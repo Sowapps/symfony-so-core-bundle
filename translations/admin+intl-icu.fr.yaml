@@ -1,0 +1,23 @@
+admin:
+    label: "{app} Admin"
+    name: "Administration"
+    navigation: "Navigation"
+
+page:
+    admin_home:
+        label: "Administration"
+    admin_dashboard:
+        label: "Dashboard"
+        legend: "Vas y gère ton dashboard ! T'as vu les stats et tout !"
+    admin_register:
+        title: "Inscription"
+        loginAction: "Vous êtes déjà inscrit ? Connectez-vous !"
+    admin_login:
+        title: "Connexion"
+        email: "Entrez votre adresse email..."
+        password: "Puis votre mot de passe !"
+        registerAction: "Pas de compte ? Inscrivez-vous !"
+
+email:
+    activateAccount:
+        subject: "Démo SoIngenious - Activez votre compte"

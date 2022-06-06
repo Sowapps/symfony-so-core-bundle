@@ -1,0 +1,29 @@
+{% extends '@SoCore/document-web-admin.html.twig' %}
+
+{% block documentContents %}
+	
+	<div id="layoutAuthentication" {% if background is defined and background %}style="background-image: url('{{ asset(background) }}')"{% endif %}>
+		<div id="layoutAuthentication_content">
+			<main class="pb-5">
+				<div class="container">
+					{% block layoutContents %}Please provide block layoutContents{% endblock %}
+				</div>
+			</main>
+		</div>
+		<div id="layoutAuthentication_footer">
+			<footer class="py-4 bg-light mt-auto">
+				<div class="container-fluid px-4">
+					<div class="d-flex align-items-center justify-content-between small">
+						<div class="text-muted">Copyright &copy; {{ 'app.label' | trans }} {{ 'now' | date('Y') }} </div>
+						{#                    <div> #}
+						{#                        <a href="#">Privacy Policy</a> #}
+						{#                        · #}
+						{#                        <a href="#">Terms &amp; Conditions</a> #}
+						{#                    </div> #}
+					</div>
+				</div>
+			</footer>
+		</div>
+	</div>
+
+{% endblock %}

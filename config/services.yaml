@@ -1,0 +1,114 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            #            string $projectPath: '%kernel.project_dir%'
+            string $publicPath: '%kernel.project_dir%/public'
+
+    #   Services
+
+    so_core.string:
+        class: Sowapps\SoCoreBundle\Service\StringHelper
+        arguments:
+            - '@slugger'
+    Sowapps\SoCoreBundle\Service\StringHelper: '@so_core.string'
+
+    so_core.environment_factory:
+        class: 'Sowapps\SoCoreBundle\Core\Environment\EnvironmentFactory'
+        arguments:
+            - '@kernel'
+            - '@cache.app'
+
+    so_core.environment:
+        class: Sowapps\SoCoreBundle\Core\Environment\Environment
+        factory: '@so_core.environment_factory'
+        arguments:
+            - '@kernel'
+
+    so_core.user:
+        class: Sowapps\SoCoreBundle\Service\DefaultUserService
+        arguments:
+            - '@security.user_password_hasher'
+            - '@security.access.decision_manager'
+            - '@security.helper'
+            - '@so_core.string'
+            - '%so_core.user%'
+    Sowapps\SoCoreBundle\Service\AbstractUserService: '@so_core.user'
+
+    so_core.context:
+        class: Sowapps\SoCoreBundle\Service\DefaultContextService
+        arguments:
+            - '@kernel'
+            - '@request_stack'
+            - '@router'
+            - '@so_core.environment'
+    Sowapps\SoCoreBundle\Contracts\ContextInterface: '@so_core.context'
+
+    so_core.controller:
+        class: Sowapps\SoCoreBundle\Service\ControllerService
+        arguments:
+            - '@kernel'
+            - '@request_stack'
+            - '@logger'
+            - '@translator'
+            - '@router'
+            - '@so_core.context'
+            - '@so_core.user'
+            - '@so_core.string'
+    Sowapps\SoCoreBundle\Service\ControllerService: '@so_core.controller'
+
+    so_core.email_verifier:
+        class: Sowapps\SoCoreBundle\Security\EmailVerifier
+        arguments:
+            - '@symfonycasts.verify_email.helper'
+            - '@mailer'
+            - '@doctrine.orm.entity_manager'
+    Sowapps\SoCoreBundle\Security\EmailVerifier: '@so_core.email_verifier'
+
+    #   Controllers
+
+    Sowapps\SoCoreBundle\Controller\Admin\AdminSecurityController:
+        tags: [ 'controller.service_arguments' ]
+        arguments:
+            - '@so_core.controller'
+            - '@so_core.email_verifier'
+            - '@so_core.user'
+            - '%so_core.admin%'
+
+    #   Forms
+
+    Sowapps\SoCoreBundle\Form\User\UserRegisterForm:
+        arguments:
+            - '@translator'
+            - '@so_core.user'
+
+    #   Twig Extension
+
+    Sowapps\SoCoreBundle\Twig\TwigExtension:
+        tags: [ 'controller.service_arguments' ]
+
+    #   Event Subscribers
+
+    so_core.locale_subscriber:
+        class: Sowapps\SoCoreBundle\EventListener\LocaleSubscriber
+        arguments:
+            - '@so_core.context'
+        tags:
+            - { name: kernel.event_listener, event: kernel.request }
+    Sowapps\SoCoreBundle\EventListener\LocaleSubscriber: '@so_core.locale_subscriber'
+
+    so_core.entity_subscriber:
+        class: Sowapps\SoCoreBundle\EventListener\EntityLifecycleSubscriber
+        arguments:
+            - '@so_core.user'
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+    Sowapps\SoCoreBundle\EventListener\EntityLifecycleSubscriber: '@so_core.entity_subscriber'

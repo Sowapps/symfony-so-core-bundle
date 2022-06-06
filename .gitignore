@@ -1,0 +1,6 @@
+
+# Symfony Bundle gitignore
+# Remove all generated
+/var/
+/vendor/
+/*.lock

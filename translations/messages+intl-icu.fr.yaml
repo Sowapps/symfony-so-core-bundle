@@ -1,0 +1,11 @@
+entity:
+    user:
+        field:
+            createDate: "Date d'inscription"
+            email: "Email"
+            password: "Mot de passe"
+            passwordConfirm: "Confirmer le mot de passe"
+            currentPassword: "Mot de passe actuel"
+            name: "Nom/Pseudo"
+            roles: "Rôles"
+            state: "État"

@@ -1,0 +1,53 @@
+{# {% set theme = setTheme('bs5') %} #}
+{# {% set currentLanguage = language.languageByLocale(app.request.locale) %} #}
+<!DOCTYPE html>
+{# <html lang="{{ currentLanguage.primaryCode }}"> #}
+<html lang="{{ app.request.locale }}">
+<head>
+	<meta charset="utf-8">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+	
+	<link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+	
+	<title>
+		{%- block title -%}
+			{%- if pageTitle is defined -%}
+				{{ ( 'app.label' | trans ) ~ ' ~ ' ~ pageTitle }}
+			{%- else -%}
+				{{ 'app.label' | trans }}
+			{%- endif -%}
+		{%- endblock -%}
+	</title>
+	
+	{% block stylesheets -%}
+		{{ encore_entry_link_tags('app-admin') }}
+	{%- endblock %}
+	
+	{#    <script> #}
+	{#    $ = function (callback) { #}
+	{#        document.addEventListener('DOMContentLoaded', callback); #}
+	{#    }; #}
+	{#    </script> #}
+
+</head>
+{% block document_body -%}
+	<body class="{{ bodyClass() }} {{ bodyClass | default() }}">
+	
+	{%- block documentContents %}{% endblock -%}
+	
+	{%- block javascripts %}
+		{{ encore_entry_script_tags('app-admin') }}
+		
+		<div id="ExternalLibraryWrapper"></div>
+		
+		{#        <script type="text/javascript"> #}
+		{#        $(function () { #}
+		{#            {% include 'admin/embed/translations.js.twig' %} #}
+		{#            {% include 'admin/embed/routing.js.twig' %} #}
+		{#        }); #}
+		{#        </script> #}
+	{% endblock -%}
+	
+	</body>
+{% endblock %}
+</html>

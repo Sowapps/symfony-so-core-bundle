@@ -1,0 +1,50 @@
+{
+	"name": "sowapps/so-core-bundle",
+	"type": "symfony-bundle",
+	"license": "MIT",
+	"minimum-stability": "stable",
+	"prefer-stable": true,
+	"require": {
+		"php": ">=8.1",
+		"ext-ctype": "*",
+		"ext-iconv": "*",
+		"symfony/flex": "^2",
+		"symfony/twig-bundle": "^6.1"
+	},
+	"autoload": {
+		"psr-4": {
+			"Sowapps\\SoCoreBundle\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Sowapps\\SoCoreBundle\\Tests\\": "tests/"
+		}
+	},
+	"extra": {
+		"symfony": {
+			"allow-contrib": false,
+			"require": "6.1.*"
+		}
+	},
+	"authors": [
+		{
+			"name": "Florent HAZARD",
+			"email": "contact@sowapps.com",
+			"homepage": "http://sowapps.com",
+			"role": "Developer"
+		}
+	],
+	"config": {
+		"allow-plugins": {
+			"symfony/flex": true,
+			"symfony/runtime": true
+		}
+	},
+	"scripts": {
+		"auto-scripts": {
+			"cache:clear": "symfony-cmd",
+			"assets:install %PUBLIC_DIR%": "symfony-cmd"
+		}
+	}
+}

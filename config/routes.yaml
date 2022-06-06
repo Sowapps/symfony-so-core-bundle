@@ -1,0 +1,16 @@
+admin_login:
+    path: /admin-login.html
+    controller: Sowapps\SoCoreBundle\Controller\Admin\AdminSecurityController::login
+
+admin_register:
+    path: /admin-register.html
+    controller: Sowapps\SoCoreBundle\Controller\Admin\AdminSecurityController::register
+
+admin_verify_email:
+    path: /admin-verify-email.html
+    controller: Sowapps\SoCoreBundle\Controller\Admin\AdminSecurityController::verifyUserEmail
+
+admin_home:
+    path: /admin/
+    methods: GET
+    controller: Sowapps\SoCoreBundle\Controller\Admin\AdminDashboardController::dashboard
