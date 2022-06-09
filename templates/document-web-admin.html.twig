@@ -20,7 +20,11 @@
 	</title>
 	
 	{% block stylesheets -%}
-		{{ encore_entry_link_tags('app-admin') }}
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+			  integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous"
+			  referrerpolicy="no-referrer"/>
+		{{ encore_entry_link_tags('admin-dependencies') }}
+		{{ encore_entry_link_tags('admin-app') }}
 	{%- endblock %}
 	
 	{#    <script> #}
@@ -31,12 +35,13 @@
 
 </head>
 {% block document_body -%}
-	<body class="{{ bodyClass() }} {{ bodyClass | default() }}">
+	<body class="{%- block bodyClass -%}{{ bodyClass() }}{%- endblock -%}">
 	
 	{%- block documentContents %}{% endblock -%}
 	
 	{%- block javascripts %}
-		{{ encore_entry_script_tags('app-admin') }}
+		{{ encore_entry_script_tags('admin-dependencies') }}
+		{{ encore_entry_script_tags('admin-app') }}
 		
 		<div id="ExternalLibraryWrapper"></div>
 		

@@ -1,0 +1,28 @@
+{# Main Title #}
+<h1 class="page-header mt-4">
+	{# pageTitle could be a block or a variable #}
+	{% block pageTitle %}
+		{%- if pageTitle is defined -%}
+			{{ pageTitle }}
+		{%- else -%}
+			{{ ('page.' ~ currentRoute ~ '.label') | trans([], 'admin') }}
+		{%- endif -%}
+	{% endblock %}
+	<small>{% block pageLegend %}{{ ('page.' ~ currentRoute ~ '.legend') | trans([], 'admin') }}{% endblock %}</small>
+</h1>
+
+{# Main Breadcrumb #}
+{% if breadcrumb is not empty %}
+	<ol class="breadcrumb mb-4">
+		{%- for item in breadcrumb -%}
+			{%- set active = loop.last -%}
+			<li class="breadcrumb-item{{ active ? ' active' : '' }}">
+				{%- if item.link -%}
+					<a href="{{ item.link }}">{{ item.label }}</a>
+				{%- else -%}
+					{{- item.label -}}
+				{%- endif -%}
+			</li>
+		{%- endfor -%}
+	</ol>
+{% endif %}

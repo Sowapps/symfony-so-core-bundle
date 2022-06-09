@@ -94,6 +94,10 @@ class AbstractUser extends AbstractEntity implements UserInterface, PasswordAuth
 		return $user->isDisabled() === $this->isDisabled() && $user->getRoles() === $this->getRoles();
 	}
 	
+	public function getGenderKey(): string {
+		return 'unknown';
+	}
+	
 	public function getLabel(): string {
 		return $this->getName();
 	}

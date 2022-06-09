@@ -87,7 +87,7 @@ class UserRegisterForm extends AbstractForm {
 	public function configureOptions(OptionsResolver $resolver) {
 		$resolver->setDefaults([
 			'data_class'   => $this->userService->getUserClass(),
-			'label_format' => 'entity.user.field.%name%',
+			'label_format' => 'user.field.%name%',
 			'row_attr'     => [
 				'class' => 'form-floating',
 			],

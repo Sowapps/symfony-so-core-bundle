@@ -1,0 +1,56 @@
+{% extends '@SoCore/document-web-admin.html.twig' %}
+
+{% set currentRoute = app.request.attributes.get('_route') %}
+{% set scope = scope | default %}
+
+{%- block bodyClass -%}{{ parent() }} sb-nav-fixed{%- endblock -%}
+
+{% block documentContents %}
+	<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+		<!-- Navbar Brand-->
+		<a class="navbar-brand ps-3" href="{{ path('home') }}">{{ 'app.label' | trans }}</a>
+		<!-- Sidebar Toggle-->
+		<button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+		<!-- Navbar Search-->
+		{#        <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0"> #}
+		{#        <div class="input-group"> #}
+		{#            <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" /> #}
+		{#            <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button> #}
+		{#        </div> #}
+		{#        </form> #}
+		<!-- Navbar-->
+		{# If search form: ms-auto ms-md-0 #}
+		{# Else: ms-auto #}
+		<div class="ms-auto me-3">
+			<ul class="navbar-nav">
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i
+								class="fas fa-user fa-fw"></i></a>
+					{% include "@SoCore/admin/section/menu-user.html.twig" %}
+				</li>
+			</ul>
+		</div>
+	</nav>
+	
+	<div id="layoutSidenav">
+		<div id="layoutSidenav_nav">
+			{% include "@SoCore/admin/section/menu-sidebar.html.twig" %}
+		</div>
+		<div id="layoutSidenav_content">
+			<main>
+				<div class="container-fluid px-4">
+					{% include "@SoCore/admin/section/content-header.html.twig" %}
+					
+					{# Main Contents #}
+					{% block layoutContents %}Please provide block layoutContents{% endblock %}
+				</div>
+			</main>
+			<footer class="py-4 bg-light mt-auto">
+				<div class="container-fluid px-4">
+					{% include "@SoCore/admin/section/footer-copyright.html.twig" %}
+				</div>
+			</footer>
+		</div>
+	</div>
+
+{% endblock %}

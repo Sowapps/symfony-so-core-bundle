@@ -1,0 +1,21 @@
+{% set collapsing = block('collapse') is defined ? uniqueId('MenuItem') : null %}
+
+<a class="nav-link" href="{{ link | default('#') }}"
+   {%- if collapsing %}data-bs-toggle="collapse" data-bs-target="#{{ collapsing }}" aria-expanded="false" aria-controls="{{ collapsing }}"{% endif -%}
+>
+	{%- if icon is not empty -%}
+		<div class="sb-nav-link-icon"><i class="{{ icon }}"></i></div>
+	{%- endif -%}
+	{{- label -}}
+	{%- if collapsing -%}
+		<div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+	{%- endif -%}
+</a>
+
+{%- if collapsing -%}
+	<div class="collapse" id="{{ collapsing }}">
+		<nav class="sb-sidenav-menu-nested nav">
+			{% block collapse %}{% endblock %}
+		</nav>
+	</div>
+{% endif -%}

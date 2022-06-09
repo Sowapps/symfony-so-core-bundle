@@ -6,18 +6,20 @@
 namespace Sowapps\SoCoreBundle\Controller\Admin;
 
 use Doctrine\ORM\EntityManagerInterface;
+use LogicException;
 use Sowapps\SoCoreBundle\Core\Controller\AbstractController;
+use Sowapps\SoCoreBundle\Entity\AbstractUser;
 use Sowapps\SoCoreBundle\Form\User\UserRegisterForm;
 use Sowapps\SoCoreBundle\Security\EmailVerifier;
 use Sowapps\SoCoreBundle\Service\AbstractUserService;
 use Sowapps\SoCoreBundle\Service\ControllerService;
+use Sowapps\SoCoreBundle\Service\LanguageService;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class AdminSecurityController extends AbstractController {
@@ -42,6 +44,11 @@ class AdminSecurityController extends AbstractController {
 		return parent::render($view, $parameters, $response);
 	}
 	
+	public function logout() {
+		// By-passed by security firewall
+		throw new LogicException('Not implemented for now.');
+	}
+	
 	public function login(AuthenticationUtils $authenticationUtils): Response {
 		// Get last login error and username
 		$lastLoginError = $authenticationUtils->getLastAuthenticationError();
@@ -55,18 +62,16 @@ class AdminSecurityController extends AbstractController {
 		]);
 	}
 	
-	public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response {
+	public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, LanguageService $languageService): Response {
 		$userClass = $this->userService->getUserClass();
+		/** @var AbstractUser $user */
 		$user = new $userClass();
 		$form = $this->createForm(UserRegisterForm::class, $user);
 		if( $form->isValidRequest($request) ) {
 			// encode the plain password
-			$user->setPassword(
-				$userPasswordHasher->hashPassword(
-					$user,
-					$form->get('plainPassword')->getData()
-				)
-			);
+			$user->setPassword($userPasswordHasher->hashPassword($user, $form->get('plainPassword')->getData()));
+			$user->setTimezone('Europe/Paris');
+			$user->setLanguage($languageService->getDefaultLocaleLanguage());
 			
 			$entityManager->persist($user);
 			$entityManager->flush();
@@ -79,6 +84,7 @@ class AdminSecurityController extends AbstractController {
 					->subject($this->translator->trans('email.activateAccount.subject', [], 'admin'))
 					->htmlTemplate('@SoCore/admin/email/register_confirmation.html.twig')
 			);
+			$this->addFlash('auth_success', $this->translator->trans('page.admin_register.success', [], 'admin'));
 			
 			return $this->redirectToRoute('admin_login');
 		}
@@ -88,7 +94,7 @@ class AdminSecurityController extends AbstractController {
 		]);
 	}
 	
-	public function verifyUserEmail(Request $request, TranslatorInterface $translator): Response {
+	public function verifyUserEmail(Request $request): Response {
 		$id = $request->get('id');
 		
 		if( null === $id ) {
@@ -106,13 +112,12 @@ class AdminSecurityController extends AbstractController {
 		try {
 			$this->emailVerifier->handleEmailConfirmation($request, $user);
 		} catch( VerifyEmailExceptionInterface $exception ) {
-			$this->addFlash('verify_email_error', $translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
+			$this->addFlash('verify_email_error', $this->translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
 			
 			return $this->redirectToRoute('admin_register');
 		}
 		
-		// @TODO Change the redirect on success and handle or remove the flash message in your templates
-		$this->addFlash('success', 'Your email address has been verified.');
+		$this->addFlash('auth_success', 'Your email address has been verified.');
 		
 		return $this->redirectToRoute('admin_home');
 	}

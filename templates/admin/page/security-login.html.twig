@@ -3,22 +3,40 @@
 {% block layoutContents %}
 	
 	<div class="row justify-content-center">
-		<div class="col-lg-5">
-			<div class="card shadow-lg border-0 rounded-lg mt-5">
+		<div class="col-lg-5 pt-5">
+			{% for flash_message in app.flashes('auth_success') %}
+				<div class="alert alert-success mb-3" role="alert">{{ flash_message }}</div>
+			{% endfor %}
+			
+			<div class="card shadow-lg border-0 rounded-lg">
 				<div class="card-header">
 					<h3 class="text-center font-weight-light my-4">{{ 'page.admin_login.title' | trans([], 'admin') }}</h3>
 				</div>
 				<div class="card-body">
-					<form>
+					{% if login.error %}
+						<div class="alert alert-warning alert-dismissible fade show" role="alert">
+							<div class="d-flex align-items-center">
+								<span class="me-2">
+									<i class="fa fa-exclamation-triangle"></i>
+								</span>
+								<div>
+									{{ login.error.messageKey | trans(login.error.messageData) }}
+								</div>
+							</div>
+							<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close' | trans }}"></button>
+						</div>
+					{% endif %}
+					
+					<form method="post">
 					<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 					<input name="isAdmin" type="hidden" value="1"/>
 					<div class="form-floating mb-3">
-						<input id="InputLoginEmail" name="adminEmail" type="email" class="form-control" required autocomplete="username"
+						<input id="InputLoginEmail" name="_username" type="email" class="form-control" required autocomplete="username"
 							   placeholder="{{ 'page.admin_login.email' | trans([], 'admin') }}" {{ login.email ? 'value="%s"'|format(login.email)|raw : '' }}/>
 						<label for="InputLoginEmail">{{ 'page.admin_login.email' | trans([], 'admin') }}</label>
 					</div>
 					<div class="form-floating mb-3">
-						<input id="InputLoginPassword" name="adminPassword" type="password" class="form-control" autocomplete="current-password" required
+						<input id="InputLoginPassword" name="_password" type="password" class="form-control" autocomplete="current-password" required
 							   placeholder="{{ 'page.admin_login.password' | trans([], 'admin') }}"/>
 						<label for="InputLoginPassword">{{ 'page.admin_login.password' | trans([], 'admin') }}</label>
 					</div>

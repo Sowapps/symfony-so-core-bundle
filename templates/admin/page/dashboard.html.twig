@@ -1,1 +1,13 @@
-ADMIN DASHBOARD
+{% extends '@SoCore/layout-admin.html.twig' %}
+
+{% block title %}{{ ( parent() ~ ' ~ ' ~ ('page.admin_dashboard.label' | trans([], 'admin')) ) | raw }}{% endblock %}
+
+{% block layoutContents %}
+	
+	ADMIN DASHBOARD
+
+{% endblock %}
+
+{# {% block javascripts %} #}
+{#    {{ parent() }} #}
+{# {% endblock %} #}

@@ -22,8 +22,8 @@ abstract class AbstractAdminController extends AbstractController {
 	public function __construct(ControllerService $controllerService) {
 		parent::__construct($controllerService);
 		
-		$this->addRouteToBreadcrumb('admin_home');
 		$this->domain = 'admin';
+		$this->addRouteToBreadcrumb('admin_home');
 	}
 	
 	/**

@@ -43,6 +43,25 @@ services:
             - '%so_core.user%'
     Sowapps\SoCoreBundle\Service\AbstractUserService: '@so_core.user'
 
+    so_core.language:
+        class: Sowapps\SoCoreBundle\Service\LanguageService
+        arguments:
+            - '@router'
+    Sowapps\SoCoreBundle\Service\LanguageService: '@so_core.language'
+
+    so_core.file:
+        class: Sowapps\SoCoreBundle\Service\FileService
+        # Packages $packages, TwigService $twig, ParameterBagInterface $parameters, UrlHelper $urlHelper, UrlGeneratorInterface $router, StringHelper $stringHelper, array $configFile
+        arguments:
+            - '@assets.packages'
+            - '@twig'
+            - '@parameter_bag'
+            - '@url_helper'
+            - '@router'
+            - '@so_core.string'
+            - '%so_core.file%'
+    Sowapps\SoCoreBundle\Service\FileService: '@so_core.file'
+
     so_core.context:
         class: Sowapps\SoCoreBundle\Service\DefaultContextService
         arguments:
@@ -70,8 +89,31 @@ services:
         arguments:
             - '@symfonycasts.verify_email.helper'
             - '@mailer'
-            - '@doctrine.orm.entity_manager'
+            - '@so_core.user'
     Sowapps\SoCoreBundle\Security\EmailVerifier: '@so_core.email_verifier'
+
+    so_core.fixture.init:
+        class: Sowapps\SoCoreBundle\Core\DataFixtures\InitFixture
+        arguments:
+            - '@so_core.user'
+            - '@so_core.string'
+        tags: [ 'doctrine.fixture.orm' ]
+    Sowapps\SoCoreBundle\Core\DataFixtures\InitFixture: '@so_core.fixture.init'
+
+    so_core.fixture.sample:
+        class: Sowapps\SoCoreBundle\Core\DataFixtures\SampleFixture
+        arguments:
+            - '@so_core.user'
+            - '@so_core.string'
+        tags: [ 'doctrine.fixture.orm' ]
+    Sowapps\SoCoreBundle\Core\DataFixtures\SampleFixture: '@so_core.fixture.sample'
+
+    #   Repositories
+
+    Sowapps\SoCoreBundle\Repository\LanguageRepository:
+        arguments:
+            - '@doctrine'
+        tags: [ 'doctrine.repository_service' ]
 
     #   Controllers
 
@@ -83,12 +125,33 @@ services:
             - '@so_core.user'
             - '%so_core.admin%'
 
+    Sowapps\SoCoreBundle\Controller\Admin\AdminDashboardController:
+        tags: [ 'controller.service_arguments' ]
+        arguments:
+            - '@so_core.controller'
+
+    Sowapps\SoCoreBundle\Controller\FileController:
+        tags: [ 'controller.service_arguments' ]
+        arguments:
+            - '@so_core.file'
+
     #   Forms
 
     Sowapps\SoCoreBundle\Form\User\UserRegisterForm:
         arguments:
             - '@translator'
             - '@so_core.user'
+
+    #   Commands
+
+    Sowapps\SoCoreBundle\Command\EmailTestCommand:
+        arguments:
+            - '@translator'
+            - '@mailer'
+            - '@twig'
+            - '%so_core.email%'
+        tags:
+            - { name: 'console.command', command: 'email:send-test' }
 
     #   Twig Extension
 

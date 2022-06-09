@@ -14,29 +14,19 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[UniqueEntity(fields: ['key'], message: 'language.key.exists')]
 class Language extends AbstractEntity {
 	
-	/**
-	 * @ORM\Column(type="string", length=7)
-	 */
-	private ?string $locale = null;
-	
-	/**
-	 * @ORM\Column(type="string", length=3)
-	 */
-	private ?string $primaryCode = null;
-	
-	/**
-	 * @ORM\Column(type="string", length=3)
-	 */
-	private ?string $regionCode = null;
-	
-	/**
-	 * @ORM\Column(name="_key", type="string", length=255)
-	 */
+	#[ORM\Column(name: '_key', type: 'string', length: 255)]
 	private ?string $key = null;
 	
-	/**
-	 * @ORM\Column(type="boolean")
-	 */
+	#[ORM\Column(type: 'string', length: 7)]
+	private ?string $locale = null;
+	
+	#[ORM\Column(type: 'string', length: 7)]
+	private ?string $primaryCode = null;
+	
+	#[ORM\Column(type: 'string', length: 7)]
+	private ?string $regionCode = null;
+	
+	#[ORM\Column(type: 'boolean')]
 	private ?bool $enabled = false;
 	
 	/**

@@ -4,19 +4,23 @@ admin:
     navigation: "Navigation"
 
 page:
-    admin_home:
-        label: "Administration"
-    admin_dashboard:
-        label: "Dashboard"
-        legend: "Vas y gère ton dashboard ! T'as vu les stats et tout !"
     admin_register:
         title: "Inscription"
         loginAction: "Vous êtes déjà inscrit ? Connectez-vous !"
+        success: "Vous êtes inscrit, il ne vous reste plus qu'à activer votre compte !"
     admin_login:
         title: "Connexion"
         email: "Entrez votre adresse email..."
         password: "Puis votre mot de passe !"
         registerAction: "Pas de compte ? Inscrivez-vous !"
+    admin_home:
+        label: "Administration"
+    admin_dashboard:
+        label: "Dashboard"
+        legend: "Le résumé de toutes les données de votre site"
+    admin_my_settings:
+        label: "Mes paramètres"
+        legend: "Configurez votre compte"
 
 email:
     activateAccount:

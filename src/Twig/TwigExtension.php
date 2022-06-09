@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection PhpInternalEntityUsedInspection */
+
 /**
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
@@ -6,11 +7,14 @@
 namespace Sowapps\SoCoreBundle\Twig;
 
 use Sowapps\SoCoreBundle\Contracts\ContextInterface;
-use Sowapps\SoCoreBundle\Core\Form\AbstractForm;
+use Sowapps\SoCoreBundle\Core\File\LocalHttpFile;
 use Sowapps\SoCoreBundle\Entity\AbstractEntity;
-use Sowapps\SoCoreBundle\Exception\UserException;
+use Sowapps\SoCoreBundle\Entity\AbstractUser;
+use Sowapps\SoCoreBundle\Entity\File;
+use Sowapps\SoCoreBundle\Service\FileService;
+use Symfony\Bridge\Twig\Mime\WrappedTemplatedEmail;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\Form\FormView;
+use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\WebpackEncoreBundle\Asset\EntrypointLookupInterface;
 use Twig\Environment as TwigService;
@@ -27,6 +31,8 @@ class TwigExtension extends AbstractExtension {
 	
 	protected TwigService $twig;
 	
+	protected FileService $fileService;
+	
 	protected ContextInterface $contextService;
 	
 	protected ParameterBagInterface $parameters;
@@ -40,18 +46,21 @@ class TwigExtension extends AbstractExtension {
 	 *
 	 * @param EntrypointLookupInterface $entrypointLookup
 	 * @param TranslatorInterface $translator
+	 * @param ParameterBagInterface $parameters
 	 * @param TwigService $twig
+	 * @param FileService $fileService
 	 * @param ContextInterface $contextService
 	 * @param string $publicPath
 	 */
 	public function __construct(
 		EntrypointLookupInterface $entrypointLookup, TranslatorInterface $translator, ParameterBagInterface $parameters, TwigService $twig,
-		ContextInterface          $contextService, string $publicPath
+		FileService               $fileService, ContextInterface $contextService, string $publicPath
 	) {
 		$this->entrypointLookup = $entrypointLookup;
 		$this->translator = $translator;
 		$this->parameters = $parameters;
 		$this->twig = $twig;
+		$this->fileService = $fileService;
 		$this->contextService = $contextService;
 		$this->publicPath = $publicPath;
 	}
@@ -65,16 +74,14 @@ class TwigExtension extends AbstractExtension {
 	
 	public function getFilters(): array {
 		return [
-			new TwigFilter('smartDate', [$this, 'formatToSmartDate']),
 			new TwigFilter('base64', [$this, 'formatToBase64']),
 			new TwigFilter('bool', 'boolval'),
+			new TwigFilter('smallImage', [$this, 'formatSmallImage']),
+			new TwigFilter('largeImage', [$this, 'formatLargeImage']),
 			//			new TwigFilter('price', [$this, 'formatPrice']),
-			//			new TwigFilter('smallImage', [$this, 'formatSmallImage']),
-			//			new TwigFilter('largeImage', [$this, 'formatLargeImage']),
 			//			new TwigFilter('attributes', [$this, 'formatAttributes'], ['is_safe' => ['html']]),
 			//			new TwigFilter('labelize', [$this, 'labelize']),
 			//			new TwigFilter('paragraphize', [$this, 'paragraphize'], ['is_safe' => ['html']]),
-			//			new TwigFilter('theme', [$this, 'applyTheme']),
 			//			new TwigFilter('pushTo', [$this, 'pushTo']),
 			//			new TwigFilter('normalize', [$this, 'normalize']),
 			//			new TwigFilter('json', [$this->normalizerService, 'serialize']),
@@ -86,6 +93,7 @@ class TwigExtension extends AbstractExtension {
 	public function getFunctions(): array {
 		return [
 			new TwigFunction('bodyClass', [$this, 'getBodyClass']),
+			new TwigFunction('uniqueId', [$this, 'getUniqueId']),
 			//			new TwigFunction('parameter', [$this, 'getParameter'], ['is_safe' => ['html']]),
 			//			new TwigFunction('label', [$this, 'getFieldLabel']),
 			//			new TwigFunction('inputAttr', [$this, 'renderInputAttr'], ['is_safe' => ['html']]),
@@ -95,7 +103,6 @@ class TwigExtension extends AbstractExtension {
 			//			new TwigFunction('arrayChecked', [$this, 'renderArrayChecked'], ['is_safe' => ['html']]),
 			//			new TwigFunction('selectOptions', [$this, 'renderSelectOptions'], ['is_safe' => ['html']]),
 			//			new TwigFunction('validityCssClass', [$this, 'renderValidityCssClass'], ['is_safe' => ['html']]),
-			//			new TwigFunction('getUniqueId', [$this, 'getUniqueId']),
 			//			new TwigFunction('date', [$this, 'formatDate']),// 'date' Filter is used by Symfony
 			//			new TwigFunction('reports', [$this, 'renderReports'], ['is_safe' => ['html']]),
 			//			new TwigFunction('form_success', [$this, 'renderSuccessAlert'], ['is_safe' => ['html']]),
@@ -118,171 +125,6 @@ class TwigExtension extends AbstractExtension {
 		return implode(' ', $classes);
 	}
 	
-	public function getParameter(string $name): ?string {
-		return $this->parameters->get($name);
-	}
-	
-	
-	/**
-	 * Push element to array
-	 * /!\ Unable to pass array by reference
-	 *
-	 * @param $element
-	 * @param array $array
-	 * @return array
-	 */
-	public function pushTo($element, array $array): array {
-		$array[] = $element;
-		
-		return $array;
-	}
-	
-	public function getTranslations(string $path, array $keys, ?string $domain = null): array {
-		$translations = [];
-		foreach( $keys as $key ) {
-			$translations[$key] = $this->translator->trans(sprintf('%s.%s', $path, $key), [], $domain);
-		}
-		
-		return $translations;
-	}
-	
-	public function getEncoreEntryCssSource(string $entryName): string {
-		$this->entrypointLookup->reset();
-		$files = $this->entrypointLookup->getCssFiles($entryName);
-		$source = '';
-		foreach( $files as $file ) {
-			$source .= file_get_contents($this->publicPath . '/' . $file);
-		}
-		
-		return $source;
-	}
-	
-	/**
-	 * @return string
-	 */
-	public function getTheme(): string {
-		return $this->theme;
-	}
-	
-	/**
-	 * @param string $theme
-	 * @return string
-	 */
-	public function setTheme(string $theme): string {
-		$this->theme = $theme;
-		
-		return $theme;
-	}
-	
-	/**
-	 * @param string $value
-	 * @return string
-	 */
-	public function applyTheme(string $value): string {
-		return str_replace(['#', '{theme}'], $this->theme, $value);
-	}
-	
-	public function repeatString($char, $times): string {
-		return str_repeat($char, $times);
-	}
-	
-	public function labelize(AbstractEntity $entity): string {
-		return $entity->__toString();
-	}
-	
-	//	public function paragraphize(?string $text): string {
-	//		if( !$text ) {
-	//			return '';
-	//		}
-	//		$parts = preg_split("#\n+#", $text);
-	//		$parts = array_map(function ($string) {
-	//			return '<p>' . strip_tags($string) . '</p>';
-	//		}, $parts);
-	//
-	//		return join('', $parts);
-	//	}
-	
-	/**
-	 * @param array|string|AbstractForm $messages
-	 * @return string
-	 */
-	public function renderErrorAlert($messages, $domain = 'validators'): string {
-		return $this->renderAlert('error', $messages, $domain);
-	}
-	
-	/**
-	 * @param $type
-	 * @param array|string|AbstractForm $messages
-	 * @param null $domain
-	 * @return string
-	 */
-	public function renderAlert($type, $messages, $domain = null): string {
-		if( !$messages ) {
-			return '';
-		}
-		if( !is_array($messages) ) {
-			$messages = [$messages];
-		}
-		$html = '';
-		foreach( $messages as $message ) {
-			// Same as AbstractController
-			if( $message instanceof UserException ) {
-				$report = $message->asArray($domain);
-				
-			} else {
-				$messageDomain = null;
-				$params = [];
-				if( is_array($message) ) {
-					[$message, $params, $messageDomain] = array_pad($message, 3, null);
-				}
-				$report = ['message' => $message, 'parameters' => $params, 'domain' => $messageDomain ?? $domain];
-			}
-			$html .= $this->twig->render('component/alert.' . $type . '.' . $this->theme . '.html.twig', $report);
-		}
-		
-		return $html;
-	}
-	
-	/**
-	 * @param array|string|AbstractForm $messages
-	 * @param string|null $domain
-	 * @return string
-	 */
-	public function renderReports($reports, string $domain = null): string {
-		// Render a message saved using AbstractController:consumeSavedReports
-		if( !empty($reports['success']) ) {
-			return $this->renderAlert('success', $reports['success'], $domain);
-		}
-		if( !empty($reports['error']) ) {
-			return $this->renderAlert('error', $reports['error'], $domain);
-		}
-		
-		return '';
-	}
-	
-	/**
-	 * @param array|string|AbstractForm $messages
-	 * @param string|null $domain
-	 * @return string
-	 */
-	public function renderSuccessAlert($messages, string $domain = null): string {
-		if( $messages instanceof FormView ) {
-			// Not set if not using AppForm
-			if( !array_key_exists('successes', $messages->vars) ) {
-				// Silently ignore compound form widgets
-				return '';
-			}
-			if( !$domain ) {
-				$domain = $messages->vars['success_domain'];
-			}
-			$messageList = $messages->vars['successes'];
-			$messages->vars['successes'] = null;
-			$messages = $messageList;
-		}
-		
-		return $this->renderAlert('success', $messages, $domain);
-	}
-	
 	public function formatToBase64($url): string {
 		if( $url[0] === '/' ) {
 			$url = $this->publicPath . $url;
@@ -291,24 +133,57 @@ class TwigExtension extends AbstractExtension {
 		return base64_encode(file_get_contents($url));
 	}
 	
-	//	public function formatSmallImage($image, $ignoreMissing = null, $email = null): string {
-	//		if( $ignoreMissing instanceof WrappedTemplatedEmail ) {
-	//			$email = $ignoreMissing;
-	//			$ignoreMissing = null;
-	//		}
-	//		$ignoreMissing ??= $image instanceof AbstractEntity;
-	//		try {
-	//			$image = $this->getFile($image);
-	//		} catch( FileNotFoundException $e ) {
-	//			if( $ignoreMissing ) {
-	//				return '';
-	//			}
-	//			throw $e;
-	//		}
-	//		$image = $this->fileService->getAlternativeFile($image, FileService::TYPE_SMALL);
-	//
-	//		return $this->formatContextImageUrl($image, $email);
-	//	}
+	public function formatSmallImage($image, $ignoreMissing = null, $email = null): string {
+		if( $ignoreMissing instanceof WrappedTemplatedEmail ) {
+			$email = $ignoreMissing;
+			//			$ignoreMissing = null;
+		}
+		$ignoreMissing ??= $image instanceof AbstractEntity;
+		try {
+			$image = $this->getFile($image);
+		} catch( FileNotFoundException $e ) {
+			if( $ignoreMissing ) {
+				return '';
+			}
+			throw $e;
+		}
+		$image = $this->fileService->getAlternativeFile($image, FileService::TYPE_SMALL);
+		
+		return $this->formatContextImageUrl($image, $email);
+	}
+	
+	public function formatLargeImage($image, ?WrappedTemplatedEmail $email = null): string {
+		$image = $this->getFile($image);
+		$image = $this->fileService->getAlternativeFile($image, FileService::TYPE_LARGE);
+		
+		return $this->formatContextImageUrl($image, $email);
+	}
+	
+	public function getFile(AbstractUser|string|File $image): LocalHttpFile {
+		if( $image instanceof AbstractUser ) {
+			//			$image = $image->getAvatar();
+			$image = 'bundles/socore/img/avatar-neutral-blue-416.jpg';
+		}
+		if( is_string($image) || $image instanceof File ) {
+			return $this->fileService->getHttpFile($image);
+		}
+		throw new FileNotFoundException('Unknown image');
+	}
+	
+	/**
+	 * @param string|File $file
+	 * @param WrappedTemplatedEmail|null $email
+	 * @return string
+	 */
+	public function formatContextImageUrl(string|File $file, ?WrappedTemplatedEmail $email): string {
+		if( !$email ) {
+			// Web templating
+			return $this->fileService->getAssetUrl($file);
+		}
+		
+		// Email templating
+		return $email->image($file instanceof File ? $this->fileService->getFileLocalPath($file) : $file);
+	}
 	
 	//	public function isDateInput(object $input): bool {
 	//		return $input->value && is_array($input->value) && isset($input->value['year']);
@@ -441,13 +316,13 @@ class TwigExtension extends AbstractExtension {
 	//		return !$input->valid ? 'is-invalid' : '';
 	//	}
 	//
-	//	public function getUniqueId($subject): string {
-	//		if( !isset($this->uniqueId[$subject]) ) {
-	//			$this->uniqueId[$subject] = 0;
-	//		}
-	//
-	//		return $subject . (++$this->uniqueId[$subject]);
-	//	}
+	public function getUniqueId($subject): string {
+		if( !isset($this->uniqueId[$subject]) ) {
+			$this->uniqueId[$subject] = 0;
+		}
+		
+		return $subject . (++$this->uniqueId[$subject]);
+	}
 	
 	public function getName(): string {
 		return 'app_ext';

@@ -1,0 +1,12 @@
+{% macro heading(title) %}
+	<div class="sb-sidenav-menu-heading">{{ title }}</div>
+{% endmacro %}
+
+{% macro item(label, link = '#', icon = null) %}
+	<a class="nav-link" href="{{ link }}">
+		{%- if icon -%}
+			<div class="sb-nav-link-icon"><i class="{{ icon }}"></i></div>
+		{%- endif -%}
+		{{ label }}
+	</a>
+{% endmacro %}
