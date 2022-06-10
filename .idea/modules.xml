@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/symfony-so-core-bundle.iml" filepath="$PROJECT_DIR$/.idea/symfony-so-core-bundle.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/so-core-bundle.iml" filepath="$PROJECT_DIR$/.idea/so-core-bundle.iml" />
     </modules>
   </component>
 </project>

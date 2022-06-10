@@ -5,6 +5,8 @@
 		<div class="nav">
 			{{ menu.heading('admin.navigation' | trans([], 'admin')) }}
 			{{ menu.item('page.admin_home.label' | trans([], 'admin'), path('admin_home'), 'fas fa-tachometer-alt') }}
+			{# Current item with submenu #}
+			{#
 			{% embed "@SoCore/widget/menu-item.html.twig" with {
 				label: 'page.admin_home.label' | trans([], 'admin'), link: path('admin_home'), icon: 'fas fa-tachometer-alt'
 			} %}
@@ -15,8 +17,10 @@
 					{{ menu.item('page.admin_home.label' | trans([], 'admin'), path('admin_home'), 'fas fa-tachometer-alt') }}
 				{% endblock %}
 			{% endembed %}
-			{% inline('page.admin_home.label' | trans([], 'admin'), path('admin_home'), 'fas fa-tachometer-alt') %}
-			{% endinline %}
+			#}
+			{# Experimental - Require token node parser #}
+			{#            {% inline('page.admin_home.label' | trans([], 'admin'), path('admin_home'), 'fas fa-tachometer-alt') %} #}
+			{#            {% endinline %} #}
 			{#
 			<div class="sb-sidenav-menu-heading">Interface</div>
 			<a class="nav-link" href="charts.html">

@@ -5,6 +5,8 @@
 
 namespace Sowapps\SoCoreBundle\DBAL;
 
+use Sowapps\SoCoreBundle\Core\DBAL\AbstractEnumType;
+
 class EnumFilePurposeType extends AbstractEnumType {
 	
 	const USER_AVATAR = 'user_avatar';

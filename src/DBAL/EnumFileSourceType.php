@@ -5,6 +5,8 @@
 
 namespace Sowapps\SoCoreBundle\DBAL;
 
+use Sowapps\SoCoreBundle\Core\DBAL\AbstractEnumType;
+
 class EnumFileSourceType extends AbstractEnumType {
 	
 	const HTTP_UPLOAD = 'http_upload';
