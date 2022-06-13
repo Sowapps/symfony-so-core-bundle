@@ -1,17 +1,18 @@
-{% import "@SoCore/widget/menu.html.twig" as menu %}
+{% import "@SoCore/component/menu.html.twig" as menu %}
 
 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
 	<div class="sb-sidenav-menu">
 		<div class="nav">
 			{{ menu.heading('admin.navigation' | trans([], 'admin')) }}
 			{{ menu.item('page.admin_home.label' | trans([], 'admin'), path('admin_home'), 'fas fa-tachometer-alt') }}
+			{{ menu.item('page.admin_user_list.label' | trans([], 'admin'), path('admin_user_list'), 'fas fa-users') }}
 			{# Current item with submenu #}
 			{#
-			{% embed "@SoCore/widget/menu-item.html.twig" with {
+			{% embed "@SoCore/component/menu-item.html.twig" with {
 				label: 'page.admin_home.label' | trans([], 'admin'), link: path('admin_home'), icon: 'fas fa-tachometer-alt'
 			} %}
 				{% block collapse %}
-					{% import "@SoCore/widget/menu.html.twig" as menu %}
+					{% import "@SoCore/component/menu.html.twig" as menu %}
 					{{ menu.item('page.admin_home.label' | trans([], 'admin'), path('admin_home'), 'fas fa-tachometer-alt') }}
 					{{ menu.item('page.admin_home.label' | trans([], 'admin'), path('admin_home'), 'fas fa-tachometer-alt') }}
 					{{ menu.item('page.admin_home.label' | trans([], 'admin'), path('admin_home'), 'fas fa-tachometer-alt') }}

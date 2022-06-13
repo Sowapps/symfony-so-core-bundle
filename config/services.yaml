@@ -43,15 +43,32 @@ services:
             - '%so_core.user%'
     Sowapps\SoCoreBundle\Service\AbstractUserService: '@so_core.user'
 
+    so_core.email:
+        class: Sowapps\SoCoreBundle\Service\EmailService
+        arguments:
+            - '@translator'
+            - '@mailer'
+            - '@twig'
+            - '@router'
+            - '@so_core.string'
+            - '%so_core.email%'
+    Sowapps\SoCoreBundle\Service\EmailService: '@so_core.email'
+
+    so_core.mailing:
+        class: Sowapps\SoCoreBundle\Service\MailingService
+        arguments:
+            - '@so_core.email'
+    Sowapps\SoCoreBundle\Service\MailingService: '@so_core.mailing'
+
     so_core.language:
         class: Sowapps\SoCoreBundle\Service\LanguageService
         arguments:
             - '@router'
+            - '@translator'
     Sowapps\SoCoreBundle\Service\LanguageService: '@so_core.language'
 
     so_core.file:
         class: Sowapps\SoCoreBundle\Service\FileService
-        # Packages $packages, TwigService $twig, ParameterBagInterface $parameters, UrlHelper $urlHelper, UrlGeneratorInterface $router, StringHelper $stringHelper, array $configFile
         arguments:
             - '@assets.packages'
             - '@twig'
@@ -130,6 +147,11 @@ services:
         arguments:
             - '@so_core.controller'
 
+    Sowapps\SoCoreBundle\Controller\Admin\AdminUserController:
+        tags: [ 'controller.service_arguments' ]
+        arguments:
+            - '@so_core.controller'
+
     Sowapps\SoCoreBundle\Controller\FileController:
         tags: [ 'controller.service_arguments' ]
         arguments:
@@ -137,7 +159,22 @@ services:
 
     #   Forms
 
+    Sowapps\SoCoreBundle\Form\User\UserType:
+        arguments:
+            - '@translator'
+            - '@so_core.user'
+
     Sowapps\SoCoreBundle\Form\User\UserRegisterForm:
+        arguments:
+            - '@translator'
+            - '@so_core.user'
+
+    Sowapps\SoCoreBundle\Form\User\UserAdminForm:
+        arguments:
+            - '@translator'
+            - '@so_core.user'
+
+    Sowapps\SoCoreBundle\Form\User\UserAdminPasswordType:
         arguments:
             - '@translator'
             - '@so_core.user'

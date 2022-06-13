@@ -229,6 +229,7 @@ class FileService extends AbstractEntityService {
 	 * @return FileRepository
 	 */
 	public function getFileRepository(): FileRepository {
+		/** @noinspection PhpIncompatibleReturnTypeInspection */
 		return $this->entityManager->getRepository(File::class);
 	}
 	

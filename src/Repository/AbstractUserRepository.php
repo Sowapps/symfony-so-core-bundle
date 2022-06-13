@@ -3,12 +3,18 @@
 namespace Sowapps\SoCoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Sowapps\SoCoreBundle\Entity\AbstractUser;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
 abstract class AbstractUserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface {
+	
+	public function query(): QueryBuilder {
+		return $this->createQueryBuilder('user')
+			->orderBy('user.id', 'DESC');
+	}
 	
 	public function add(AbstractUser $entity, bool $flush = false): void {
 		$this->getEntityManager()->persist($entity);

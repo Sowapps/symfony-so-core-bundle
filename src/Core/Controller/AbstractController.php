@@ -9,6 +9,7 @@ use Exception;
 use Psr\Log\LoggerInterface;
 use Sowapps\SoCoreBundle\Contracts\ContextInterface;
 use Sowapps\SoCoreBundle\Core\Form\AppForm;
+use Sowapps\SoCoreBundle\Entity\AbstractUser;
 use Sowapps\SoCoreBundle\Exception\ForbiddenOperationException;
 use Sowapps\SoCoreBundle\Exception\UserException;
 use Sowapps\SoCoreBundle\Service\AbstractUserService;
@@ -32,6 +33,7 @@ use Throwable;
  * Class AbstractController
  *
  * @package Sowapps\SoCoreBundle\Core\Controller
+ * @method AbstractUser getUser()
  */
 class AbstractController extends SymfonyAbstractController {
 	

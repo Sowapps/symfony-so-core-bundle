@@ -10,7 +10,7 @@ use Exception;
 /**
  * Class Environment
  *
- * @package App\Core\Environment
+ * @package Sowapps\SoCoreBundle\Core\Environment
  */
 class Environment {
 	

@@ -10,7 +10,7 @@ use JetBrains\PhpStorm\ArrayShape;
 /**
  * Class EnvironmentProject
  *
- * @package App\Core\Environment
+ * @package Sowapps\SoCoreBundle\Core\Environment
  */
 class EnvironmentProject {
 	

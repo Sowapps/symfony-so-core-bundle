@@ -1,0 +1,56 @@
+{% set standaloneForm = standaloneForm | default(form is defined and (form is not iterable or not form.parent)) %}
+
+{% if standaloneForm %}
+	{% if form is iterable %}
+		{{ form_start(form) }}
+	{% else %}
+<form method="{{ form is same as(true) ? 'post' : form }}">
+{% endif %}
+{% endif %}
+<div class="card mb-3 {{ cardClass | default() }}">
+	{% if block('header') is defined %}
+		<div class="card-header {{ headerClass | default() }}">
+			{{ block('header') }}
+		</div>
+	{% endif %}
+	<div class="card-body {{ bodyClass | default('text-black') }}">
+		{% block body -%}
+			{%- if body_title is defined %}
+				<div class="mb-3 text-grey text-uppercase">
+					<b>{{ body_title }}</b>
+				</div>
+			{% endif -%}
+			{% if legend is defined %}
+				<p>{{ legend | raw }}</p>
+			{% endif %}
+			{%- block body_contents %}
+				{% if form is defined and form is iterable %}
+					{{ form_widget(form) }}
+				{% endif %}
+			{% endblock -%}
+		{%- endblock %}
+	</div>
+	{% if block('footer') is not empty or form is defined %}
+		<div class="card-footer {{ footerClass | default('text-end') }}">
+			{%- block footer -%}
+				{%- if form is defined -%}
+					<button type="submit" name="{{ submit.name | default('submitSave') }}" value="{{ submit.value | default(1) }}" class="btn btn-primary">
+						{{- submit.label | default(formSaveText | default('action.save' | trans)) -}}
+					</button>
+				{%- endif -%}
+			{%- endblock -%}
+			{# {% if block('footer') is not defined and form is defined -%} #}
+			{# <button type="submit" name="{{ submit.name | default('submitSave') }}" value="{{ submit.value | default(1) }}" class="btn btn-primary"> #}
+			{# {{- submit.label | default(formSaveText | default('action.save' | trans)) -}} #}
+			{# </button> #}
+			{# {%- endif -%} #}
+		</div>
+	{% endif %}
+</div>
+{% if standaloneForm %}
+{% if form is iterable %}
+{{ form_end(form) }}
+{% else %}
+</form>
+	{% endif %}
+{% endif %}

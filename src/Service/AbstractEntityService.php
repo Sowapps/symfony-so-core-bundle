@@ -10,6 +10,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use ErrorException;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
+use Sowapps\SoCoreBundle\Core\Entity\EntityReference;
 use Sowapps\SoCoreBundle\Entity\AbstractEntity;
 
 abstract class AbstractEntityService {
@@ -41,13 +43,46 @@ abstract class AbstractEntityService {
 	}
 	
 	/**
-	 * @param \Sowapps\SoCoreBundle\Entity\AbstractEntity[] $entities
+	 * @param AbstractEntity[] $entities
 	 * @return array
 	 */
 	public function flattenEntities(array $entities): array {
 		return array_map(function (AbstractEntity $entity) {
 			return $entity->getId();
 		}, $entities);
+	}
+	
+	public function convertEntitiesToReferences(array $values): array {
+		$data = [];
+		foreach( $values as $key => $value ) {
+			if( $value instanceof AbstractEntity ) {
+				if( $value->isNew() ) {
+					throw new RuntimeException(sprintf('Unable to extract reference from non-persisted instance of "%s"', get_class($value)));
+				}
+				$value = $value->getEntityReference();
+			}
+			$data[$key] = $value;
+		}
+		
+		return $data;
+	}
+	
+	public function convertReferencesToEntities(array $values): array {
+		foreach( $values as &$value ) {
+			if( $value instanceof EntityReference ) {
+				$value = $this->getReferenceEntity($value);
+			}
+		}
+		
+		return $values;
+	}
+	
+	/**
+	 * @param EntityReference $reference
+	 * @return AbstractEntity
+	 */
+	public function getReferenceEntity(EntityReference $reference): AbstractEntity {
+		return $this->entityManager->getRepository($reference->getClass())->find($reference->getId());
 	}
 	
 	/**
@@ -64,7 +99,7 @@ abstract class AbstractEntityService {
 	 * Prepare to persist entity without flush
 	 * Use prepare only if you don't know if the entity is just updated or created
 	 *
-	 * @param \Sowapps\SoCoreBundle\Entity\AbstractEntity $entity
+	 * @param AbstractEntity $entity
 	 */
 	public function prepare(AbstractEntity $entity) {
 		if( $entity->isNew() ) {

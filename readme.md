@@ -73,5 +73,19 @@ Configure `config/routes.yaml`.
 
 Include SoCoreBundle routes.
 
+# Override
 
+First, have a look on this page: https://symfony.com/doc/current/bundles/override.html
+
+## Controllers
+
+Extends our controller and write route to your own
+
+## Templates
+
+Put your template in /templates/bundles/SoCoBundle/ by respecting given hierarchy, you may extend our template to replace blocks only.
+
+## Doctrine Custom types
+
+Replace type in your doctrine configuration by your class. Extends our class and add more values for an enum.
 

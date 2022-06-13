@@ -1,0 +1,10 @@
+{% extends '@SoCore/component/panel.html.twig' %}
+
+{% set headerClass = 'bg-black text-white py-2' %}
+{% set footerClass = 'bg-light text-end' %}
+
+{%- block header -%}
+	{%- if title is defined -%}
+		<h5 class="mb-0 py-1">{{ title }}</h5>
+	{%- endif -%}
+{%- endblock -%}

@@ -1,0 +1,95 @@
+{% extends '@SoCore/layout-admin.html.twig' %}
+
+{% set pageTitle = user %}
+
+{% block layoutContents %}
+	<div class="row">
+		<div class="col-12 col-md-6 col-xl-4">
+			{% include "@SoCore/component/panel.admin.html.twig" with {
+				title: 'page.admin_user_edit.user.title' | trans([], 'admin'),
+				form: userAdminForm,
+				submit: {
+					value: securityToken
+				}
+			} only %}
+		</div>
+		
+		<div class="col-12 col-md-6 col-xl-4">
+			{% embed "@SoCore/component/panel.admin.html.twig" with {
+				title: 'page.admin_user_edit.password.title' | trans([], 'admin'),
+				form: userPasswordForm
+			} %}
+				{% block footer %}
+					{% if allowUserAccountRecover %}
+						<button class="btn btn-outline-primary me-1" type="button" data-bs-toggle="modal" data-bs-target="#DialogAccountRecover">
+							{{- 'page.admin_user_edit.accountRecover.action' | trans([], 'admin') -}}
+						</button>
+					{% endif %}
+					{{ parent() }}
+				{% endblock %}
+			{% endembed %}
+			{% if allowUserAccountRecover %}
+				{# Account Recover Dialog #}
+				{% embed '@SoCore/component/dialog.html.twig' with {
+					dialogId: 'DialogAccountRecover',
+					title: 'page.admin_user_edit.accountRecover.title' | trans([], 'admin'),
+					form: true,
+					submit: {
+						label: 'action.send' | trans,
+						name: 'submitAccountRecover',
+						value: securityToken
+					}
+				} only %}
+					{% block body %}
+						<p>{{ 'page.admin_user_edit.accountRecover.legend' | trans([], 'admin') | nl2br | raw }}</p>
+					{% endblock %}
+				{% endembed %}
+			{% endif %}
+			
+			<form method="post">
+			{% embed "@SoCore/component/panel.admin.html.twig" with {title: 'page.admin_user_edit.activation.title' | trans([], 'admin')} %}
+				{% block body_contents %}
+					{{ reports(userActivationReports, 'admin') }}
+					{% if user.disabled %}
+						<div class="alert alert-danger" role="alert">
+							Compte désactivé !
+						</div>
+					{% elseif user.activated %}
+						<div class="alert alert-primary" role="alert">
+							Compte actif !
+						</div>
+					{% else %}
+						<div class="alert alert-warning" role="alert">
+							Compte non activé...
+						</div>
+					{% endif %}
+					{% if user.activated %}
+						<div class="mb-3">
+							<label class="form-label">Activation du compte</label>
+							<input type="text" readonly class="form-control" value="{{ date('short_date', user.activationDate) }}">
+						</div>
+					{% else %}
+						<div class="mb-3">
+							<label class="form-label">Expiration de l'activation</label>
+							<input type="text" readonly class="form-control" value="{{ date('short_datetime', user.activationExpireDate) }}">
+						</div>
+					{% endif %}
+				{% endblock %}
+				{% block footer %}
+					{% if allowUserEnable %}
+						<button name="submitEnable" class="btn btn-primary ms-1" value="{{ securityToken }}" type="submit">{{ 'action.enable' | trans }}</button>
+					{% endif %}
+					{% if allowUserDisable %}
+						<button name="submitDisable" class="btn btn-outline-warning ms-1" value="{{ securityToken }}"
+								type="submit">{{ 'action.disable' | trans }}</button>
+					{% endif %}
+					{%- if allowUserActivationResend -%}
+						<button name="submitActivationResend" class="btn btn-outline-primary ms-1" value="{{ securityToken }}"
+								type="submit">{{ 'page.admin_user_edit.activationResend.action' | trans([], 'admin') }}</button>
+					{%- endif -%}
+				{% endblock %}
+			{% endembed %}
+			</form>
+		</div>
+	</div>
+{% endblock %}

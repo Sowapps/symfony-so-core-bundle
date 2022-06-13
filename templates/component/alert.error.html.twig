@@ -1,0 +1,12 @@
+{# sizing: normal, compact #}
+{% set sizing = sizing | default('normal') %}
+{% set alertClass = alertClass | default(sizing == 'compact' ? 'p-2' : '') %}
+{% set btnClass = btnClass | default(sizing == 'compact' ? 'p-2 mt-1' : '') %}
+{% if domain ?? false %}
+	{% set message = message | trans(parameters | default([]), domain) %}
+{% endif %}
+<div class="alert alert-danger alert-dismissible fade show {{ alertClass }}" role="alert">
+	{{- message | raw -}}
+	{# {{- parameters is defined ? (message | trans(parameters | default([]), domain | default(null))) : message -}} #}
+	<button type="button" class="btn-close {{ btnClass }}" data-bs-dismiss="alert" aria-label="{{ 'action.close' | trans }}"></button>
+</div>

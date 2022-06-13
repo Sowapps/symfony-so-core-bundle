@@ -5,90 +5,33 @@
 
 namespace Sowapps\SoCoreBundle\Form\User;
 
-use App\Entity\User;
-use Sowapps\SoCoreBundle\Core\Form\AbstractForm;
-use Sowapps\SoCoreBundle\Service\AbstractUserService;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Sowapps\SoCoreBundle\Core\Form\AbstractUserForm;
+use Sowapps\SoCoreBundle\Core\Form\Creator\FormCreator;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
-class UserRegisterForm extends AbstractForm {
-	
-	protected AbstractUserService $userService;
-	
-	public function __construct(TranslatorInterface $translator, AbstractUserService $userService) {
-		parent::__construct($translator);
-		$this->userService = $userService;
-	}
+class UserRegisterForm extends AbstractUserForm {
 	
 	public function buildForm(FormBuilderInterface $builder, array $options) {
-		/** @var User $user */
-		$user = $builder->getData();
-		$builder->add('name');
-		$builder->add('email', null, [
-			'attr' => ['autocomplete' => 'username'],
-		]);
-		$builder->add('plainPassword', RepeatedType::class, static::getPasswordOptions() + [
-				'type'        => PasswordType::class,
-				'first_name'  => 'password',
-				'second_name' => 'passwordConfirm',
-				'options'     => ['attr' => ['autocomplete' => 'new-password']],
-			]);
+		$creator = new FormCreator($builder, $options);
+		$creator->addForm('user', UserType::class)
+			->addModel(UserType::MODEL_NAME)
+			->addModel(UserType::MODEL_EMAIL)
+			->addModel(UserType::MODEL_PASSWORD)
+			->addModel(UserType::MODEL_CALCULATED)
+			->end();
+		//		$data = $builder->getData();
 		//		$builder
-		//			->add('roles', ChoiceType::class, [
-		//				'required'    => true,
-		//				'expanded'    => true,
-		//				'multiple'    => true,
-		//				'choices'     => [
-		//					'user.roleState.user'      => User::ROLE_USER,
-		//					'user.roleState.admin'     => User::ROLE_ADMIN,
-		//					'user.roleState.developer' => User::ROLE_DEVELOPER,
-		//				],
-		//				'choice_attr' => function ($element) {
-		//					$requiredRole = $this->userService->getRoleRestriction($element);
-		//					if( !$requiredRole ) {
-		//						$disable = true;
-		//					} else {
-		//						$disable = !$this->userService->isCurrentHavingRole($requiredRole);
-		//					}
-		//
-		//					return $disable ? ['disabled' => 'disabled'] : [];
-		//				},
+		//			->add('user', UserType::class, [
+		//				'label'  => false,
+		//				'data'   => is_object($data) ? $data : $data['user'],
+		//				'models' => [UserType::MODEL_NAME, UserType::MODEL_EMAIL, UserType::MODEL_PASSWORD, UserType::MODEL_CALCULATED],
 		//			]);
-		$builder->add('timezone', HiddenType::class, [
-			'attr' => [
-				'data-controller' => 'form--timezone',
-			],
-		]);
-	}
-	
-	public static function getPasswordOptions(): array {
-		return [
-			'mapped'      => false,
-			'constraints' => [
-				new NotBlank([
-					'message' => 'user.password.empty',
-				]),
-				new Length([
-					'min'        => 6,
-					'max'        => 4096,
-					'minMessage' => 'user.password.length',
-					// max length allowed by Symfony for security reasons
-				]),
-			],
-		];
 	}
 	
 	public function configureOptions(OptionsResolver $resolver) {
 		$resolver->setDefaults([
-			'data_class'   => $this->userService->getUserClass(),
-			'label_format' => 'user.field.%name%',
-			'row_attr'     => [
+			'row_attr' => [
 				'class' => 'form-floating',
 			],
 		]);

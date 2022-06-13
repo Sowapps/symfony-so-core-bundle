@@ -5,14 +5,18 @@
 
 namespace Sowapps\SoCoreBundle\Service;
 
+use DateTimeInterface;
 use Sowapps\SoCoreBundle\Entity\Language;
 use Sowapps\SoCoreBundle\Repository\LanguageRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LanguageService extends AbstractEntityService {
 	
 	protected RouterInterface $router;
+	
+	protected TranslatorInterface $translator;
 	
 	protected ?string $currentCountry = null;
 	
@@ -20,10 +24,45 @@ class LanguageService extends AbstractEntityService {
 	 * LanguageService constructor
 	 *
 	 * @param RouterInterface $router
-	 * @param string $projectPath
+	 * @param TranslatorInterface $translator
 	 */
-	public function __construct(RouterInterface $router) {
+	public function __construct(RouterInterface $router, TranslatorInterface $translator) {
 		$this->router = $router;
+		$this->translator = $translator;
+	}
+	
+	/**
+	 * @param DateTimeInterface $date
+	 * @param string $format
+	 * @return string
+	 */
+	public function formatDate($date, string $format): string {
+		$format = $this->translator->trans('date.format.' . $format);
+		$customCharFormats = ['l' => 'date.day.', 'F' => 'date.month.'];
+		$customChars = array_keys($customCharFormats);
+		// Escape our custom characters to not be handled by DateTime::format
+		$format = strtr($format, array_combine($customChars, array_map(function ($char) {
+			return '#\\' . $char;
+		}, $customChars)));
+		// Ignore escaped characters, revert change
+		$format = strtr($format, array_combine(array_map(function ($char) {
+			return '\\#\\' . $char;
+		}, $customChars), array_map(function ($char) {
+			return '\\' . $char;
+		}, $customChars)));
+		$dateText = $date->format($format);
+		if( $date instanceof DateTimeInterface ) {
+			// Custom still not formatted
+			// We replace our format characters by the translated string
+			$dateText = strtr($dateText, array_combine(array_map(function ($char) {
+				return '#' . $char;
+			}, $customChars), array_map(function ($char, $charFormat) use ($date) {
+				// e.g. Get format('l') to translate date.day.friday
+				return $this->translator->trans($charFormat . strtolower($date->format($char)));
+			}, $customChars, $customCharFormats)));
+		}// Else could format DateInterval
+		
+		return $dateText;
 	}
 	
 	/**
@@ -38,6 +77,7 @@ class LanguageService extends AbstractEntityService {
 	 * @return LanguageRepository
 	 */
 	public function getLanguageRepository(): LanguageRepository {
+		/** @noinspection PhpIncompatibleReturnTypeInspection */
 		return $this->entityManager->getRepository(Language::class);
 	}
 	

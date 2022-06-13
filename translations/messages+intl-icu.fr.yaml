@@ -5,25 +5,14 @@ user:
         password: "Mot de passe"
         passwordConfirm: "Confirmer le mot de passe"
         currentPassword: "Mot de passe actuel"
+        avatar: "Avatar"
         name: "Nom/Pseudo"
         roles: "Rôles"
         state: "État"
     roleState:
-        user: >-
-            {gender, select,
-                female   {Utilisatrice}
-                other    {Utilisateur}
-            }
-        admin: >-
-            {gender, select,
-                female   {Administratrice}
-                other    {Administrateur}
-            }
-        developer: >-
-            {gender, select,
-                female   {Développeuse}
-                other    {Développeur}
-            }
+        user: "Utilisateur"
+        admin: "Administrateur"
+        developer: "Développeur"
 
 # Package translations
 "Invalid credentials.": "Ces identifiants ne correspondent pas à un compte connu."

@@ -1,0 +1,99 @@
+{% if form is defined and form is iterable and dialogId is not defined %}
+	{% set dialogId = 'Dialog_' ~ form.vars.id %}
+{% endif %}
+{% set standaloneForm = standaloneForm | default(form is defined and (form is not iterable or not form.parent)) %}
+{% set dialogClasses = ['modal-auto-close-components'] %}
+{% if disableWhenHidden is defined and disableWhenHidden %}
+	{% set dialogClasses = 'modal-hide-is-disabling' | pushTo(dialogClasses) %}
+{% endif %}
+{% set attr = attr | default('') %}
+{% set options = options | default({ keyboard: 'false' }) %}
+{% if options %}
+	{# https://getbootstrap.com/docs/5.0/components/modal/#options #}
+	{% set attr = attr ~ ' ' ~ (options | attributes('data-bs-')) %}
+{% endif %}
+{% set controller = controller | default(controllers | default('component--dialog') | split(' ') | first) %}
+{% set controllers = controllers | default(controller) %}
+{% set open = open ?? null %}
+
+{# Removed attribute tabindex="-1" to fix issue with select2 search field #}
+<div {% if dialogId is defined %}id="{{ dialogId }}"{% endif %} class="modal fade {{ dialogClasses | join(' ') }}" aria-hidden="true"
+	 data-controller="{{ controllers }}"
+	 data-action="app.dialog.open->{{ controller }}#open app.dialog.close->{{ controller }}#close {{ controllerActions | default }}" {%- if attr %} {{ attr | raw }}{% endif -%}>
+	<div class="modal-dialog{{ large is defined and large ? ' modal-lg' : '' }}">
+		<div class="modal-content{{ autoFocus ?? true ? ' modal-focus' : '' }}{{ autoReset ?? true ? ' modal-form-reset' : '' }}{{ smartEnter ?? true ? ' smart-enter-on-inputs' : '' }}">
+			{%- block content -%}
+				{% if standaloneForm %}
+					{% if form is iterable %}
+						{{ form_start(form, formOptions | default([])) }}
+					{% else %}
+						<form method="{{ form is same as(true) ? 'post' : form }}">
+					{% endif %}
+				{% endif %}
+				<div class="modal-header">
+					<h2 class="modal-title text-center w-100">{{ title | default() }}</h2>
+					<button type="button" aria-label="{{ 'action.close' | trans }}" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">
+					{% block body %}
+						{% if legend is defined %}
+							<p>{{ legend | raw }}</p>
+						{% endif %}
+						<div class="report-list" data-{{ reportController | default(controller) }}-target="{{ reportTarget | default('reportList') }}"></div>
+						{% if form is defined and form is iterable %}
+							{% block body_form %}
+								{{ form_widget(form) }}
+							{% endblock %}
+						{% endif %}
+					{% endblock %}
+				</div>
+				{% if block('footer') is defined %}
+					<div class="modal-footer">
+						{%- block footer -%}
+							{% set hasSubmitting = submitting is defined -%}
+							{% set formSaveText = submit.label | default(formSaveText | default('action.save' | trans)) -%}
+							{% if form is defined %}
+								<button type="button" class="btn btn-outline-secondary action-cancel" data-bs-dismiss="modal">
+									{{- 'action.cancel' | trans -}}
+								</button>
+								<button type="submit" {% if submit.name is defined %} name="{{ submit.name }}"{% endif %} data-form--form-target="submitButton"
+										{% if submit.value is defined %} value="{{ submit.value }}"{% endif %} class="btn btn-primary">
+									{% if hasSubmitting -%}
+									<span class="show-not-submitting">
+									{% endif -%}
+										{% if submit.icon | default -%}
+											<i class="{{ submit.icon }} me-2"></i>
+										{% endif -%}
+										{{- submit.label | default(formSaveText) -}}
+										{% if hasSubmitting -%}
+									</span>
+									<span class="show-submitting">
+										{% if submitting.icon | default -%}
+											<i class="{{ submitting.icon }} me-2"></i>
+										{% endif -%}
+										{{- submitting.label | default(formSaveText) -}}
+									</span>
+									{% endif -%}
+								
+								</button>
+							{% endif %}
+						{%- endblock -%}
+					</div>
+				{% endif %}
+				{% if standaloneForm %}
+					{% if form is iterable %}
+						{{ form_end(form) }}
+					{% else %}
+						</form>
+					{% endif %}
+				{% endif %}
+			{%- endblock -%}
+		</div>
+	</div>
+</div>
+
+{% if (open is null and form is defined and form is iterable and not form.vars.valid) or open %}
+	<script>
+	$(() => document.getElementById("{{ dialogId }}").dispatchEvent(new Event('app.dialog.open')));
+	</script>
+{% endif %}

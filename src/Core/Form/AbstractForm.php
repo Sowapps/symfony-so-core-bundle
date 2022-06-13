@@ -12,12 +12,27 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class AbstractForm extends AbstractType {
 	
-	protected $translator;
+	protected TranslatorInterface $translator;
+	
+	protected array $options;
 	
 	protected ?string $success = null;
 	
 	public function __construct(TranslatorInterface $translator) {
 		$this->translator = $translator;
+	}
+	
+	public function hasModel(string|array $model): bool {
+		if( is_string($model) ) {
+			return isset($this->options['models'][$model]);
+		}
+		
+		return !!array_intersect(array_keys($this->options['models']), $model);
+	}
+	
+	public function isModelDisabled(string $model, $default = false): bool {
+		// Model is true if enabled, false if disabled
+		return !($this->options['models'][$model] ?? !$default);
 	}
 	
 	public function buildView(FormView $view, FormInterface $form, array $options): void {
@@ -73,6 +88,20 @@ abstract class AbstractForm extends AbstractType {
 		}
 		
 		return $choices;
+	}
+	
+	/**
+	 * @return array
+	 */
+	public function getOptions(): array {
+		return $this->options;
+	}
+	
+	/**
+	 * @param array $options
+	 */
+	public function setOptions(array $options): void {
+		$this->options = $options;
 	}
 	
 }

@@ -21,7 +21,36 @@ page:
     admin_my_settings:
         label: "Mes paramètres"
         legend: "Configurez votre compte"
-
+    admin_user_list:
+        label: "Utilisateurs"
+        legend: "Gérez vos utilisateurs"
+    admin_user_edit:
+        legend: "Modérer un utilisateur"
+        edit:
+            success: "Les modifications apportées ont été sauvegardées !"
+        disable:
+            success: "Le compte utilisateur a été désactivé, il ne peut plus accéder au site !"
+        enable:
+            success: "Le compte utilisateur a été ré-activé, il peut à nouveau accéder au site !"
+        activationResend:
+            action: "Renvoyer l'email d'activation"
+            success: "Email d'activation renvoyé !"
+        accountRecover:
+            action: "Récupération de mot de passe"
+            title: "Demande de récupération du compte"
+            legend: |
+                Vous vous apprêtez à envoyer à l'utilisateur un email de récupération de compte.
+                Il se présentera de la même manière que s'il en avait lui même fait la demande.
+                Voulez-vous confirmer l'envoi ?
+            success: "Email de récupération de mot de passe envoyé !"
+        user:
+            title: "Utilisateur"
+        activation:
+            title: "Activation du compte"
+        password:
+            title: "Mot de passe"
+            password:
+                help: "L'utilisateur ne sera pas notifié, nous vous conseillons d'utiliser la récupération de compte."
 email:
     activateAccount:
         subject: "Démo SoIngenious - Activez votre compte"

@@ -29,6 +29,16 @@ admin_dashboard:
     methods: GET
     controller: Sowapps\SoCoreBundle\Controller\Admin\AdminDashboardController::dashboard
 
+admin_user_list:
+    path: /admin/user/list.html
+    methods: GET
+    controller: Sowapps\SoCoreBundle\Controller\Admin\AdminUserController::list
+
+admin_user_edit:
+    path: /admin/user/{id}/update.html
+    methods: GET|POST
+    controller: Sowapps\SoCoreBundle\Controller\Admin\AdminUserController::edit
+
 admin_my_settings:
     path: /admin/my/settings.html
     methods: GET

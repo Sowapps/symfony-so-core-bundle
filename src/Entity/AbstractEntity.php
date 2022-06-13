@@ -8,6 +8,7 @@ namespace Sowapps\SoCoreBundle\Entity;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
+use Sowapps\SoCoreBundle\Core\Entity\EntityReference;
 use Sowapps\SoCoreBundle\Core\Entity\Persistable;
 
 /**
@@ -80,6 +81,10 @@ class AbstractEntity implements JsonSerializable, Persistable {
 		return get_called_class() . '#' . $this->getId();
 	}
 	
+	public function getEntityReference(): EntityReference {
+		return new EntityReference(get_class($this), $this->getId());
+	}
+	
 	public function getId(): ?int {
 		return $this->id;
 	}
@@ -88,7 +93,7 @@ class AbstractEntity implements JsonSerializable, Persistable {
 	 * @param mixed $other
 	 * @return bool
 	 */
-	public function equals($other): bool {
+	public function equals(mixed $other): bool {
 		return $other && is_object($other) && get_class($this) === get_class($other) && !$this->isNew() && !$other->isNew() && $this->getId() === $other->getId();
 	}
 	
