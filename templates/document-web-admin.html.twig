@@ -1,4 +1,3 @@
-{# {% set theme = setTheme('bs5') %} #}
 {# {% set currentLanguage = language.languageByLocale(app.request.locale) %} #}
 <!DOCTYPE html>
 {# <html lang="{{ currentLanguage.primaryCode }}"> #}
@@ -41,16 +40,14 @@
 	
 	{%- block javascripts %}
 		{{ encore_entry_script_tags('admin-dependencies') }}
+		
+		{%- block js_app %}{% endblock -%}
+		
 		{{ encore_entry_script_tags('admin-app') }}
 		
 		<div id="ExternalLibraryWrapper"></div>
 		
-		{#        <script type="text/javascript"> #}
-		{#        $(function () { #}
-		{#            {% include 'admin/embed/translations.js.twig' %} #}
-		{#            {% include 'admin/embed/routing.js.twig' %} #}
-		{#        }); #}
-		{#        </script> #}
+		{% include '@SoCore/admin/section/system-components.html.twig' %}
 	{% endblock -%}
 	
 	</body>

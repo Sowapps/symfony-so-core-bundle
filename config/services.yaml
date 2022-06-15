@@ -10,7 +10,6 @@ services:
         autowire: true
         autoconfigure: true
         bind:
-            #            string $projectPath: '%kernel.project_dir%'
             string $publicPath: '%kernel.project_dir%/public'
 
     #   Services
@@ -46,7 +45,6 @@ services:
     so_core.email:
         class: Sowapps\SoCoreBundle\Service\EmailService
         arguments:
-            - '@translator'
             - '@mailer'
             - '@twig'
             - '@router'
@@ -57,6 +55,7 @@ services:
     so_core.mailing:
         class: Sowapps\SoCoreBundle\Service\MailingService
         arguments:
+            - '@translator'
             - '@so_core.email'
     Sowapps\SoCoreBundle\Service\MailingService: '@so_core.mailing'
 
@@ -105,7 +104,7 @@ services:
         class: Sowapps\SoCoreBundle\Security\EmailVerifier
         arguments:
             - '@symfonycasts.verify_email.helper'
-            - '@mailer'
+            - '@so_core.mailing'
             - '@so_core.user'
     Sowapps\SoCoreBundle\Security\EmailVerifier: '@so_core.email_verifier'
 
@@ -126,6 +125,21 @@ services:
     Sowapps\SoCoreBundle\Core\DataFixtures\SampleFixture: '@so_core.fixture.sample'
 
     #   Repositories
+
+    Sowapps\SoCoreBundle\Repository\EmailMessageRepository:
+        arguments:
+            - '@doctrine'
+        tags: [ 'doctrine.repository_service' ]
+
+    Sowapps\SoCoreBundle\Repository\EmailSubscriptionRepository:
+        arguments:
+            - '@doctrine'
+        tags: [ 'doctrine.repository_service' ]
+
+    Sowapps\SoCoreBundle\Repository\FileRepository:
+        arguments:
+            - '@doctrine'
+        tags: [ 'doctrine.repository_service' ]
 
     Sowapps\SoCoreBundle\Repository\LanguageRepository:
         arguments:
@@ -152,10 +166,15 @@ services:
         arguments:
             - '@so_core.controller'
 
+    Sowapps\SoCoreBundle\Controller\EmailController:
+        tags: [ 'controller.service_arguments' ]
+        arguments:
+            - '@so_core.controller'
+
     Sowapps\SoCoreBundle\Controller\FileController:
         tags: [ 'controller.service_arguments' ]
         arguments:
-            - '@so_core.file'
+            - '@so_core.controller'
 
     #   Forms
 
@@ -167,17 +186,22 @@ services:
     Sowapps\SoCoreBundle\Form\User\UserRegisterForm:
         arguments:
             - '@translator'
-            - '@so_core.user'
+
+    Sowapps\SoCoreBundle\Form\User\UserRecoveryRequestForm:
+        arguments:
+            - '@translator'
+
+    Sowapps\SoCoreBundle\Form\User\UserRecoveryPasswordForm:
+        arguments:
+            - '@translator'
 
     Sowapps\SoCoreBundle\Form\User\UserAdminForm:
         arguments:
             - '@translator'
-            - '@so_core.user'
 
-    Sowapps\SoCoreBundle\Form\User\UserAdminPasswordType:
+    Sowapps\SoCoreBundle\Form\User\UserAdminPasswordForm:
         arguments:
             - '@translator'
-            - '@so_core.user'
 
     #   Commands
 

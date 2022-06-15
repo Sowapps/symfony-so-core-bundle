@@ -4,8 +4,10 @@
 	<div class="sb-sidenav-menu">
 		<div class="nav">
 			{{ menu.heading('admin.navigation' | trans([], 'admin')) }}
-			{{ menu.item('page.admin_home.label' | trans([], 'admin'), path('admin_home'), 'fas fa-tachometer-alt') }}
-			{{ menu.item('page.admin_user_list.label' | trans([], 'admin'), path('admin_user_list'), 'fas fa-users') }}
+			{%- block menu_main -%}
+				{{ menu.item('page.admin_home.label' | trans([], 'admin'), path('admin_home'), 'fas fa-tachometer-alt') }}
+				{{ menu.item('page.admin_user_list.label' | trans([], 'admin'), path('admin_user_list'), 'fas fa-users') }}
+			{%- endblock -%}
 			{# Current item with submenu #}
 			{#
 			{% embed "@SoCore/component/menu-item.html.twig" with {

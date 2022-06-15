@@ -39,7 +39,7 @@ abstract class AbstractEnumType extends Type {
 		return $value;
 	}
 	
-	public function getName() {
+	public function getName(): string {
 		return $this->name;
 	}
 	

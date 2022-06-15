@@ -6,7 +6,31 @@
 		<div id="layoutAuthentication_content">
 			<main class="pb-5">
 				<div class="container">
-					{% block layoutContents %}Please provide block layoutContents{% endblock %}
+					{% block layoutContents %}
+						
+						<div class="row justify-content-center">
+							<div class="col-lg-5 pt-5">
+								{% block reports %}{% endblock %}
+								
+								<div class="card shadow-lg border-0 rounded-lg">
+									<div class="card-header">
+										<h1 class="text-center font-weight-light my-4 fs-2">
+											{%- block title %}{% endblock -%}
+										</h1>
+									</div>
+									<div class="card-body">
+										{%- block body %}{% endblock -%}
+									</div>
+									<div class="card-footer text-center py-3">
+										<div class="small">
+											{%- block footer -%}{%- endblock -%}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					
+					{% endblock %}
 				</div>
 			</main>
 		</div>

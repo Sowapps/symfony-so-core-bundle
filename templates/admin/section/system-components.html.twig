@@ -1,0 +1,23 @@
+{# Handle system confirm when user request an operation that require to be confirmed #}
+{% embed '@SoCore/component/dialog.html.twig' with {
+	dialogId: 'DialogSystemConfirm',
+	legend: true,
+	form: true,
+	disableWhenHidden: true,
+	controllers: 'sowapps--so-core--dialog sowapps--so-core--confirm-dialog',
+	controllerActions: 'so.confirm.request@window->sowapps--so-core--confirm-dialog#request'
+} %}
+	{#    title: '', #}
+	{#    legend: '', #}
+	{%- block footer -%}
+		<button type="button" class="btn btn-outline-secondary" data-sowapps--so-core--confirm-dialog-target="cancel"
+				data-action="click->sowapps--so-core--confirm-dialog#cancel">
+			{{- 'action.cancel' | trans -}}
+		</button>
+		<button type="submit" name="submitConfirm" class="btn btn-primary" data-sowapps--so-core--confirm-dialog-target="confirm">
+			{{- 'action.ok' | trans -}}
+		</button>
+	{%- endblock -%}
+{% endembed %}
+
+

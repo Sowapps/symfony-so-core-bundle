@@ -3,6 +3,16 @@ security_logout:
     methods: GET
     controller: Sowapps\SoCoreBundle\Controller\Admin\AdminSecurityController::logout
 
+security_recover_request:
+    path: /lost-password.html
+    methods: GET|POST
+    controller: Sowapps\SoCoreBundle\Controller\Admin\AdminSecurityController::requestRecover
+
+security_recover_password:
+    path: /lost-password/{id<\d+>}/{recoveryKey}/recover.html
+    methods: GET|POST
+    controller: Sowapps\SoCoreBundle\Controller\Admin\AdminSecurityController::recoverPassword
+
 admin_login:
     path: /admin-login.html
     controller: Sowapps\SoCoreBundle\Controller\Admin\AdminSecurityController::login
@@ -43,6 +53,13 @@ admin_my_settings:
     path: /admin/my/settings.html
     methods: GET
     controller: Sowapps\SoCoreBundle\Controller\Admin\AdminDashboardController::dashboard
+
+### Specials
+
+email_message_view:
+    path: /email/{messageId<\d+>}/{messageKey}/view.html
+    methods: GET
+    controller: Sowapps\SoCoreBundle\Controller\EmailController::view
 
 file_download:
     path: /file/{action}/{key}/{id<\d+>}.{extension}

@@ -1,0 +1,30 @@
+{% extends '@SoCore/layout-authentication.html.twig' %}
+
+{% block reports %}
+	{% for flash_error in app.flashes('verify_email_error') %}
+		<div class="alert alert-danger mb-3" role="alert">{{ flash_error }}</div>
+	{% endfor %}
+{% endblock %}
+
+{% block title %}
+	{{ 'page.admin_register.title' | trans([], 'admin') }}
+{% endblock %}
+
+{% block body %}
+	{{ form_start(form) }}
+	
+	{{ form_widget(form) }}
+	
+	<div class="mt-4 mb-0 d-grid">
+		<button class="btn btn-primary btn-block" name="submitSave" type="submit">{{ 'action.register' | trans }}</button>
+	</div>
+	{{ form_end(form) }}
+{% endblock %}
+
+{% block footer %}
+	<div class="small">
+		<a href="{{ path('admin_login') }}">
+			{{- 'page.admin_register.loginAction' | trans([], 'admin') -}}
+		</a>
+	</div>
+{% endblock %}

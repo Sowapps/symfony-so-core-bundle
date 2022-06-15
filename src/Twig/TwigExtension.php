@@ -85,6 +85,7 @@ class TwigExtension extends AbstractExtension {
 		return [
 			new TwigFilter('base64', [$this, 'formatToBase64']),
 			new TwigFilter('bool', 'boolval'),
+			new TwigFilter('json', 'json_encode'),
 			new TwigFilter('smallImage', [$this, 'formatSmallImage']),
 			new TwigFilter('largeImage', [$this, 'formatLargeImage']),
 			new TwigFilter('pushTo', [$this, 'pushTo']),
@@ -92,9 +93,7 @@ class TwigExtension extends AbstractExtension {
 			//			new TwigFilter('price', [$this, 'formatPrice']),
 			//			new TwigFilter('labelize', [$this, 'labelize']),
 			//			new TwigFilter('paragraphize', [$this, 'paragraphize'], ['is_safe' => ['html']]),
-			//			new TwigFilter('pushTo', [$this, 'pushTo']),
 			//			new TwigFilter('normalize', [$this, 'normalize']),
-			//			new TwigFilter('json', [$this->normalizerService, 'serialize']),
 			//			new TwigFilter('interval', [$this, 'formatInterval']),
 			//			new TwigFilter('asMinutes', [$this, 'formatIntervalAsMinutes']),
 		];
@@ -106,6 +105,9 @@ class TwigExtension extends AbstractExtension {
 			new TwigFunction('uniqueId', [$this, 'getUniqueId']),
 			new TwigFunction('date', [$this, 'formatDate']),// 'date' Filter is used by Symfony
 			new TwigFunction('reports', [$this, 'renderReports'], ['is_safe' => ['html']]),
+			new TwigFunction('form_success', [$this, 'renderSuccessAlert'], ['is_safe' => ['html']]),
+			new TwigFunction('encore_entry_css_source', [$this, 'getEncoreEntryCssSource']),
+			new TwigFunction('translations', [$this, 'getTranslations']),
 			//			new TwigFunction('parameter', [$this, 'getParameter'], ['is_safe' => ['html']]),
 			//			new TwigFunction('label', [$this, 'getFieldLabel']),
 			//			new TwigFunction('inputAttr', [$this, 'renderInputAttr'], ['is_safe' => ['html']]),
@@ -115,15 +117,20 @@ class TwigExtension extends AbstractExtension {
 			//			new TwigFunction('arrayChecked', [$this, 'renderArrayChecked'], ['is_safe' => ['html']]),
 			//			new TwigFunction('selectOptions', [$this, 'renderSelectOptions'], ['is_safe' => ['html']]),
 			//			new TwigFunction('validityCssClass', [$this, 'renderValidityCssClass'], ['is_safe' => ['html']]),
-			//			new TwigFunction('form_success', [$this, 'renderSuccessAlert'], ['is_safe' => ['html']]),
-			//			new TwigFunction('successAlert', [$this, 'renderSuccessAlert'], ['is_safe' => ['html']]),
 			//			new TwigFunction('errorAlert', [$this, 'renderErrorAlert'], ['is_safe' => ['html']]),
 			//			new TwigFunction('repeatString', [$this, 'repeatString'], ['is_safe' => ['html']]),
 			//			new TwigFunction('setTheme', [$this, 'setTheme']),
 			//			new TwigFunction('theme', [$this, 'getTheme']),
-			//			new TwigFunction('encore_entry_css_source', [$this, 'getEncoreEntryCssSource']),
-			//			new TwigFunction('translations', [$this, 'getTranslations']),
 		];
+	}
+	
+	public function getTranslations(string $path, array $keys, ?string $domain = null): array {
+		$translations = [];
+		foreach( $keys as $key ) {
+			$translations[$key] = $this->translator->trans(sprintf('%s.%s', $path, $key), [], $domain);
+		}
+		
+		return $translations;
 	}
 	
 	public function getBodyClass(): string {
@@ -209,23 +216,6 @@ class TwigExtension extends AbstractExtension {
 	}
 	
 	/**
-	 * @param array|string|AbstractForm $messages
-	 * @param string|null $domain
-	 * @return string
-	 */
-	public function renderReports($reports, string $domain = null): string {
-		// Render a message saved using AbstractController:consumeSavedReports
-		if( !empty($reports['success']) ) {
-			return $this->renderAlert('success', $reports['success'], $domain);
-		}
-		if( !empty($reports['error']) ) {
-			return $this->renderAlert('error', $reports['error'], $domain);
-		}
-		
-		return '';
-	}
-	
-	/**
 	 * @param $type
 	 * @param array|string|AbstractForm $messages
 	 * @param null $domain
@@ -256,6 +246,57 @@ class TwigExtension extends AbstractExtension {
 		}
 		
 		return $html;
+	}
+	
+	/**
+	 * @param array|string|AbstractForm $messages
+	 * @param string|null $domain
+	 * @return string
+	 */
+	public function renderReports($reports, string $domain = null): string {
+		// Render a message saved using AbstractController:consumeSavedReports
+		if( !empty($reports['success']) ) {
+			return $this->renderAlert('success', $reports['success'], $domain);
+		}
+		if( !empty($reports['error']) ) {
+			return $this->renderAlert('error', $reports['error'], $domain);
+		}
+		
+		return '';
+	}
+	
+	/**
+	 * @param array|string|AbstractForm $messages
+	 * @param string|null $domain
+	 * @return string
+	 */
+	public function renderSuccessAlert($messages, string $domain = null): string {
+		if( $messages instanceof FormView ) {
+			// Not set if not using AppForm
+			if( !array_key_exists('successes', $messages->vars) ) {
+				// Silently ignore compound form widgets
+				return '';
+			}
+			if( !$domain ) {
+				$domain = $messages->vars['success_domain'];
+			}
+			$messageList = $messages->vars['successes'];
+			$messages->vars['successes'] = null;
+			$messages = $messageList;
+		}
+		
+		return $this->renderAlert('success', $messages, $domain);
+	}
+	
+	public function getEncoreEntryCssSource(string $entryName): string {
+		$this->entrypointLookup->reset();
+		$files = $this->entrypointLookup->getCssFiles($entryName);
+		$source = '';
+		foreach( $files as $file ) {
+			$source .= file_get_contents($this->publicPath . '/' . $file);
+		}
+		
+		return $source;
 	}
 	
 	/**

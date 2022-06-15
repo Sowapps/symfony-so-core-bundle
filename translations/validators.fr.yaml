@@ -1,27 +1,10 @@
 user:
-    #    name:
-    #        exists: "Ce pseudo est déjà utilisé."
     email:
         exists: "Cette adresse email est déjà utilisée."
-#        notFound: "Aïe, on n'a pas retrouvé cette adresse email dans notre base de données."
-#        invalid: "Cette adresse email n'est pas valide."
-#    password:
-#        empty: "Merci de préciser un mot de passe"
-#        length: "Votre mot de passe doit faire au moins {{ limit }} caractères"
-#    gender:
-#        invalid: "Ce genre n'est pas connu de notre système."
-#    agreeTerms:
-#        empty: "Vous devez accepter les conditions générales d'utilisation."
-#    agreeGdpr:
-#        empty: "Vous devez accepter la politique de confidentialité de ce site."
-#    agreeAbility:
-#        empty: "Vous devez être en capacité pour continuer en tant que professionnel."
-#    disable:
-#        alreadyDisabled: "Le compte de cet utilisateur est déjà désactivé !"
-#    enable:
-#        alreadyEnabled: "Le compte de cet utilisateur est déjà actif !"
-#    recovery:
-#        tooRecent: "Une demande a déjà été faite récemment, veuillez attendre quelques minutes pour renouveler l'opération"
+        notFound: "Nous n'avons pas retrouvé cette adresse email dans notre base de données."
+    password:
+        empty: "Merci de préciser un mot de passe"
+        length: "Votre mot de passe doit faire au moins {{ limit }} caractères"
 
 language:
     locale:

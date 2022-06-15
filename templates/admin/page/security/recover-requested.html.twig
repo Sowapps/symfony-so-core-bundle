@@ -1,0 +1,23 @@
+{% extends '@SoCore/layout-authentication.html.twig' %}
+
+{% block title %}
+	{{ 'page.recover_request.title' | trans }}
+{% endblock %}
+
+{% block body %}
+	<h4 class="text-success mb-4">{{ 'page.recover_request.success.title' | trans }}</h4>
+	<p class="lead">{{ 'page.recover_request.success.legend' | trans }}</p>
+	
+	<div class="d-grid">
+		<a class="btn btn-secondary btn-block mt-4" href="{{ path('home') }}">{{ 'action.backHome' | trans }}</a>
+	</div>
+{% endblock %}
+
+{% block footer %}
+	<div class="small">
+		<a href="{{ path('home') }}">
+			<i class="fas fa-arrow-left me-1"></i>
+			{{- 'action.backHome' | trans -}}
+		</a>
+	</div>
+{% endblock %}

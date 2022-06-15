@@ -13,6 +13,7 @@ page:
         email: "Entrez votre adresse email..."
         password: "Puis votre mot de passe !"
         registerAction: "Pas de compte ? Inscrivez-vous !"
+        recoverAction: "Mot de passe oublié ?"
     admin_home:
         label: "Administration"
     admin_dashboard:
@@ -24,6 +25,12 @@ page:
     admin_user_list:
         label: "Utilisateurs"
         legend: "Gérez vos utilisateurs"
+        dataTable:
+            placeholder: "Rechercher..."
+            perPage: "{select} utilisateurs par page"
+            noRows: "Aucun utilisateur trouvé"
+            noResults: "Aucun résultat pour votre recherche"
+            info: "Page {page} sur {pages} pour {rows} utilisateurs"
     admin_user_edit:
         legend: "Modérer un utilisateur"
         edit:
@@ -51,6 +58,3 @@ page:
             title: "Mot de passe"
             password:
                 help: "L'utilisateur ne sera pas notifié, nous vous conseillons d'utiliser la récupération de compte."
-email:
-    activateAccount:
-        subject: "Démo SoIngenious - Activez votre compte"

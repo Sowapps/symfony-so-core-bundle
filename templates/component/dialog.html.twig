@@ -1,6 +1,4 @@
-{% if form is defined and form is iterable and dialogId is not defined %}
-	{% set dialogId = 'Dialog_' ~ form.vars.id %}
-{% endif %}
+{% set dialogId = dialogId | default(form is defined and form is iterable and dialogId is not defined ? ('Dialog_' ~ form.vars.id) : uniqueId('Dialog_')) %}
 {% set standaloneForm = standaloneForm | default(form is defined and (form is not iterable or not form.parent)) %}
 {% set dialogClasses = ['modal-auto-close-components'] %}
 {% if disableWhenHidden is defined and disableWhenHidden %}
@@ -17,7 +15,7 @@
 {% set open = open ?? null %}
 
 {# Removed attribute tabindex="-1" to fix issue with select2 search field #}
-<div {% if dialogId is defined %}id="{{ dialogId }}"{% endif %} class="modal fade {{ dialogClasses | join(' ') }}" aria-hidden="true"
+<div id="{{ dialogId }}" class="modal fade {{ dialogClasses | join(' ') }}" aria-hidden="true"
 	 data-controller="{{ controllers }}"
 	 data-action="app.dialog.open->{{ controller }}#open app.dialog.close->{{ controller }}#close {{ controllerActions | default }}" {%- if attr %} {{ attr | raw }}{% endif -%}>
 	<div class="modal-dialog{{ large is defined and large ? ' modal-lg' : '' }}">
@@ -37,7 +35,7 @@
 				<div class="modal-body">
 					{% block body %}
 						{% if legend is defined %}
-							<p>{{ legend | raw }}</p>
+							<p class="dialog-legend">{{ legend | raw }}</p>
 						{% endif %}
 						<div class="report-list" data-{{ reportController | default(controller) }}-target="{{ reportTarget | default('reportList') }}"></div>
 						{% if form is defined and form is iterable %}
@@ -56,7 +54,7 @@
 								<button type="button" class="btn btn-outline-secondary action-cancel" data-bs-dismiss="modal">
 									{{- 'action.cancel' | trans -}}
 								</button>
-								<button type="submit" {% if submit.name is defined %} name="{{ submit.name }}"{% endif %} data-form--form-target="submitButton"
+								<button type="submit" {% if submit.name is defined %} name="{{ submit.name }}"{% endif %} data-component--form-target="submitButton"
 										{% if submit.value is defined %} value="{{ submit.value }}"{% endif %} class="btn btn-primary">
 									{% if hasSubmitting -%}
 									<span class="show-not-submitting">

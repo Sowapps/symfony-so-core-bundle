@@ -32,7 +32,7 @@ class Form {
 	public function end(): FormCreator {
 		$builder = $this->creator->getBuilder();
 		$data = $builder->getData();
-		dump($data, $this->name, $this->type, is_object($data) ? $data : $data[$this->name] ?? null);
+//		dump($data, $this->name, $this->type, is_object($data) ? $data : $data[$this->name] ?? null);
 		$builder->add($this->name, $this->type, [
 			'label'  => false,
 			// Instance of entity, array containing name as key or null

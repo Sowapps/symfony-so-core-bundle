@@ -1,0 +1,275 @@
+{% use "bootstrap_5_layout.html.twig" %}
+
+{%- block form_start -%}
+	{% set attr = attr|merge({'data-controller': attr['data-controller'] | default('component--form'), novalidate: 'novalidate'}) %}
+	{{- parent() -}}
+{%- endblock form_start -%}
+
+{%- block form_row -%}
+	{%- if compound is defined and compound -%}
+		{%- set element = 'fieldset' -%}
+	{%- endif -%}
+	{%- set widget_attr = {} -%}
+	{%- if help is not empty -%}
+		{%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+	{%- endif -%}
+	{%- set row_class = row_class|default(row_attr.class|default('mb-3')|trim) -%}
+	<{{ element|default('div') }}{% with {attr: row_attr|merge({class: row_class})} %}{{ block('attributes') }}{% endwith %}>
+	{%- if 'form-floating' in row_class -%}
+		{{- form_widget(form, widget_attr) -}}
+		{{- form_label(form) -}}
+	{%- else -%}
+		{{- form_label(form) -}}
+		{{- form_widget(form, widget_attr) -}}
+	{%- endif -%}
+	{{- form_help(form) -}}
+	{%- if valid -%}
+		{{- block('form_feedback') -}}
+	{%- else -%}
+		{{- form_errors(form) -}}
+	{%- endif -%}
+	</{{ element|default('div') }}>
+{%- endblock form_row %}
+
+{% block form_feedback -%}
+	<div class="invalid-feedback">
+		<span class="text-danger fs-5 me-2"><i class="fa-solid fa-triangle-exclamation"></i></span>
+		<span>{{- form.vars.invalid_message | default('generic.invalidValue') | trans([], 'validators') -}}</span>
+	</div>
+{% endblock form_feedback -%}
+
+{%- block form_widget_compound -%}
+	<div {{ block('widget_container_attributes') }}>
+		{{- form_success(form) -}}
+		{%- if form is rootform -%}
+			{{ form_errors(form) }}
+		{%- endif -%}
+		{{- block('form_rows') -}}
+		{{- form_rest(form) -}}
+	</div>
+{%- endblock form_widget_compound -%}
+
+{% block money_widget -%}
+	{%- set prepend = not (money_pattern starts with '{{') -%}
+	{%- set append = not (money_pattern ends with '}}') -%}
+	{%- if prepend or append -%}
+		{% if not valid %}
+			{% set attr = attr|merge({class: (attr.class|default('') ~ ' is-invalid')|trim}) -%}
+		{% endif %}
+		<div class="input-group{{ group_class|default('') }}">
+			{%- if prepend -%}
+				<span class="input-group-text">{{ money_pattern|form_encode_currency }}</span>
+			{%- endif -%}
+			{{- block('form_widget_simple') -}}
+			{%- if append -%}
+				<span class="input-group-text">{{ money_pattern|form_encode_currency }}</span>
+			{%- endif -%}
+			{%- if valid -%}
+				{{- block('form_feedback') -}}
+			{%- else -%}
+				{{- form_errors(form) -}}
+				{% set valid = true %}
+			{%- endif -%}
+		</div>
+	{%- else -%}
+		{{- block('form_widget_simple') -}}
+	{%- endif -%}
+{%- endblock money_widget %}
+
+{#
+{%- block datetime_widget -%}
+	{% set datetimePickerId = form.vars.id ~ "Wrapper" %}
+	<div class="input-group date" id="{{ datetimePickerId }}" {% if not form.vars.disabled %}data-controller="input--date" data-date-format="DD/MM/YYYY HH:mm" data-target-input="nearest"{% endif %}>
+		{% set attr = attr|merge({class: (attr.class|default('') ~ ' form-control-md datetimepicker-input')|trim}) -%}
+		{% set attr = attr|merge({'data-input--date-target': 'input', 'data-target': '#' ~ datetimePickerId}) -%}
+		{{- block('form_widget_simple') -}}
+		<span class="btn btn-outline-secondary" data-target="#{{ datetimePickerId }}" data-toggle="datetimepicker">
+			<i class="fas fa-calendar-alt"></i>
+		</span>
+	</div>
+{%- endblock datetime_widget -%}
+
+{%- block date_widget -%}
+	{% set datetimePickerId = form.vars.id ~ "Wrapper" %}
+	<div class="input-group date" id="{{ datetimePickerId }}" {% if not form.vars.disabled %}data-controller="input--date" data-date-format="DD/MM/YYYY" data-target-input="nearest"{% endif %}>
+		{% set attr = attr|merge({class: (attr.class|default('') ~ ' form-control-md datetimepicker-input')|trim}) -%}
+		{% set attr = attr|merge({'data-input--date-target': 'input', 'data-target': '#' ~ datetimePickerId}) -%}
+		{{- block('form_widget_simple') -}}
+		<span class="btn btn-outline-secondary" data-target="#{{ datetimePickerId }}" data-toggle="datetimepicker">
+			<i class="fas fa-calendar-alt"></i>
+		</span>
+	</div>
+{%- endblock date_widget -%}
+
+{%- block time_widget -%}
+	{% set datetimePickerId = form.vars.id ~ "Wrapper" %}
+	<div class="input-group date" id="{{ datetimePickerId }}" {% if not form.vars.disabled %}data-controller="input--date" data-date-format="HH:mm" data-date-stepping="5"
+		 data-target-input="nearest"{% endif %}>
+		{% set attr = attr|merge({class: (attr.class|default('') ~ ' form-control-md datetimepicker-input')|trim}) -%}
+		{% set attr = attr|merge({'data-input--date-target': 'input', 'data-target': '#' ~ datetimePickerId, 'pattern': "[0-9]{2}:[0-9]{2}"}) -%}
+		{{- block('form_widget_simple') -}}
+		<span class="btn btn-outline-secondary" data-target="#{{ datetimePickerId }}" data-toggle="datetimepicker">
+			<i class="fas fa-calendar-alt"></i>
+		</span>
+	</div>
+{%- endblock time_widget -%}
+
+{%- block phone_number_widget -%}
+	{% set attr = attr|merge({'data-controller': 'input--phone-number'}) %}
+	{% if widget is constant('Misd\\PhoneNumberBundle\\Form\\Type\\PhoneNumberType::WIDGET_COUNTRY_CHOICE') %}
+		{% set attr = attr|merge({class: (attr.class|default('') ~ ' input-group')|trim}) %}
+		<div {{ block('widget_container_attributes') }}>
+			<div class="input-group-text">
+				{{- form_widget(form.country) -}}
+			</div>
+			{{- form_widget(form.number) -}}
+		</div>
+	{% else -%}
+		{{- block('form_widget_simple') -}}
+	{%- endif %}
+{%- endblock phone_number_widget %}
+#}
+
+{%- block choice_widget_collapsed -%}
+	{% set attr = attr|merge({'data-controller': 'input--select'}) %}
+	{{- parent() -}}
+{%- endblock -%}
+
+{# {% block form_row -%} #}
+{# {%- if not compound is defined -%} #}
+{# {%- set compound = false -%} #}
+{# {%- endif -%} #}
+{# {%- if compound -%} #}
+{# {%- set element = 'fieldset' -%} #}
+{# {%- endif -%} #}
+{# {%- set widget_attr = {} -%} #}
+{# {%- if not expanded is defined or not expanded -%} #}
+{# {%- set row_attr = row_attr|merge({class: (row_attr.class|default('') ~ ' mb-3')|trim}) -%} #}
+{# {%- endif -%} #}
+{# {%- if help is not empty -%} #}
+{# {%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%} #}
+{# {%- endif -%} #}
+{# {% set has_input_group = input_prepend is defined or input_append is defined or input_prepend_raw is defined or input_append_raw is defined %} #}
+{# #}{# On admin, fieldset or field, we want a bottom margin #}
+{# <{{ element|default('div') }}{% with {attr: row_attr} %}{{ block('attributes') }}{% endwith %}> #}
+{# {{- form_label(form) -}} #}
+{# {{- form_widget(form, widget_attr) -}} #}
+{# {%- if not has_input_group -%} #}
+{# {%- if valid -%} #}
+{# {{- block('form_feedback') -}} #}
+{# {%- else -%} #}
+{# {{- form_errors(form) -}} #}
+{# {%- endif -%} #}
+{# {%- endif -%} #}
+{# {{- form_help(form) -}} #}
+{# </{{ element|default('div') }}> #}
+{# {%- endblock form_row %} #}
+
+ {% block form_errors -%}
+	 {%- if errors|length > 0 -%}
+		 <div class="{% if form is not rootform %}invalid-feedback{% else %}alert alert-danger{% endif %}">
+			 {%- for error in errors -%}
+				 <div>
+					 <span class="text-danger fs-5 me-2"><i class="fa-solid fa-triangle-exclamation"></i></span>
+					 <span>{{ error.message }}</span>
+				 </div>
+			 {%- endfor -%}
+		 </div>
+	 {%- endif %}
+ {%- endblock form_errors %}
+
+{% block form_widget_simple -%}
+	{% set has_input_group = input_prepend is defined or input_append is defined or input_prepend_raw is defined or input_append_raw is defined %}
+	{%- if has_input_group -%}
+		<div class="input-group has-validation{{ not valid ? ' is-invalid' : '' }}"{%- if input_controller is defined -%} data-controller="{{ input_controller }}"{%- set input_controller = null -%}{%- endif -%}>
+	{%- endif -%}
+	{%- if input_prepend is defined -%}
+		<span class="input-group-text" id="{{ form.vars.id ~ "_prepend" }}">{{ input_prepend | raw }}</span>
+	{%- endif -%}
+	{%- if input_prepend_raw is defined -%}
+		{{ input_prepend_raw | raw }}
+	{%- endif -%}
+	{{- parent() -}}
+	{%- if input_append_raw is defined -%}
+		{{ input_append_raw | raw }}
+	{%- endif -%}
+	{%- if input_append is defined -%}
+		<span class="input-group-text" id="{{ form.vars.id ~ "_append" }}">{{ input_append | raw }}</span>
+	{%- endif -%}
+	{%- if has_input_group -%}
+		</div>
+	{%- endif -%}
+{%- endblock form_widget_simple %}
+
+{# {% block file_widget -%} #}
+{# {%- set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) -%} #}
+{# {%- set type = type|default('file') -%} #}
+{# {{- block('form_widget_simple') -}} #}
+{# {% endblock %} #}
+
+{# {% block money_widget -%} #}
+{# {%- set prepend = not (money_pattern starts with '{{') -%} #}
+{# {%- set append = not (money_pattern ends with '}}') -%} #}
+{# {%- if prepend or append -%} #}
+{# <div class="input-group{{ group_class|default('') }}"> #}
+{# {%- if prepend -%} #}
+{# <span class="input-group-text">{{ money_pattern|form_encode_currency }}</span> #}
+{# {%- endif -%} #}
+{# {{- block('form_widget_simple') -}} #}
+{# {%- if append -%} #}
+{# <span class="input-group-text">{{ money_pattern|form_encode_currency }}</span> #}
+{# {%- endif -%} #}
+{# </div> #}
+{# {%- else -%} #}
+{# {{- block('form_widget_simple') -}} #}
+{# {%- endif -%} #}
+{# {%- endblock %} #}
+
+{%- block address_widget -%}
+	{# Only prevent UI changes when user is looking #}
+	{% set readMode = form.vars.data is not empty %}
+	<div data-controller="google--address-form" data-google--address-form-api-key-value="{{ google.clientKey }}" {{ block('attributes') }}
+		 data-action="component--form:app.form.reset->google--address-form#reset" data-google--address-form-required-value="{{ form.vars.required | json }}">
+		<div class="mb-3" data-google--address-form-target="searchForm"{% if readMode %} style="display: none;"{% endif %}>
+			<div class="float-end">
+				<button class="btn btn-link btn-sm" type="button" data-action="click->google--address-form#setReadMode"
+						data-google--address-form-target="cancelEditButton"
+						style="display: none;">
+					{{- 'action.cancel' | trans -}}
+				</button>
+			</div>
+			<label class="form-label required" for="{{ form.vars.id }}_search">
+				{{- form.vars.label_format | replace({
+					'%name%': form.vars.name
+				}) | trans -}}
+			</label>
+			<input class="form-control" type="search" data-google--address-form-target="searchInput" id="{{ form.vars.id }}_search" autocomplete="no"/>
+			{{- block('form_feedback') -}}
+		</div>
+		
+		<div data-google--address-form-target="addressForm"{% if not readMode %} style="display: none;"{% endif %}>
+			{% if not disabled %}
+				<div class="float-end">
+					<button class="btn btn-link btn-sm" type="button" data-action="click->google--address-form#setEditMode" data-google--address-form-target="editButton">
+						{{- 'action.change' | trans -}}
+					</button>
+				</div>
+			{% endif %}
+			{{ form_row(form.street, { attr: { "data-google--address-form-target" : "streetInput" } }) }}
+			
+			<div class="row">
+				<div class="col-12 col-lg-6">
+					{{ form_row(form.city.postalCode, { attr: { "data-google--address-form-target" : "postalCodeInput" } }) }}
+				</div>
+				<div class="col-12 col-lg-6">
+					{{ form_row(form.city.name, { attr: { "data-google--address-form-target" : "cityInput" } }) }}
+				</div>
+			</div>
+		</div>
+		<div class="d-none">
+			{{ form_widget(form.coordinates.latitude, { attr: { "data-google--address-form-target" : "latitudeInput" } }) }}
+			{{ form_widget(form.coordinates.longitude, { attr: { "data-google--address-form-target" : "longitudeInput" } }) }}
+			{{ form_widget(form.googlePlaceId, { attr: { "data-google--address-form-target" : "googlePlaceIdInput" } }) }}
+		</div>
+	</div>
+{%- endblock -%}

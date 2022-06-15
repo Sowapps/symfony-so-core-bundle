@@ -6,7 +6,7 @@ use Sowapps\SoCoreBundle\Core\Form\AbstractForm;
 use Sowapps\SoCoreBundle\Core\Form\Creator\FormCreator;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class UserAdminPasswordType extends AbstractForm {
+class UserAdminPasswordForm extends AbstractForm {
 	
 	public function buildForm(FormBuilderInterface $builder, array $options) {
 		$creator = new FormCreator($builder, $options);

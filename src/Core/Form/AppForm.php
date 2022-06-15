@@ -14,6 +14,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PropertyAccess\PropertyPathInterface;
+use Traversable;
 
 /**
  * Class AppForm
@@ -270,7 +271,7 @@ class AppForm implements FormInterface, IteratorAggregate {
 		return $this->form->isRoot();
 	}
 	
-	public function getIterator() {
+	public function getIterator(): Traversable|array {
 		return $this->form->getIterator();
 	}
 	

@@ -1,0 +1,16 @@
+{% trans_default_domain 'emails' %}
+
+{% extends '@SoCore/document-email.html.twig' %}
+
+{% block contents %}
+	
+	<h2 class="mb-4">{{ 'registerEmail.title' | trans }}</h2>
+	<p class="mb-3">{{ 'registerEmail.message' | trans }}</p>
+	<p class="mb-3">
+		<a href="{{ activateUrl }}" target="_blank">
+			{{- 'registerEmail.activate' | trans -}}
+		</a>
+	</p>
+	<p class="small">{{ 'registerEmail.expiration' | trans({expire: expiresAtMessageKey | trans(expiresAtMessageData, 'VerifyEmailBundle')}) }}</p>
+
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends '@SoCore/layout-authentication.html.twig' %}
+
+{% block title %}
+	{{ 'page.recover_password.title' | trans }}
+{% endblock %}
+
+{% block body %}
+	<h4 class="text-danger mb-4">{{ 'page.recover_password.error.title' | trans }}</h4>
+	<p class="lead">{{ error }}</p>
+{% endblock %}
+
+{% block footer %}
+	<div class="small">
+		<a href="{{ path('home') }}">
+			<i class="fas fa-arrow-left me-1"></i>
+			{{- 'action.backHome' | trans -}}
+		</a>
+	</div>
+{% endblock %}

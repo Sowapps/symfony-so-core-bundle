@@ -1,0 +1,54 @@
+{% extends '@SoCore/layout-authentication.html.twig' %}
+
+{% block reports %}
+	{% for flash_message in app.flashes('auth_success') %}
+		<div class="alert alert-success mb-3" role="alert">{{ flash_message }}</div>
+	{% endfor %}
+{% endblock %}
+
+{% block title %}
+	{{ 'page.admin_login.title' | trans([], 'admin') }}
+{% endblock %}
+
+{% block body %}
+	{% if login.error %}
+		<div class="alert alert-warning alert-dismissible fade show" role="alert">
+			<div class="d-flex align-items-center">
+				<span class="me-2">
+					<i class="fa fa-exclamation-triangle"></i>
+				</span>
+				<div>
+					{{ login.error.messageKey | trans(login.error.messageData) }}
+				</div>
+			</div>
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close' | trans }}"></button>
+		</div>
+	{% endif %}
+	
+	<form method="post">
+	<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+	<input name="isAdmin" type="hidden" value="1"/>
+	<div class="form-floating mb-3">
+		<input id="InputLoginEmail" name="_username" type="email" class="form-control" required autocomplete="username"
+			   placeholder="{{ 'page.admin_login.email' | trans([], 'admin') }}" {{ login.email ? 'value="%s"'|format(login.email)|raw : '' }}/>
+		<label for="InputLoginEmail">{{ 'page.admin_login.email' | trans([], 'admin') }}</label>
+	</div>
+	<div class="form-floating mb-3">
+		<input id="InputLoginPassword" name="_password" type="password" class="form-control" autocomplete="current-password" required
+			   placeholder="{{ 'page.admin_login.password' | trans([], 'admin') }}"/>
+		<label for="InputLoginPassword">{{ 'page.admin_login.password' | trans([], 'admin') }}</label>
+	</div>
+	<div class="d-flex align-items-center justify-content-between mt-4 mb-0">
+		<a class="small" href="{{ path('security_recover_request') }}">{{ 'page.admin_login.recoverAction' | trans([], 'admin') }}</a>
+		<button type="submit" class="btn btn-primary">{{ 'action.login' | trans }}</button>
+	</div>
+	</form>
+{% endblock %}
+
+{% block footer %}
+	<div class="small">
+		<a href="{{ path('admin_register') }}">
+			{{- 'page.admin_login.registerAction' | trans([], 'admin') -}}
+		</a>
+	</div>
+{% endblock %}

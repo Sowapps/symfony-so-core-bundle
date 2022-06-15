@@ -1,3 +1,16 @@
 email:
     seeOnline: "Un souci d'affichage ? Cliquez ici pour voir l'email en ligne."
     noResponseText: "Ceci est un email automatique, aucune réponse ne sera lue."
+
+registerEmail:
+    subject: "Bienvenue sur {app_label}"
+    title: "Confirmer votre inscription"
+    message: "Pour terminer votre inscription, veuillez activer votre compte en suivant le lien ci-dessous."
+    activate: "Activer mon compte"
+    expiration: "Ce lien expirera dans {expire}."
+
+recoveryEmail:
+    subject: "Mot de passe oublié sur {app_label}"
+    title: "Nous pouvons vous aider !"
+    message: "Vous avez demandé un nouveau mot de passe, vous pouvez le changer en suivant le lien ci-dessous."
+    recover: "Récupérer mon compte"

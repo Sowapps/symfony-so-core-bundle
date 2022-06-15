@@ -3,41 +3,41 @@
 {# Should do this way but cache:clear is exploding with this twig configuration #}
 {# {%- apply inline_css(source('@styles/email.css')) -%} #}
 
-{# {%- apply inline_css(encore_entry_css_source('email')) -%} #}
-
-<table class="body">
-	<tbody>
-	<tr>
-		<td class="center" align="center" valign="top">
-			<center>
-				{% if emailViewUrl is defined %}
-					<a href="{{ emailViewUrl }}" class="color-grey display-block mt-1 mb-1 small online-hidden">
-						{{ 'email.seeOnline' | trans }}
-					</a>
-				{% endif %}
+{%- apply inline_css(encore_entry_css_source('email')) -%}
+	
+	<table class="body">
+		<tbody>
+		<tr>
+			<td class="center" align="center" valign="top">
+				<center>
+					{% if emailViewUrl is defined %}
+						<a href="{{ emailViewUrl }}" class="color-grey display-block mt-1 mb-1 small online-hidden">
+							{{- 'email.seeOnline' | trans -}}
+						</a>
+					{% endif %}
+					
+					<table class="container content mb-4">
+						<tbody>
+						<tr>
+							<td class="px-5 py-4 text-center">
+								{%- block contents %}{% endblock -%}
+							</td>
+						</tr>
+						<tr>
+							<td class="px-5 py-3">
+								<br>
+								<p class="small text-center">
+									<i>{{ 'email.noResponseText' | trans }}</i>
+								</p>
+							</td>
+						</tr>
+						</tbody>
+					</table>
 				
-				<table class="container content mb-4">
-					<tbody>
-					<tr>
-						<td class="px-5 py-4 text-center">
-							{% block contents %}{% endblock %}
-						</td>
-					</tr>
-					<tr>
-						<td class="px-5 py-3">
-							<br>
-							<p class="small text-center">
-								<i>{{ 'email.noResponseText' | trans }}</i>
-							</p>
-						</td>
-					</tr>
-					</tbody>
-				</table>
-			
-			</center>
-		</td>
-	</tr>
-	</tbody>
-</table>
+				</center>
+			</td>
+		</tr>
+		</tbody>
+	</table>
 
-{# {%- endapply -%} #}
+{%- endapply -%}

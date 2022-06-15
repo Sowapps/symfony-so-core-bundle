@@ -8,7 +8,7 @@ namespace Sowapps\SoCoreBundle\Controller\Admin;
 use Sowapps\SoCoreBundle\Core\Controller\AbstractAdminController;
 use Sowapps\SoCoreBundle\Entity\AbstractUser;
 use Sowapps\SoCoreBundle\Form\User\UserAdminForm;
-use Sowapps\SoCoreBundle\Form\User\UserAdminPasswordType;
+use Sowapps\SoCoreBundle\Form\User\UserAdminPasswordForm;
 use Sowapps\SoCoreBundle\Service\AbstractUserService;
 use Sowapps\SoCoreBundle\Service\MailingService;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +19,6 @@ class AdminUserController extends AbstractAdminController {
 	const FORM_ACTIVATION = 'admin.user.activation';
 	
 	public function dashboard(): Response {
-		
 		return $this->render('@SoCore/admin/page/dashboard.html.twig');
 	}
 	
@@ -74,7 +73,7 @@ class AdminUserController extends AbstractAdminController {
 		$userRoles = $user->getRoles();
 		
 		$userAdminForm = $this->createForm(UserAdminForm::class, ['user' => $user]);
-		$userPasswordForm = $this->createForm(UserAdminPasswordType::class, ['user' => $user]);
+		$userPasswordForm = $this->createForm(UserAdminPasswordForm::class, ['user' => $user]);
 		$formSuccess = [];
 		
 		if( $userAdminForm->isValidRequest($request) ) {
@@ -171,6 +170,8 @@ class AdminUserController extends AbstractAdminController {
 			
 			return $this->redirectToRequest($request);
 		}
+		
+		dump($userPasswordForm->getSuccesses());
 		
 		return $this->render('@SoCore/admin/page/user-edit.html.twig', [
 			'securityToken'             => $newSecurityToken,

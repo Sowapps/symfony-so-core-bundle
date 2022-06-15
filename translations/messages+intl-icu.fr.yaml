@@ -14,6 +14,28 @@ user:
         admin: "Administrateur"
         developer: "Développeur"
 
+page:
+    verifyUserEmail:
+        success: "Votre adresse email a bien été vérifiée"
+    recover_request:
+        action: "Un souci pour accéder à votre compte ? {0}Cliquez-ici{1}"
+        title: "Récupération du compte"
+        legend: "Vous avez perdu votre mot de passe ? Entrez votre email et on vous envoie un lien pour le récupérer !"
+        success:
+            title: "Email de récupération envoyé !"
+            legend: "Un email pour récupérer votre compte vous a été envoyé, surveillez votre boite mail."
+    recover_password:
+        title: "Récupération de votre compte"
+        legend: "Nous avons pu confirmer votre identité, choisissez un nouveau mot de passe pour votre compte."
+        error:
+            title: "Impossible de récupérer le compte"
+            back: "Retour à l'accueil"
+            loggedIn: "Vous ne pouvez pas demander une récupération de compte alors que vous êtes connecté."
+            invalid: "Cette demande de récupération de mot de passe n'est plus valide, elle a peut être expiré."
+        success:
+            title: "Mot de passe modifié"
+            legend: "Votre nouveau mot de passe a été enregistré, Vous pouvez maintenant vous connecter en l'utilisant."
+
 # Package translations
 "Invalid credentials.": "Ces identifiants ne correspondent pas à un compte connu."
 "Invalid CSRF token.": "Formulaire invalide, ré-essaye stp."

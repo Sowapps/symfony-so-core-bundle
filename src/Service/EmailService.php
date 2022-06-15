@@ -16,20 +16,15 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment as TwigService;
 
 class EmailService extends AbstractEntityService {
 	
-	const DOMAIN = 'emails';
 	/**
 	 * @deprecated Use url
 	 */
 	const TOKEN_VIEW_ONLINE = '###EMAIL_ONLINE_VIEW_LINK###';
-	
-	protected TranslatorInterface $translator;
 	
 	protected MailerInterface $mailer;
 	
@@ -44,16 +39,13 @@ class EmailService extends AbstractEntityService {
 	/**
 	 * EmailService constructor
 	 *
-	 * @param TranslatorInterface $translator
 	 * @param MailerInterface $mailer
 	 * @param TwigService $twig
 	 * @param UrlGeneratorInterface $router
 	 * @param StringHelper $stringHelper
 	 * @param array $configEmail
 	 */
-	public function __construct(TranslatorInterface $translator, MailerInterface $mailer, TwigService $twig, UrlGeneratorInterface $router,
-								StringHelper        $stringHelper, array $configEmail) {
-		$this->translator = $translator;
+	public function __construct(MailerInterface $mailer, TwigService $twig, UrlGeneratorInterface $router, StringHelper $stringHelper, array $configEmail) {
 		$this->mailer = $mailer;
 		$this->twig = $twig;
 		$this->router = $router;
@@ -110,8 +102,8 @@ class EmailService extends AbstractEntityService {
 			return null;
 		}
 		$emailMessage = new EmailMessage();
-		$emailMessage->setFromUserEmail($this->config['from']);
-		$emailMessage->setFromUserName($this->translator->trans('app.label'));
+		$emailMessage->setFromUserName($this->config['from']['name']);
+		$emailMessage->setFromUserEmail($this->config['from']['email']);
 		if( $recipient instanceof AbstractUser ) {
 			$emailMessage->setToUser($recipient);
 		} elseif( is_array($recipient) ) {
@@ -121,7 +113,7 @@ class EmailService extends AbstractEntityService {
 			$emailMessage->setToUserEmail($recipient);
 		}
 		$emailMessage->setPurpose($purpose);
-		$emailMessage->setSubject($this->translator->trans($subject, $data, self::DOMAIN));
+		$emailMessage->setSubject($subject);
 		$emailMessage->setOnlineExpireDate(new DateTime(sprintf('+%d hours', $this->config['online_view']['expire_hours'])));
 		$emailMessage->setPrivateKey($this->stringHelper->generateKey());
 		$emailMessage->setTemplateHtml($template);
@@ -177,17 +169,6 @@ class EmailService extends AbstractEntityService {
 	public function fillNewSubscription($emailSubscription, $purpose) {
 		$emailSubscription->setPrivateKey($this->stringHelper->generateKey());
 		$emailSubscription->setPurpose($purpose);
-	}
-	
-	public function sendTestEmail($recipient) {
-		$email = new Email();
-		$email
-			->subject('Look & Lib Test Email')
-			->from(new Address($this->config['from'], $this->translator->trans('app.label')))
-			->to($recipient)
-			->html($this->twig->render('email/email.test.html.twig'));
-		
-		$this->mailer->send($email);
 	}
 	
 	public function send(EmailMessage $emailMessage) {

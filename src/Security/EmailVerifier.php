@@ -4,48 +4,35 @@ namespace Sowapps\SoCoreBundle\Security;
 
 use Sowapps\SoCoreBundle\Entity\AbstractUser;
 use Sowapps\SoCoreBundle\Service\AbstractUserService;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Sowapps\SoCoreBundle\Service\MailingService;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
-use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
 class EmailVerifier {
 	
 	private VerifyEmailHelperInterface $verifyEmailHelper;
 	
-	private MailerInterface $mailer;
+	private MailingService $mailingService;
 	
 	private AbstractUserService $userService;
 	
-	public function __construct(VerifyEmailHelperInterface $helper, MailerInterface $mailer, AbstractUserService $userService) {
+	public function __construct(VerifyEmailHelperInterface $helper, MailingService $mailingService, AbstractUserService $userService) {
 		$this->verifyEmailHelper = $helper;
-		$this->mailer = $mailer;
+		$this->mailingService = $mailingService;
 		$this->userService = $userService;
 	}
 	
-	public function sendEmailConfirmation(string $verifyEmailRouteName, UserInterface $user, TemplatedEmail $email): void {
-		$signatureComponents = $this->verifyEmailHelper->generateSignature(
-			$verifyEmailRouteName,
-			$user->getId(),
-			$user->getEmail(),
-			['id' => $user->getId()]
-		);
+	public function sendEmailConfirmation(AbstractUser $user): void {
+		$signatureComponents = $this->verifyEmailHelper->generateSignature('admin_verify_email', $user->getId(), $user->getEmail(), ['id' => $user->getId()]);
 		
-		$context = $email->getContext();
-		$context['signedUrl'] = $signatureComponents->getSignedUrl();
+		$context = [];
+		$context['activateUrl'] = $signatureComponents->getSignedUrl();
 		$context['expiresAtMessageKey'] = $signatureComponents->getExpirationMessageKey();
 		$context['expiresAtMessageData'] = $signatureComponents->getExpirationMessageData();
 		
-		$email->context($context);
-		
-		$this->mailer->send($email);
+		$this->mailingService->sendActivationEmail($user, $context);
 	}
 	
-	/**
-	 * @throws VerifyEmailExceptionInterface
-	 */
 	public function handleEmailConfirmation(Request $request, AbstractUser $user): void {
 		$this->verifyEmailHelper->validateEmailConfirmation($request->getUri(), $user->getId(), $user->getEmail());
 		

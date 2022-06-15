@@ -1,3 +1,5 @@
+SoCore is a Symfony Bundle to bring basic features to your Sowapps App
+
 # Standards
 
 Project is done for the following requirements:
@@ -21,7 +23,7 @@ Project is done for the following requirements:
 All front dependencies must be added to your project
 
 ```
-yarn add bootstrap startbootstrap-sb-admin @fortawesome/fontawesome-free @popperjs/core sass sass-loader
+yarn add bootstrap startbootstrap-sb-admin @fortawesome/fontawesome-free @popperjs/core sass sass-loader simple-datatables
 ```
 
 ## Configuration
@@ -89,3 +91,6 @@ Put your template in /templates/bundles/SoCoBundle/ by respecting given hierarch
 
 Replace type in your doctrine configuration by your class. Extends our class and add more values for an enum.
 
+## Stimulus controllers
+
+Add controllers to the assets/controllers.json file under @sowapps/so-core
