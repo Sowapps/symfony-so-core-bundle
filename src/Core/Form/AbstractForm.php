@@ -8,6 +8,7 @@ namespace Sowapps\SoCoreBundle\Core\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Contracts\Service\Attribute\Required;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class AbstractForm extends AbstractType {
@@ -18,9 +19,11 @@ abstract class AbstractForm extends AbstractType {
 	
 	protected ?string $success = null;
 	
-	public function __construct(TranslatorInterface $translator) {
+	#[Required]
+	public function setTranslator(TranslatorInterface $translator): void {
 		$this->translator = $translator;
 	}
+	
 	
 	public function hasModel(string|array $model): bool {
 		if( is_string($model) ) {

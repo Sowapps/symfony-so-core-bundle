@@ -7,14 +7,12 @@ namespace Sowapps\SoCoreBundle\Core\Form;
 
 use Sowapps\SoCoreBundle\Service\AbstractUserService;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AbstractUserForm extends AbstractForm {
 	
 	protected AbstractUserService $userService;
 	
-	public function __construct(TranslatorInterface $translator, AbstractUserService $userService) {
-		parent::__construct($translator);
+	public function __construct(AbstractUserService $userService) {
 		$this->userService = $userService;
 	}
 	

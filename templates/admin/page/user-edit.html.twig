@@ -46,50 +46,52 @@
 				{% endembed %}
 			{% endif %}
 			
-			<form method="post">
-			{% embed "@SoCore/component/panel.admin.html.twig" with {title: 'page.admin_user_edit.activation.title' | trans([], 'admin')} %}
-				{% block body_contents %}
-					{{ reports(userActivationReports, 'admin') }}
-					{% if user.disabled %}
-						<div class="alert alert-danger" role="alert">
-							Compte désactivé !
-						</div>
-					{% elseif user.activated %}
-						<div class="alert alert-primary" role="alert">
-							Compte actif !
-						</div>
-					{% else %}
-						<div class="alert alert-warning" role="alert">
-							Compte non activé...
-						</div>
-					{% endif %}
-					{% if user.activated %}
-						<div class="mb-3">
-							<label class="form-label">Activation du compte</label>
-							<input type="text" readonly class="form-control" value="{{ date('short_date', user.activationDate) }}">
-						</div>
-					{% else %}
-						<div class="mb-3">
-							<label class="form-label">Expiration de l'activation</label>
-							<input type="text" readonly class="form-control" value="{{ date('short_datetime', user.activationExpireDate) }}">
-						</div>
-					{% endif %}
-				{% endblock %}
-				{% block footer %}
-					{% if allowUserEnable %}
-						<button name="submitEnable" class="btn btn-primary ms-1" value="{{ securityToken }}" type="submit">{{ 'action.enable' | trans }}</button>
-					{% endif %}
-					{% if allowUserDisable %}
-						<button name="submitDisable" class="btn btn-outline-warning ms-1" value="{{ securityToken }}"
-								type="submit">{{ 'action.disable' | trans }}</button>
-					{% endif %}
-					{%- if allowUserActivationResend -%}
-						<button name="submitActivationResend" class="btn btn-outline-primary ms-1" value="{{ securityToken }}"
-								type="submit">{{ 'page.admin_user_edit.activationResend.action' | trans([], 'admin') }}</button>
-					{%- endif -%}
-				{% endblock %}
-			{% endembed %}
-			</form>
+			{% if allowUserAccountActivation %}
+				<form method="post">
+				{% embed "@SoCore/component/panel.admin.html.twig" with {title: 'page.admin_user_edit.activation.title' | trans([], 'admin')} %}
+					{% block body_contents %}
+						{{ reports(userActivationReports, 'admin') }}
+						{% if user.disabled %}
+							<div class="alert alert-danger" role="alert">
+								Compte désactivé !
+							</div>
+						{% elseif user.activated %}
+							<div class="alert alert-primary" role="alert">
+								Compte actif !
+							</div>
+						{% else %}
+							<div class="alert alert-warning" role="alert">
+								Compte non activé...
+							</div>
+						{% endif %}
+						{% if user.activated %}
+							<div class="mb-3">
+								<label class="form-label">Activation du compte</label>
+								<input type="text" readonly class="form-control" value="{{ date('short_date', user.activationDate) }}">
+							</div>
+						{% else %}
+							<div class="mb-3">
+								<label class="form-label">Expiration de l'activation</label>
+								<input type="text" readonly class="form-control" value="{{ date('short_datetime', user.activationExpireDate) }}">
+							</div>
+						{% endif %}
+					{% endblock %}
+					{% block footer %}
+						{% if allowUserEnable %}
+							<button name="submitEnable" class="btn btn-primary ms-1" value="{{ securityToken }}" type="submit">{{ 'action.enable' | trans }}</button>
+						{% endif %}
+						{% if allowUserDisable %}
+							<button name="submitDisable" class="btn btn-outline-warning ms-1" value="{{ securityToken }}"
+									type="submit">{{ 'action.disable' | trans }}</button>
+						{% endif %}
+						{%- if allowUserActivationResend -%}
+							<button name="submitActivationResend" class="btn btn-outline-primary ms-1" value="{{ securityToken }}"
+									type="submit">{{ 'page.admin_user_edit.activationResend.action' | trans([], 'admin') }}</button>
+						{%- endif -%}
+					{% endblock %}
+				{% endembed %}
+				</form>
+			{% endif %}
 		</div>
 	</div>
 {% endblock %}

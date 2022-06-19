@@ -186,34 +186,24 @@ services:
 
     #   Forms
 
-    Sowapps\SoCoreBundle\Form\LanguageForm:
-        arguments:
-            - '@translator'
+    Sowapps\SoCoreBundle\Form\LanguageForm: [ ]
+
+    Sowapps\SoCoreBundle\Form\User\UserRegisterForm: [ ]
+
+    Sowapps\SoCoreBundle\Form\User\UserRecoveryRequestForm: [ ]
+
+    Sowapps\SoCoreBundle\Form\User\UserRecoveryPasswordForm: [ ]
+
+    Sowapps\SoCoreBundle\Form\User\UserAdminForm: [ ]
+
+    Sowapps\SoCoreBundle\Form\User\UserUpdateForm: [ ]
+
+    Sowapps\SoCoreBundle\Form\User\UserAdminPasswordForm: [ ]
+
+    # Form Types
 
     Sowapps\SoCoreBundle\Form\User\UserType:
-        arguments:
-            - '@translator'
-            - '@so_core.user'
-
-    Sowapps\SoCoreBundle\Form\User\UserRegisterForm:
-        arguments:
-            - '@translator'
-
-    Sowapps\SoCoreBundle\Form\User\UserRecoveryRequestForm:
-        arguments:
-            - '@translator'
-
-    Sowapps\SoCoreBundle\Form\User\UserRecoveryPasswordForm:
-        arguments:
-            - '@translator'
-
-    Sowapps\SoCoreBundle\Form\User\UserAdminForm:
-        arguments:
-            - '@translator'
-
-    Sowapps\SoCoreBundle\Form\User\UserAdminPasswordForm:
-        arguments:
-            - '@translator'
+        - '@so_core.user'
 
     #   Commands
 

@@ -9,6 +9,7 @@ use Sowapps\SoCoreBundle\Core\Controller\AbstractAdminController;
 use Sowapps\SoCoreBundle\Entity\AbstractUser;
 use Sowapps\SoCoreBundle\Form\User\UserAdminForm;
 use Sowapps\SoCoreBundle\Form\User\UserAdminPasswordForm;
+use Sowapps\SoCoreBundle\Form\User\UserUpdateForm;
 use Sowapps\SoCoreBundle\Service\AbstractUserService;
 use Sowapps\SoCoreBundle\Service\MailingService;
 use Symfony\Component\HttpFoundation\Request;
@@ -67,48 +68,51 @@ class AdminUserController extends AbstractAdminController {
 		//		$this->addRouteToBreadcrumb('admin_user_edit', $user->getLabel(), false);
 		
 		// Permissions
-		$allowUserAdmin = true;
-		$allowUserEnable = $user->isDisabled();
-		$allowUserDisable = !$user->isDisabled();
-		$allowUserActivationResend = !$user->isActivated();
+		$allowUserSelf = $mySettings;
+		$allowUserAdmin = !$mySettings;
+		$allowUserEnable = !$mySettings && $user->isDisabled();
+		$allowUserDisable = !$mySettings && !$user->isDisabled();
+		$allowUserActivationResend = !$mySettings && !$user->isActivated();
 		$allowUserPasswordEdit = true;
-		$allowUserAccountRecover = true;
+		$allowUserAccountRecover = !$mySettings;
 		
 		$securityToken = $this->getSecurityToken('admin.user', $newSecurityToken) ?? 'none';
 		
 		// Roles before form
 		$userRoles = $user->getRoles();
 		
-		$userAdminForm = $this->createForm(UserAdminForm::class, ['user' => $user]);
+		$userAdminForm = $this->createForm($allowUserAdmin ? UserAdminForm::class : UserUpdateForm::class, ['user' => $user]);
 		$userPasswordForm = $this->createForm(UserAdminPasswordForm::class, ['user' => $user]);
 		$formSuccess = [];
 		
 		if( $userAdminForm->isValidRequest($request) ) {
-			if( !$allowUserAdmin ) {
+			if( !$allowUserAdmin && !$allowUserSelf ) {
 				throw $this->createForbiddenOperationException();
 			}
 			// Check roles & re-assign if needed
-			$requestRoles = $user->getRoles();
-			foreach( $userService->getRoles() as $role => [, $roleRestriction] ) {
-				$requiredRole = $roleRestriction;
-				// Can not change unavailable role or role current have not
-				if( !$requiredRole || !$userService->isCurrentHavingRole($requiredRole) ) {
-					continue;
-				}
-				$currentlyHavingRole = in_array($role, $userRoles);
-				$requestHavingRole = in_array($role, $requestRoles);
-				if( $requestHavingRole !== $currentlyHavingRole ) {
-					// Role presence changed
-					if( $currentlyHavingRole ) {
-						// Removing role
-						unset($userRoles[array_search($role, $userRoles)]);
-					} else {
-						// Adding role
-						$userRoles[] = $role;
+			if( $allowUserAdmin ) {
+				$requestRoles = $user->getRoles();
+				foreach( $userService->getRoles() as $role => [, $roleRestriction] ) {
+					$requiredRole = $roleRestriction;
+					// Can not change unavailable role or role current have not
+					if( !$requiredRole || !$userService->isCurrentHavingRole($requiredRole) ) {
+						continue;
+					}
+					$currentlyHavingRole = in_array($role, $userRoles);
+					$requestHavingRole = in_array($role, $requestRoles);
+					if( $requestHavingRole !== $currentlyHavingRole ) {
+						// Role presence changed
+						if( $currentlyHavingRole ) {
+							// Removing role
+							unset($userRoles[array_search($role, $userRoles)]);
+						} else {
+							// Adding role
+							$userRoles[] = $role;
+						}
 					}
 				}
+				$user->setRoles($userRoles);
 			}
-			$user->setRoles($userRoles);
 			$userService->update($user);
 			$userAdminForm->addSuccess('page.admin_user_edit.edit.success');
 			
@@ -181,17 +185,18 @@ class AdminUserController extends AbstractAdminController {
 		dump($userPasswordForm->getSuccesses());
 		
 		return $this->render('@SoCore/admin/page/user-edit.html.twig', [
-			'securityToken'             => $newSecurityToken,
-			'user'                      => $user,
-			'userAdminForm'             => $userAdminForm->createView(),
-			'userPasswordForm'          => $userPasswordForm->createView(),
-			'userActivationReports'     => $this->consumeSavedReports(self::FORM_ACTIVATION),
-			'allowUserAdmin'            => $allowUserAdmin,
-			'allowUserEnable'           => $allowUserEnable,
-			'allowUserDisable'          => $allowUserDisable,
-			'allowUserActivationResend' => $allowUserActivationResend,
-			'allowUserPasswordEdit'     => $allowUserPasswordEdit,
-			'allowUserAccountRecover'   => $allowUserAccountRecover,
+			'securityToken'              => $newSecurityToken,
+			'user'                       => $user,
+			'userAdminForm'              => $userAdminForm->createView(),
+			'userPasswordForm'           => $userPasswordForm->createView(),
+			'userActivationReports'      => $this->consumeSavedReports(self::FORM_ACTIVATION),
+			'allowUserAdmin'             => $allowUserAdmin,
+			'allowUserEnable'            => $allowUserEnable,
+			'allowUserDisable'           => $allowUserDisable,
+			'allowUserAccountActivation' => $allowUserAdmin,
+			'allowUserActivationResend'  => $allowUserActivationResend,
+			'allowUserPasswordEdit'      => $allowUserPasswordEdit,
+			'allowUserAccountRecover'    => $allowUserAccountRecover,
 		]);
 	}
 	
