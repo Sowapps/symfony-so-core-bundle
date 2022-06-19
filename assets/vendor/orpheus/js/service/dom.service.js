@@ -1,4 +1,4 @@
-import { isDefined, isDomElement, isJquery, isObject } from "../orpheus.js";
+import { isArray, isDefined, isDomElement, isJquery, isObject } from "../orpheus.js";
 
 class DomService {
 	
@@ -12,8 +12,66 @@ class DomService {
 		},
 	}
 	
-	getInputs(element) {
-		return element.querySelectorAll('input,select,textarea');
+	assignValue($element, value) {
+		const elementTag = $element.tagName;
+		let changed = false;
+		if( elementTag === 'img' || elementTag === 'iframe' ) {
+			$element.setAttribute('src', value);
+		} else if( elementTag === 'a' ) {
+			$element.setAttribute('href', value);
+		} else if( this.isCheckbox($element) ) {
+			if( $element.value.toLowerCase() !== 'on' ) {
+				// Not default browser value
+				$element.checked = isArray(value) ? value.includes($element.value) : $element.value === value;
+			} else {
+				// + to convert to int, !! to convert to boolean
+				$element.checked = !!+value;
+			}
+			changed = true;
+		} else if( elementTag === 'select' && $element.multiple && isArray(value) ) {
+			// Create all missing options
+			for( const subValue of value ) {
+				let $option = $element.querySelector('option[value="' + subValue + '"]');
+				if( !$option ) {
+					// Automatically create new options
+					$option = this.createElement('option');
+					$option.innerText = subValue;
+					$option.value = subValue;
+					$element.append($option);
+				}
+			}
+			// Set selected property for all options (to remove previous selected)
+			$element.querySelectorAll('option').forEach($option => {
+				$option.selected = value.includes($option.value);
+			})
+			changed = true;
+		} else if( this.isInput($element) ) {
+			// Fix issue in some dynamic forms
+			// input was filled but the change event not called
+			// dispatchEvent adds compatibility with Stimulus (raw event listener)
+			$element.value = value;
+			changed = true;
+		} else {
+			// Simple html element
+			$element.innerText = value || $element.dataset.emptyText;
+		}
+		
+		if( changed ) {
+			$element.dispatchEvent(new Event('change'));
+		}
+		
+	}
+	
+	isCheckbox($element) {
+		return $element.tagName.toLowerCase() === 'input' && $element.getAttribute('type') === 'checkbox';
+	}
+	
+	isInput($element) {
+		return ['input', 'select', 'textarea'].includes($element.tagName.toLowerCase());
+	}
+	
+	getInputs($element) {
+		return $element.querySelectorAll('input,select,textarea');
 	}
 	
 	getViewportSize() {
@@ -266,6 +324,45 @@ class DomService {
 				$element.hide();
 			}
 		});
+	}
+	
+	detach($element) {
+		if( !$element.parentElement ) {
+			return false;
+		}
+		$element.parentElement.removeChild($element);
+		return true;
+	}
+	
+	castElement(fragment) {
+		return document.createRange().createContextualFragment(fragment).firstElementChild;
+	}
+	
+	createElement(tag, className, attributes) {
+		const $element = document.createElement(tag);
+		if( className ) {
+			$element.className = className;
+		}
+		if( attributes && typeof attributes === 'object' ) {
+			Object.entries(attributes).forEach(([key, value]) => {
+				$element.setAttribute(key, value);
+			});
+		}
+		return $element;
+	}
+	
+	/**
+	 * @param {Element} $element
+	 * @param {string|Array<string>} classList
+	 * @param {boolean|null} toggle True to add, false to remove, null to invert
+	 */
+	toggleClass($element, classList, toggle) {
+		if( typeof classList === 'string' ) {
+			classList = classList.split(' ');
+		}
+		for( const cssClass of classList ) {
+			$element.classList.toggle(cssClass, toggle);
+		}
 	}
 	
 }

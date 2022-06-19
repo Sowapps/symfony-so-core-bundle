@@ -92,6 +92,6 @@
 
 {% if (open is null and form is defined and form is iterable and not form.vars.valid) or open %}
 	<script>
-	$(() => document.getElementById("{{ dialogId }}").dispatchEvent(new Event('app.dialog.open')));
+	onDomReady(() => document.getElementById("{{ dialogId }}").dispatchEvent(new Event('app.dialog.open')));
 	</script>
 {% endif %}

@@ -1,3 +1,11 @@
+language:
+    field:
+        locale: "Locale"
+        primaryCode: "Code Primaire"
+        regionCode: "Code Région"
+        enabled: "Actif ?"
+        key: "Clé"
+
 user:
     field:
         createDate: "Date d'inscription"

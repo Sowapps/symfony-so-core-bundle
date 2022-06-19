@@ -23,8 +23,9 @@ class AdminUserController extends AbstractAdminController {
 	}
 	
 	public function list(Request $request): Response {
+		$this->addRequestToBreadcrumb($request);
+		
 		$userService = $this->userService;
-		$this->addRouteToBreadcrumb('admin_user_list');
 		$allowUserActivate = $userService->isCurrentUserAdmin();
 		$formSuccess = [];
 		
@@ -52,12 +53,18 @@ class AdminUserController extends AbstractAdminController {
 	}
 	
 	public function mySettings(Request $request, MailingService $mailingService, AbstractUserService $userService): Response {
-		return $this->edit($request, $mailingService, $userService, $this->getUser());
+		$this->addRequestToBreadcrumb($request);
+		
+		return $this->edit($request, $mailingService, $userService, $this->getUser(), true);
 	}
 	
-	public function edit(Request $request, MailingService $mailingService, AbstractUserService $userService, AbstractUser $user): Response {
-		$this->addRouteToBreadcrumb('admin_user_list');
-		$this->addRouteToBreadcrumb('admin_user_edit', $user->getLabel(), ['id' => $user->getId()]);
+	public function edit(Request $request, MailingService $mailingService, AbstractUserService $userService, AbstractUser $user, bool $mySettings = false): Response {
+		if( !$mySettings ) {
+			$this->addRouteToBreadcrumb('admin_user_list');
+			$this->addRouteToBreadcrumb('admin_user_edit', $user->getLabel(), false);
+		}
+		//		$this->addRouteToBreadcrumb('admin_user_edit', $user->getLabel(), ['id' => $user->getId()]);// Child
+		//		$this->addRouteToBreadcrumb('admin_user_edit', $user->getLabel(), false);
 		
 		// Permissions
 		$allowUserAdmin = true;

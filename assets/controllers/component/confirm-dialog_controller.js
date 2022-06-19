@@ -16,7 +16,6 @@ export default class extends AbstractController {
 	
 	request(event) {
 		const data = event.detail;
-		// console.log('Confirm Dialog - Request', this.element, event, data);
 		// Fill dialog
 		this.element.querySelectorAll('.modal-title').forEach(element => element.innerHTML = data.title);
 		this.element.querySelectorAll('.dialog-legend').forEach(element => element.innerHTML = data.message);

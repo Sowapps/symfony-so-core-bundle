@@ -1,14 +1,14 @@
 {% extends '@SoCore/layout-admin.html.twig' %}
 
-{% block title %}{{ ( parent() ~ ' ~ ' ~ ('page.admin_user_list.label' | trans([], 'admin')) ) | raw }}{% endblock %}
+{% block title %}{{ ( parent() ~ ' ~ ' ~ ('page.admin_user_list.label' | trans({}, 'admin')) ) | raw }}{% endblock %}
 
 {% block layoutContents %}
 	<div class="row">
-		<div class="col">
-			{% embed "@SoCore/component/panel.admin.html.twig" with {title: 'page.admin_user_list.label' | trans([], 'admin')} %}
+		<div class="col-xxl-8 col-hg-6">
+			{% embed "@SoCore/component/panel.admin.html.twig" with {title: 'page.admin_user_list.label' | trans({}, 'admin')} %}
 				{% block body_contents %}
-					<table class="table table-striped table-bordered" data-controller="admin--table"
-						   data-admin--table-labels-value="{{ translations('page.admin_user_list.dataTable', ['placeholder', 'perPage', 'noRows', 'noResults', 'info'], 'admin') | json }}">
+					<table class="table table-striped table-bordered" data-controller="sowapps--so-core--table"
+						   data-sowapps--so-core--table-labels-value="{{ datatableTranslations('page.admin_user_list.dataTable', 'admin') | json }}">
 						<thead>
 						<tr>
 							<th scope="col" style="width:1%;">#</th>

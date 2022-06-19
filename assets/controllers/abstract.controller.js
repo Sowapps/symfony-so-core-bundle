@@ -19,7 +19,12 @@ export class AbstractController extends Controller {
 				element = element[0];
 			}
 		}
-		element.dispatchEvent(new CustomEvent(event, detail ? {detail: detail} : null));
+		try {
+			// console.log('Dispatch event', event, 'with', detail, 'to', element);
+			element.dispatchEvent(new CustomEvent(event, detail ? {detail: detail} : null));
+		} catch( error ) {
+			console.error('Method dispatchEvent is not available in element', element, 'source error :', error);
+		}
 	}
 	
 	fixSelect2(element) {
@@ -88,6 +93,10 @@ export class AbstractController extends Controller {
 	
 	createModal(selector) {
 		return new Modal(document.querySelector(selector));
+	}
+	
+	getController($element, name) {
+		return this.application.getControllerForElementAndIdentifier($element, name);
 	}
 	
 }

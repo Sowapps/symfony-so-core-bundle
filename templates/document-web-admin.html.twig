@@ -26,11 +26,11 @@
 		{{ encore_entry_link_tags('admin-app') }}
 	{%- endblock %}
 	
-	{#    <script> #}
-	{#    $ = function (callback) { #}
-	{#        document.addEventListener('DOMContentLoaded', callback); #}
-	{#    }; #}
-	{#    </script> #}
+	<script type="text/javascript">
+	onDomReady = callback => {
+		document.addEventListener('DOMContentLoaded', callback);
+	};
+	</script>
 
 </head>
 {% block document_body -%}

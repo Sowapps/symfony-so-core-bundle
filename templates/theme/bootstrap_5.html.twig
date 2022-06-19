@@ -1,8 +1,15 @@
 {% use "bootstrap_5_layout.html.twig" %}
 
 {%- block form_start -%}
-	{% set attr = attr|merge({'data-controller': attr['data-controller'] | default('component--form'), novalidate: 'novalidate'}) %}
+	{% set attr = attr|merge({
+		'data-controller': attr['data-controller'] | default('sowapps--so-core--form'),
+		'data-sowapps--so-core--form-name-value': form.vars.name,
+		novalidate: 'novalidate'
+	}) %}
 	{{- parent() -}}
+	{%- if form.vars.require_id is defined and form.vars.require_id -%}
+		<input type="hidden" class="object-id" name="id"/>
+	{%- endif -%}
 {%- endblock form_start -%}
 
 {%- block form_row -%}

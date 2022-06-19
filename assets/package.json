@@ -15,8 +15,38 @@
 				"fetch": "lazy",
 				"enabled": true
 			},
+			"form": {
+				"main": "controllers/component/form_controller.js",
+				"fetch": "lazy",
+				"enabled": true
+			},
 			"dialog": {
 				"main": "controllers/component/dialog_controller.js",
+				"fetch": "lazy",
+				"enabled": true
+			},
+			"table": {
+				"main": "controllers/component/datatable_controller.js",
+				"fetch": "lazy",
+				"enabled": true
+			},
+			"timezone": {
+				"main": "controllers/input/timezone_controller.js",
+				"fetch": "lazy",
+				"enabled": true
+			},
+			"language-dialog": {
+				"main": "controllers/admin/language-dialog_controller.js",
+				"fetch": "lazy",
+				"enabled": true
+			},
+			"language-list": {
+				"main": "controllers/admin/language-list_controller.js",
+				"fetch": "lazy",
+				"enabled": true
+			},
+			"log": {
+				"main": "controllers/admin/log_controller.js",
 				"fetch": "lazy",
 				"enabled": true
 			}
@@ -24,10 +54,13 @@
 	},
 	"peerDependencies": {
 		"@hotwired/stimulus": "^3.0.0",
+		"stimulus-use": "^0.50.0",
 		"bootstrap": "^5.1.3"
 	},
 	"devDependencies": {
+		"core-js": "^3.0.0",
 		"@hotwired/stimulus": "^3.0.0",
+		"stimulus-use": "^0.50.0",
 		"bootstrap": "^5.1.3"
 	}
 }

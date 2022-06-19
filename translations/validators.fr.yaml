@@ -1,3 +1,7 @@
+generic:
+    invalidValue: "Cette valeur n'est pas valide."
+    invalidDate: "Cette date n'est pas valide."
+
 user:
     email:
         exists: "Cette adresse email est déjà utilisée."

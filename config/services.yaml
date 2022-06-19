@@ -161,6 +161,11 @@ services:
         arguments:
             - '@so_core.controller'
 
+    Sowapps\SoCoreBundle\Controller\Admin\AdminLanguageController:
+        tags: [ 'controller.service_arguments' ]
+        arguments:
+            - '@so_core.controller'
+
     Sowapps\SoCoreBundle\Controller\Admin\AdminUserController:
         tags: [ 'controller.service_arguments' ]
         arguments:
@@ -176,7 +181,14 @@ services:
         arguments:
             - '@so_core.controller'
 
+    Sowapps\SoCoreBundle\Core\Form\FormExtension:
+        tags: [ 'form.type_extension' ]
+
     #   Forms
+
+    Sowapps\SoCoreBundle\Form\LanguageForm:
+        arguments:
+            - '@translator'
 
     Sowapps\SoCoreBundle\Form\User\UserType:
         arguments:

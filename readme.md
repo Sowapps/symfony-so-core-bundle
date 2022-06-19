@@ -93,4 +93,36 @@ Replace type in your doctrine configuration by your class. Extends our class and
 
 ## Stimulus controllers
 
-Add controllers to the assets/controllers.json file under @sowapps/so-core
+Add controllers to the `assets/controllers.json` file under `@sowapps/so-core`
+
+# Develop
+
+## Webpack
+
+For now, only `yarn add file:../so-core-bundle/assets;` works, but updating source requires to restart watch.
+
+H:\Workspaces\git\so-core-bundle
+
+/!\ It does not work, packages sources does not find any module
+
+Link your package using yarn
+See https://benjaminwfox.com/blog/tech/why-isnt-npm-link-working
+
+In the package assets/ folder, run
+
+`yarn link`
+
+Now, your package is available in any project but as a symlink instead of a remote repository.
+
+In your project folder, run
+
+``yarn link @sowapps/so-core``
+
+## Stimulus controllers
+
+Create your controllers in `assets/controllers`
+
+Declare them in `assets/package.json`
+
+Use it as `@sowapps--so-core--name` with name the given name in package.json
+

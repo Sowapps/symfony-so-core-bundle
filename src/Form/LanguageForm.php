@@ -1,0 +1,49 @@
+<?php
+/**
+ * @author Florent HAZARD <f.hazard@sowapps.com>
+ */
+
+namespace Sowapps\SoCoreBundle\Form;
+
+use Sowapps\SoCoreBundle\Core\Form\AbstractForm;
+use Sowapps\SoCoreBundle\Entity\Language;
+use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+class LanguageForm extends AbstractForm {
+	
+	public function buildForm(FormBuilderInterface $builder, array $options) {
+		/** @var FormBuilder $builder */
+		$builder
+			->add('key', null, [
+				'attr' => [
+					'placeholder' => 'english, us_english ...',
+				],
+			])
+			->add('primaryCode', null, [
+				'attr' => [
+					'placeholder' => 'en ...',
+				],
+			])
+			->add('regionCode', null, [
+				'attr' => [
+					'placeholder' => 'GB, US ...',
+				],
+			])
+			->add('locale', null, [
+				'attr' => [
+					'placeholder' => 'en, us, en_US ...',
+				],
+			]);
+	}
+	
+	public function configureOptions(OptionsResolver $resolver) {
+		parent::configureOptions($resolver);
+		$resolver->setDefaults([
+			'data_class'   => Language::class,
+			'label_format' => 'language.field.%name%',
+		]);
+	}
+	
+}

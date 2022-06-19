@@ -106,7 +106,7 @@ class UserType extends AbstractUserForm {
 		if( $this->hasModel(self::MODEL_CALCULATED) ) {
 			$builder->add('timezone', HiddenType::class, [
 				'attr' => [
-					'data-controller' => 'input--timezone',
+					'data-controller' => 'sowapps--so-core--timezone',
 				],
 			]);
 		}

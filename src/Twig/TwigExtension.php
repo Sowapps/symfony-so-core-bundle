@@ -86,6 +86,7 @@ class TwigExtension extends AbstractExtension {
 			new TwigFilter('base64', [$this, 'formatToBase64']),
 			new TwigFilter('bool', 'boolval'),
 			new TwigFilter('json', 'json_encode'),
+//			new TwigFilter('json', [$this, 'formatJson'], ['is_safe' => ['html']]),
 			new TwigFilter('smallImage', [$this, 'formatSmallImage']),
 			new TwigFilter('largeImage', [$this, 'formatLargeImage']),
 			new TwigFilter('pushTo', [$this, 'pushTo']),
@@ -108,6 +109,7 @@ class TwigExtension extends AbstractExtension {
 			new TwigFunction('form_success', [$this, 'renderSuccessAlert'], ['is_safe' => ['html']]),
 			new TwigFunction('encore_entry_css_source', [$this, 'getEncoreEntryCssSource']),
 			new TwigFunction('translations', [$this, 'getTranslations']),
+			new TwigFunction('datatableTranslations', [$this, 'getDataTableTranslations']),
 			//			new TwigFunction('parameter', [$this, 'getParameter'], ['is_safe' => ['html']]),
 			//			new TwigFunction('label', [$this, 'getFieldLabel']),
 			//			new TwigFunction('inputAttr', [$this, 'renderInputAttr'], ['is_safe' => ['html']]),
@@ -122,6 +124,14 @@ class TwigExtension extends AbstractExtension {
 			//			new TwigFunction('setTheme', [$this, 'setTheme']),
 			//			new TwigFunction('theme', [$this, 'getTheme']),
 		];
+	}
+	
+	public function formatJson($data): string {
+		return htmlspecialchars(json_encode($data), ENT_QUOTES, 'UTF-8');
+	}
+	
+	public function getDataTableTranslations(string $path, ?string $domain = null): array {
+		return $this->getTranslations($path, ['placeholder', 'perPage', 'noRows', 'noResults', 'info'], $domain);
 	}
 	
 	public function getTranslations(string $path, array $keys, ?string $domain = null): array {

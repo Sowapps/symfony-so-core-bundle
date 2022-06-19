@@ -19,6 +19,36 @@ page:
     admin_dashboard:
         label: "Dashboard"
         legend: "Le résumé de toutes les données de votre site"
+    admin_language_list:
+        label: "Langues"
+        legend: "Gérer les langues disponibles"
+        dataTable:
+            placeholder: "Rechercher..."
+            perPage: "{select} langues par page"
+            noRows: "Aucune langue trouvée"
+            noResults: "Aucun résultat pour votre recherche"
+            info: "Page {page} sur {pages} pour {rows} langues"
+        create:
+            title: "Nouvelle langue"
+            legend: "Attention, il ne suffit pas de créer une langue ici pour qu'elle soit pleinement fonctionnelle, les traductions en accord avec sa locale doivent être fournies dans les sources."
+            success: "Nouvelle langue {key} crée !"
+        update:
+            title: "Modifier une langue"
+            legend: "En modifiant cette langue, elle sera désactivée pour que vous vous assuriez d'avoir fini toutes les modifications nécessaires."
+            success: "Les modifications apportées à la langue {key} ont été sauvegardées !"
+        enable:
+            confirmTitle: "Activer la langue ?"
+            confirmMessage: |
+                Voulez-vous vraiment activer la langue "{key}" ?
+                Vous devez vous assurez que les traductions symfony correspondantes à la locale "{locale}" soit disponible sur l'application.
+                Elle deviendra disponible dans l'interface du site.
+            success: "Langue {key} activée !"
+        disable:
+            confirmTitle: "Désactiver la langue ?"
+            confirmMessage: |
+                Voulez-vous vraiment désactiver la langue "{key}" ?
+                Elle ne sera plus disponible dans l'interface du site.
+            success: "La langue {key} a été désactivée !"
     admin_my_settings:
         label: "Mes paramètres"
         legend: "Configurez votre compte"

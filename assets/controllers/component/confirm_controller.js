@@ -1,4 +1,5 @@
 import { AbstractController } from "../abstract.controller.js";
+import { stringService } from "../../vendor/orpheus/js/service/string.service.js";
 
 export default class extends AbstractController {
 	
@@ -12,10 +13,14 @@ export default class extends AbstractController {
 	formatData() {
 		return {
 			title: this.titleValue,
-			message: this.hasMessageValue ? this.messageValue : null,
+			message: this.hasMessageValue ? this.formatMessage(this.messageValue) : null,
 			submitName: this.hasSubmitNameValue ? this.submitNameValue : 'submitConfirm',
 			submitValue: this.hasSubmitValueValue ? this.submitValueValue : '1',
 		};
+	}
+	
+	formatMessage(message) {
+		return stringService.nl2br(message);
 	}
 	
 	request() {

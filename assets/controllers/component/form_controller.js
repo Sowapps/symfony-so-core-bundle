@@ -4,10 +4,11 @@ import { domService } from "../../vendor/orpheus/js/service/dom.service.js";
 export default class Form extends AbstractController {
 	
 	static targets = ['submitButton'];
-	static values = {delegate: Boolean, liveCheck: Boolean};
+	static values = {delegate: Boolean, liveCheck: Boolean, name: String};
 	
 	initialize() {
 		const $form = this.element;
+		this.idInput = $form.querySelector('.object-id');
 		// Ensure we can find this element even this is not a <form>
 		$form.classList.add('controller-form');
 		this.delegateValue = this.hasDelegateValue && this.delegateValue;
@@ -60,6 +61,33 @@ export default class Form extends AbstractController {
 		}
 	}
 	
+	fill(data) {
+		if( !data ) {
+			return;
+		}
+		if( typeof data === 'string' ) {
+			data = JSON.parse(data);
+		}
+		// console.log('Form fill', data);
+		if( data.id && this.idInput ) {
+			// ID Input is create by bootstrap_5 theme and our FormExtension
+			this.idInput.value = data.id;
+		}
+		const formPrefix = this.getName();
+		Object.entries(data).forEach(([key, value]) => {
+			const name = `${formPrefix}[${key}]`;
+			this.element.querySelectorAll('[name="' + name + '"]').forEach($element => {
+				domService.assignValue($element, value);
+			});
+		});
+		
+		return this;
+	}
+	
+	getName() {
+		return this.nameValue;
+	}
+	
 	enableSubmit() {
 		this.submitButtonTargets.forEach(button => {
 			button.disabled = false;
@@ -76,6 +104,7 @@ export default class Form extends AbstractController {
 		if( this.element.nodeName === 'FORM' ) {
 			this.element.reset();
 		}
+		return this;
 	}
 	
 	checkValidity() {

@@ -20,12 +20,6 @@ provideTranslations({
 	'cancel': "Cancel",
 });
 
-function debug(t) {
-	for( var i in arguments ) {
-		console.log(arguments[i]);
-	}
-}
-
 function clone(obj) {
 	var target = {};
 	for( var i in obj ) {

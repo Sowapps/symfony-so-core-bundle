@@ -1,3 +1,5 @@
+## Security
+
 security_logout:
     path: /log-out.html
     methods: GET
@@ -25,6 +27,8 @@ admin_verify_email:
     path: /admin-verify-email.html
     controller: Sowapps\SoCoreBundle\Controller\Admin\AdminSecurityController::verifyUserEmail
 
+### Administration
+
 admin_home:
     path: /admin/
     methods: GET
@@ -50,9 +54,14 @@ admin_user_edit:
     controller: Sowapps\SoCoreBundle\Controller\Admin\AdminUserController::edit
 
 admin_my_settings:
-    path: /admin/my/settings.html
+    path: /admin/my-account/settings.html
     methods: GET
-    controller: Sowapps\SoCoreBundle\Controller\Admin\AdminDashboardController::dashboard
+    controller: Sowapps\SoCoreBundle\Controller\Admin\AdminUserController::mySettings
+
+admin_language_list:
+    path: /admin/language/list.html
+    methods: GET|POST
+    controller: Sowapps\SoCoreBundle\Controller\Admin\AdminLanguageController::list
 
 ### Specials
 
