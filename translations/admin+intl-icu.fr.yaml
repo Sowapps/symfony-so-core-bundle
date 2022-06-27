@@ -88,3 +88,6 @@ page:
             title: "Mot de passe"
             password:
                 help: "L'utilisateur ne sera pas notifié, nous vous conseillons d'utiliser la récupération de compte."
+        picture:
+            title: "Avatar"
+            success: "Avatar modifié avec succès !"

@@ -1,6 +1,6 @@
 <?php
 
-namespace Sowapps\SoCoreBundle\Core\Form\Creator;
+namespace Sowapps\SoCore\Core\Form\Creator;
 
 class Form {
 	

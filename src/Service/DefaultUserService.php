@@ -3,9 +3,9 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Service;
+namespace Sowapps\SoCore\Service;
 
-use Sowapps\SoCoreBundle\Repository\AbstractUserRepository;
+use Sowapps\SoCore\Repository\AbstractUserRepository;
 
 class DefaultUserService extends AbstractUserService {
 	

@@ -3,16 +3,16 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Entity;
+namespace Sowapps\SoCore\Entity;
 
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
-use Sowapps\SoCoreBundle\Core\Entity\EntityReference;
-use Sowapps\SoCoreBundle\Core\Entity\Persistable;
+use Sowapps\SoCore\Core\Entity\EntityReference;
+use Sowapps\SoCore\Core\Entity\Persistable;
 
 /**
- * Superclass must be in Sowapps\SoCoreBundle\Entity namespace
+ * Superclass must be in Sowapps\SoCore\Entity namespace
  */
 #[ORM\MappedSuperclass]
 class AbstractEntity implements JsonSerializable, Persistable {
@@ -31,7 +31,7 @@ class AbstractEntity implements JsonSerializable, Persistable {
 	#[ORM\Column(type: 'string', length: 60)]
 	protected ?string $createIp = null;
 	
-	#[ORM\ManyToOne(targetEntity: 'Sowapps\SoCoreBundle\Entity\AbstractUser')]
+	#[ORM\ManyToOne(targetEntity: 'Sowapps\SoCore\Entity\AbstractUser')]
 	protected ?AbstractUser $createUser = null;
 	
 	public function __construct() {

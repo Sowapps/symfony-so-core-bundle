@@ -3,10 +3,10 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Core\Form\Workflow;
+namespace Sowapps\SoCore\Core\Form\Workflow;
 
-use Sowapps\SoCoreBundle\Core\Controller\AbstractController;
-use Sowapps\SoCoreBundle\Core\Form\AppForm;
+use Sowapps\SoCore\Core\Controller\AbstractController;
+use Sowapps\SoCore\Core\Form\AppForm;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
 

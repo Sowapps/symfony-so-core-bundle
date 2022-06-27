@@ -3,14 +3,14 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Core\Environment;
+namespace Sowapps\SoCore\Core\Environment;
 
 use JetBrains\PhpStorm\ArrayShape;
 
 /**
  * Class EnvironmentProject
  *
- * @package Sowapps\SoCoreBundle\Core\Environment
+ * @package Sowapps\SoCore\Core\Environment
  */
 class EnvironmentProject {
 	

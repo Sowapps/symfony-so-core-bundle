@@ -1,8 +1,8 @@
 <?php
 
-namespace Sowapps\SoCoreBundle\Form\User;
+namespace Sowapps\SoCore\Form\User;
 
-use Sowapps\SoCoreBundle\Core\Form\AbstractForm;
+use Sowapps\SoCore\Core\Form\AbstractForm;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class UserRecoveryRequestForm extends AbstractForm {

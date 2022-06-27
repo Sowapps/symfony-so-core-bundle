@@ -3,11 +3,11 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Service;
+namespace Sowapps\SoCore\Service;
 
-use Sowapps\SoCoreBundle\DBAL\EnumEmailPurposeType;
-use Sowapps\SoCoreBundle\Entity\AbstractUser;
-use Sowapps\SoCoreBundle\Entity\EmailMessage;
+use Sowapps\SoCore\DBAL\EnumEmailPurposeType;
+use Sowapps\SoCore\Entity\AbstractUser;
+use Sowapps\SoCore\Entity\EmailMessage;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**

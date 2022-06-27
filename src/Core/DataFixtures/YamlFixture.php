@@ -3,13 +3,13 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Core\DataFixtures;
+namespace Sowapps\SoCore\Core\DataFixtures;
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use RuntimeException;
-use Sowapps\SoCoreBundle\Service\AbstractUserService;
-use Sowapps\SoCoreBundle\Service\StringHelper;
+use Sowapps\SoCore\Service\AbstractUserService;
+use Sowapps\SoCore\Service\StringHelper;
 use Symfony\Component\Config\Exception\FileLocatorFileNotFoundException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Yaml\Yaml;

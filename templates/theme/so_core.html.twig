@@ -1,0 +1,25 @@
+
+{% block so_entity_widget -%}
+	{{- block('form_widget_simple') -}}
+{%- endblock %}
+
+{% block so_file_widget -%}
+	{% do setFlag('require_media_library') %}
+	
+	<div class="form-widget widget-file" data-controller="sowapps--so-core--input-file" data-sowapps--so-core--input-file-purpose-value="user_avatar">
+		{% if form.vars.value is empty %}
+			<input class="form-control" type="text" value="{{ 'widget.file.empty' | trans }}" disabled>
+			<button class="btn btn-outline-primary" type="button" data-action="click->sowapps--so-core--input-file#openDialog">
+				{{- 'widget.file.createAction' | trans -}}
+			</button>
+		{% else %}
+			<input class="form-control" type="text" value="{{ form.vars.data }}" disabled>
+			<button class="btn btn-outline-primary" type="button" data-action="click->sowapps--so-core--input-file#openDialog">
+				{{- 'widget.file.updateAction' | trans -}}
+			</button>
+		{% endif %}
+		
+		{% set type = 'hidden' %}
+		{{- block('form_widget_simple') -}}
+	</div>
+{%- endblock %}

@@ -3,7 +3,7 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Core\Form;
+namespace Sowapps\SoCore\Core\Form;
 
 use IteratorAggregate;
 use Symfony\Component\Form\Exception\TransformationFailedException;
@@ -20,7 +20,7 @@ use Traversable;
  * Class AppForm
  * This class AppForm is a tool to handle forms, not a form type
  *
- * @package Sowapps\SoCoreBundle\Form
+ * @package Sowapps\SoCore\Form
  */
 class AppForm implements FormInterface, IteratorAggregate {
 	

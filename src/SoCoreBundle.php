@@ -1,6 +1,6 @@
 <?php
 
-namespace Sowapps\SoCoreBundle;
+namespace Sowapps\SoCore;
 
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

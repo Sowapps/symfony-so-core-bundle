@@ -3,11 +3,11 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Core\Form\Workflow;
+namespace Sowapps\SoCore\Core\Form\Workflow;
 
 use JetBrains\PhpStorm\ArrayShape;
-use Sowapps\SoCoreBundle\Core\Form\AppForm;
-use Sowapps\SoCoreBundle\Entity\AbstractUser;
+use Sowapps\SoCore\Core\Form\AppForm;
+use Sowapps\SoCore\Entity\AbstractUser;
 use Symfony\Component\HttpFoundation\Request;
 
 class WorkflowStep {

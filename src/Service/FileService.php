@@ -3,21 +3,19 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Service;
+namespace Sowapps\SoCore\Service;
 
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
-use Sowapps\SoCoreBundle\Core\Entity\Persistable;
-use Sowapps\SoCoreBundle\Core\File\AsciiSlugger;
-use Sowapps\SoCoreBundle\Core\File\FileNameSlugger;
-use Sowapps\SoCoreBundle\Core\File\Generator\WkHtmlToPdfGenerator;
-use Sowapps\SoCoreBundle\Core\File\LocalHttpFile;
-use Sowapps\SoCoreBundle\DBAL\EnumFileSourceType;
-use Sowapps\SoCoreBundle\Entity\AbstractEntity;
-use Sowapps\SoCoreBundle\Entity\File;
-use Sowapps\SoCoreBundle\Repository\FileRepository;
+use Sowapps\SoCore\Core\Entity\Persistable;
+use Sowapps\SoCore\Core\File\FileNameSlugger;
+use Sowapps\SoCore\Core\File\LocalHttpFile;
+use Sowapps\SoCore\DBAL\EnumFileSourceType;
+use Sowapps\SoCore\Entity\AbstractEntity;
+use Sowapps\SoCore\Entity\File;
+use Sowapps\SoCore\Repository\FileRepository;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
@@ -84,23 +82,9 @@ class FileService extends AbstractEntityService {
 		}
 	}
 	
-	//	public function createNewPdfGenerator(): WkHtmlToPdfGenerator {
-	//		$generator = new WkHtmlToPdfGenerator();
-	//		$generator->setBinaryPath($this->parameters->get('wkhtmltopdf.binary'));
-	//
-	//		$tempPath = $this->parameters->get('wkhtmltopdf.temp_path');
-	//		if( $tempPath && !is_dir($tempPath) ) {
-	//			mkdir($tempPath);
-	//		}
-	//		$generator->setTempPath($tempPath ?: sys_get_temp_dir());
-	//		$generator->setViewportSize('1024x768');
-	//
-	//		return $generator;
-	//	}
-	
-	public function upload(UploadedFile $uploadedFile, ?string $purpose, ?string $label = null, ?DateTimeImmutable $expireDate = null, ?Persistable $parent = null): ?File {
+	public function upload(UploadedFile $uploadedFile, ?string $purpose, ?DateTime $expireDate = null, ?Persistable $parent = null): ?File {
 		$file = new File();
-		$file->setName($label ?: $uploadedFile->getClientOriginalName());
+		$file->setName($uploadedFile->getClientOriginalName());
 		$file->setExtension($uploadedFile->getClientOriginalExtension());
 		$file->setMimeType($uploadedFile->getMimeType());
 		$file->setPurpose($purpose);
@@ -108,6 +92,7 @@ class FileService extends AbstractEntityService {
 		$file->setSourceType(EnumFileSourceType::HTTP_UPLOAD);
 		$file->setSourceName($uploadedFile->getClientOriginalName());
 		$file->setSourceUrl(null);
+		// Upload to local storage with no path
 		if( $expireDate ) {
 			$file->setExpireDate($expireDate);
 		}
@@ -119,7 +104,7 @@ class FileService extends AbstractEntityService {
 		
 		try {
 			// Require to be stored in db, need an id
-			$uploadedFile->move($this->config['store_path'], $file->getLocalName());
+			$uploadedFile->move($this->getStoreUri($file), $file->getLocalName());
 		} catch( FileException $e ) {
 			$this->entityManager->remove($file);
 			$this->entityManager->flush();
@@ -130,7 +115,7 @@ class FileService extends AbstractEntityService {
 		return $file;
 	}
 	
-	public function import(string $filePath, string $purpose, ?string $label = null, ?DateTimeImmutable $expireDate = null, $extension = null, ?File $file = null): ?File {
+	public function import(string $filePath, string $purpose, ?string $label = null, ?DateTime $expireDate = null, $extension = null, ?File $file = null): ?File {
 		$filesystem = new Filesystem();
 		$mimeTypes = new MimeTypes();
 		$fileName = basename($filePath);
@@ -149,7 +134,7 @@ class FileService extends AbstractEntityService {
 		$this->save($file);
 		
 		try {
-			$filesystem->copy($filePath, $this->config['store_path'] . DIRECTORY_SEPARATOR . $file->getLocalName());
+			$filesystem->copy($filePath, $this->getStoreUri($file) . DIRECTORY_SEPARATOR . $file->getLocalName());
 		} catch( IOException $e ) {
 			$this->entityManager->remove($file);
 			$this->entityManager->flush();
@@ -158,6 +143,10 @@ class FileService extends AbstractEntityService {
 		}
 		
 		return $file;
+	}
+	
+	public function getStoreUri(File $file) {
+		return $this->config['store_path'];
 	}
 	
 	public function getFileExtension(string $fileName): string {
@@ -229,7 +218,6 @@ class FileService extends AbstractEntityService {
 	 * @return FileRepository
 	 */
 	public function getFileRepository(): FileRepository {
-		/** @noinspection PhpIncompatibleReturnTypeInspection */
 		return $this->entityManager->getRepository(File::class);
 	}
 	

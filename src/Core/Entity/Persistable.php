@@ -3,7 +3,7 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Core\Entity;
+namespace Sowapps\SoCore\Core\Entity;
 
 interface Persistable {
 	

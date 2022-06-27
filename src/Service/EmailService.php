@@ -3,15 +3,15 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Service;
+namespace Sowapps\SoCore\Service;
 
 use DateTime;
 use Doctrine\ORM\NonUniqueResultException;
-use Sowapps\SoCoreBundle\Entity\AbstractUser;
-use Sowapps\SoCoreBundle\Entity\EmailMessage;
-use Sowapps\SoCoreBundle\Entity\EmailSubscription;
-use Sowapps\SoCoreBundle\Repository\EmailMessageRepository;
-use Sowapps\SoCoreBundle\Repository\EmailSubscriptionRepository;
+use Sowapps\SoCore\Entity\AbstractUser;
+use Sowapps\SoCore\Entity\EmailMessage;
+use Sowapps\SoCore\Entity\EmailSubscription;
+use Sowapps\SoCore\Repository\EmailMessageRepository;
+use Sowapps\SoCore\Repository\EmailSubscriptionRepository;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Mailer\MailerInterface;

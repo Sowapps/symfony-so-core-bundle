@@ -1,10 +1,10 @@
 <?php
 
-namespace Sowapps\SoCoreBundle\Repository;
+namespace Sowapps\SoCore\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
-use Sowapps\SoCoreBundle\Entity\AbstractUser;
+use Sowapps\SoCore\Entity\AbstractUser;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;

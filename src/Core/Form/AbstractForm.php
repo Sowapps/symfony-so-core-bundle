@@ -3,7 +3,7 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Core\Form;
+namespace Sowapps\SoCore\Core\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;

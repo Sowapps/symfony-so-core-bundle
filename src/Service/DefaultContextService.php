@@ -3,13 +3,13 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Service;
+namespace Sowapps\SoCore\Service;
 
-use Sowapps\SoCoreBundle\Contracts\ContextInterface;
-use Sowapps\SoCoreBundle\Contracts\CurrencyInterface;
-use Sowapps\SoCoreBundle\Core\Environment\Environment;
-use Sowapps\SoCoreBundle\Core\Locale\LocaleFormatter;
-use Sowapps\SoCoreBundle\Entity\Language;
+use Sowapps\SoCore\Contracts\ContextInterface;
+use Sowapps\SoCore\Contracts\CurrencyInterface;
+use Sowapps\SoCore\Core\Environment\Environment;
+use Sowapps\SoCore\Core\Locale\LocaleFormatter;
+use Sowapps\SoCore\Entity\Language;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;

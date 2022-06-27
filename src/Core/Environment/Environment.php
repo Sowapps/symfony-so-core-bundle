@@ -3,14 +3,14 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Core\Environment;
+namespace Sowapps\SoCore\Core\Environment;
 
 use Exception;
 
 /**
  * Class Environment
  *
- * @package Sowapps\SoCoreBundle\Core\Environment
+ * @package Sowapps\SoCore\Core\Environment
  */
 class Environment {
 	

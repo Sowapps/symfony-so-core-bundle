@@ -3,18 +3,18 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Core\Controller;
+namespace Sowapps\SoCore\Core\Controller;
 
 use Exception;
 use Psr\Log\LoggerInterface;
-use Sowapps\SoCoreBundle\Contracts\ContextInterface;
-use Sowapps\SoCoreBundle\Core\Form\AppForm;
-use Sowapps\SoCoreBundle\Entity\AbstractUser;
-use Sowapps\SoCoreBundle\Exception\ForbiddenOperationException;
-use Sowapps\SoCoreBundle\Exception\UserException;
-use Sowapps\SoCoreBundle\Service\AbstractUserService;
-use Sowapps\SoCoreBundle\Service\ControllerService;
-use Sowapps\SoCoreBundle\Service\StringHelper;
+use Sowapps\SoCore\Contracts\ContextInterface;
+use Sowapps\SoCore\Core\Form\AppForm;
+use Sowapps\SoCore\Entity\AbstractUser;
+use Sowapps\SoCore\Exception\ForbiddenOperationException;
+use Sowapps\SoCore\Exception\UserException;
+use Sowapps\SoCore\Service\AbstractUserService;
+use Sowapps\SoCore\Service\ControllerService;
+use Sowapps\SoCore\Service\StringHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as SymfonyAbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
@@ -32,7 +32,7 @@ use Throwable;
 /**
  * Class AbstractController
  *
- * @package Sowapps\SoCoreBundle\Core\Controller
+ * @package Sowapps\SoCore\Core\Controller
  * @method AbstractUser getUser()
  */
 class AbstractController extends SymfonyAbstractController {

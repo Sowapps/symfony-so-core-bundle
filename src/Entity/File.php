@@ -1,10 +1,12 @@
 <?php
 
-namespace Sowapps\SoCoreBundle\Entity;
+namespace Sowapps\SoCore\Entity;
 
+use DateTime;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
-use Sowapps\SoCoreBundle\Repository\FileRepository;
+use Sowapps\SoCore\DBAL\EnumFileStorageType;
+use Sowapps\SoCore\Repository\FileRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FileRepository::class)]
@@ -35,17 +37,20 @@ class File extends AbstractEntity {
 	#[ORM\Column(type: "string", length: 511, nullable: true)]
 	private ?string $sourceUrl = null;
 	
-	#[ORM\Column(type: "datetime_immutable", nullable: true)]
-	private ?DateTimeImmutable $expireDate = null;
+	#[ORM\Column(type: "datetime", nullable: true)]
+	private ?DateTime $expireDate = null;
 	
 	#[ORM\Column(type: "integer", nullable: true)]
 	private ?int $parentId = null;
 	
-	/**
-	 * @ORM\Column(type="smallint")
-	 */
 	#[ORM\Column(type: "smallint")]
 	private int $position = 0;
+
+	#[ORM\Column(type: "enum_file_storage")]
+	private string $storage = EnumFileStorageType::LOCAL;// On which support ?
+
+	#[ORM\Column(type: "string")]
+	private ?string $path = null;// Path on support
 	
 	#[ORM\Column(type: "string", length: 255, nullable: true)]
 	private ?string $outputName = null;
@@ -141,11 +146,11 @@ class File extends AbstractEntity {
 		return $this;
 	}
 	
-	public function getExpireDate(): ?DateTimeImmutable {
+	public function getExpireDate(): ?DateTime {
 		return $this->expireDate;
 	}
 	
-	public function setExpireDate(?DateTimeImmutable $expireDate): self {
+	public function setExpireDate(?DateTime $expireDate): self {
 		$this->expireDate = $expireDate;
 		
 		return $this;
@@ -167,6 +172,42 @@ class File extends AbstractEntity {
 	
 	public function setPosition(int $position): self {
 		$this->position = $position;
+		
+		return $this;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getStorage(): string
+	{
+		return $this->storage;
+	}
+	
+	/**
+	 * @param string $storage
+	 */
+	public function setStorage(string $storage): self
+	{
+		$this->storage = $storage;
+		
+		return $this;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getPath(): string
+	{
+		return $this->path;
+	}
+	
+	/**
+	 * @param string $path
+	 */
+	public function setPath(string $path): self
+	{
+		$this->path = $path;
 		
 		return $this;
 	}

@@ -3,7 +3,7 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Exception;
+namespace Sowapps\SoCore\Exception;
 
 use JetBrains\PhpStorm\ArrayShape;
 use RuntimeException;

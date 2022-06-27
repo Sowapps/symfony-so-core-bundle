@@ -44,6 +44,24 @@ page:
             title: "Mot de passe modifié"
             legend: "Votre nouveau mot de passe a été enregistré, Vous pouvez maintenant vous connecter en l'utilisant."
 
+widget:
+    file:
+        createAction: "Nouveau"
+        updateAction: "Modifier"
+        empty: "Aucun fichier"
+    mediaPicker:
+        title: "Sélectionner un fichier"
+        # Pickers
+        upload:
+            label: "Upload"
+            dropMessage: "Déposez votre fichier ici ou cliquez pour parcourir"
+            dropOverMessage: "Déposez votre fichier, c'est bon !"
+            invalidFileType: "Ce format de fichier n'est pas autorisé."
+            sending: "Envoi en cours..."
+        #            invalidFileResolution: "La résolution de ta photo doit être d'au moins 300px en largeur et hauteur."
+        library:
+            label: "Bibliothèque"
+
 # Package translations
 "Invalid credentials.": "Ces identifiants ne correspondent pas à un compte connu."
 "Invalid CSRF token.": "Formulaire invalide, ré-essaye stp."

@@ -3,17 +3,17 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Core\Controller;
+namespace Sowapps\SoCore\Core\Controller;
 
 
-use Sowapps\SoCoreBundle\Service\ControllerService;
+use Sowapps\SoCore\Service\ControllerService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class AbstractAdminController
  *
- * @package Sowapps\SoCoreBundle\Core\Controller
+ * @package Sowapps\SoCore\Core\Controller
  */
 abstract class AbstractAdminController extends AbstractController {
 	

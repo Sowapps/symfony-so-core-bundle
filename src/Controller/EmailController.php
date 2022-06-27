@@ -3,9 +3,9 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Controller;
+namespace Sowapps\SoCore\Controller;
 
-use Sowapps\SoCoreBundle\Service\EmailService;
+use Sowapps\SoCore\Service\EmailService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

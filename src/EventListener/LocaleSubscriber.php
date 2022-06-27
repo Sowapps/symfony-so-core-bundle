@@ -3,9 +3,9 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\EventListener;
+namespace Sowapps\SoCore\EventListener;
 
-use Sowapps\SoCoreBundle\Contracts\ContextInterface;
+use Sowapps\SoCore\Contracts\ContextInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;

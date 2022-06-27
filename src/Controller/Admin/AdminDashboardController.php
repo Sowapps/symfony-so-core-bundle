@@ -3,9 +3,9 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Controller\Admin;
+namespace Sowapps\SoCore\Controller\Admin;
 
-use Sowapps\SoCoreBundle\Core\Controller\AbstractAdminController;
+use Sowapps\SoCore\Core\Controller\AbstractAdminController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

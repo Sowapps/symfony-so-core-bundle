@@ -3,16 +3,16 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Core\Form\Workflow;
+namespace Sowapps\SoCore\Core\Form\Workflow;
 
-use Sowapps\SoCoreBundle\Exception\UserException;
+use Sowapps\SoCore\Exception\UserException;
 use Throwable;
 
 /**
  * Class WorkflowStepException
  * Exception about missing step data
  *
- * @package Sowapps\SoCoreBundle\Core\Form\Workflow
+ * @package Sowapps\SoCore\Core\Form\Workflow
  */
 class WorkflowStepException extends UserException {
 	

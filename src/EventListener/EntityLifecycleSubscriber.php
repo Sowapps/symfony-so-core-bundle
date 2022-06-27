@@ -3,14 +3,14 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\EventListener;
+namespace Sowapps\SoCore\EventListener;
 
 use DateTimeImmutable;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
-use Sowapps\SoCoreBundle\Entity\AbstractEntity;
-use Sowapps\SoCoreBundle\Service\AbstractUserService;
+use Sowapps\SoCore\Entity\AbstractEntity;
+use Sowapps\SoCore\Service\AbstractUserService;
 
 class EntityLifecycleSubscriber implements EventSubscriber {
 	

@@ -1,6 +1,9 @@
 {
-	"name": "sowapps/so-core-bundle",
+	"name": "sowapps/so-core",
 	"type": "symfony-bundle",
+	"keywords": [
+		"symfony-ux"
+	],
 	"license": "MIT",
 	"minimum-stability": "stable",
 	"prefer-stable": true,
@@ -18,12 +21,12 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Sowapps\\SoCoreBundle\\": "src/"
+			"Sowapps\\SoCore\\": "src/"
 		}
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"Sowapps\\SoCoreBundle\\Tests\\": "tests/"
+			"Sowapps\\SoCore\\Tests\\": "tests/"
 		}
 	},
 	"extra": {

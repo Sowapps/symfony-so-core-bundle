@@ -3,15 +3,16 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Controller\Admin;
+namespace Sowapps\SoCore\Controller\Admin;
 
-use Sowapps\SoCoreBundle\Core\Controller\AbstractAdminController;
-use Sowapps\SoCoreBundle\Entity\AbstractUser;
-use Sowapps\SoCoreBundle\Form\User\UserAdminForm;
-use Sowapps\SoCoreBundle\Form\User\UserAdminPasswordForm;
-use Sowapps\SoCoreBundle\Form\User\UserUpdateForm;
-use Sowapps\SoCoreBundle\Service\AbstractUserService;
-use Sowapps\SoCoreBundle\Service\MailingService;
+use Sowapps\SoCore\Core\Controller\AbstractAdminController;
+use Sowapps\SoCore\Entity\AbstractUser;
+use Sowapps\SoCore\Form\User\UserAdminForm;
+use Sowapps\SoCore\Form\User\UserAdminPasswordForm;
+use Sowapps\SoCore\Form\User\UserPictureForm;
+use Sowapps\SoCore\Form\User\UserUpdateForm;
+use Sowapps\SoCore\Service\AbstractUserService;
+use Sowapps\SoCore\Service\MailingService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -83,7 +84,8 @@ class AdminUserController extends AbstractAdminController {
 		
 		$userAdminForm = $this->createForm($allowUserAdmin ? UserAdminForm::class : UserUpdateForm::class, ['user' => $user]);
 		$userPasswordForm = $this->createForm(UserAdminPasswordForm::class, ['user' => $user]);
-		$formSuccess = [];
+		$userPictureForm = $this->createForm(UserPictureForm::class, ['user' => $user]);
+		//		$formSuccess = [];
 		
 		if( $userAdminForm->isValidRequest($request) ) {
 			if( !$allowUserAdmin && !$allowUserSelf ) {
@@ -126,6 +128,16 @@ class AdminUserController extends AbstractAdminController {
 			$user->setPassword($this->userService->encodePassword($userPasswordForm->get('plainPassword')->getData(), $user));
 			$userService->update($user);
 			$userPasswordForm->addSuccess('page.admin_user_edit.edit.success');
+			
+			return $this->redirectToRequest($request, $userPasswordForm);
+		}
+		
+		if( $userPictureForm->isValidRequest($request) ) {
+			if( !$allowUserAdmin && !$allowUserSelf ) {
+				throw $this->createForbiddenOperationException();
+			}
+			$userService->update($user);
+			$userAdminForm->addSuccess('page.admin_user_edit.picture.success');
 			
 			return $this->redirectToRequest($request, $userPasswordForm);
 		}
@@ -182,12 +194,11 @@ class AdminUserController extends AbstractAdminController {
 			return $this->redirectToRequest($request);
 		}
 		
-		dump($userPasswordForm->getSuccesses());
-		
 		return $this->render('@SoCore/admin/page/user-edit.html.twig', [
 			'securityToken'              => $newSecurityToken,
 			'user'                       => $user,
 			'userAdminForm'              => $userAdminForm->createView(),
+			'userPictureForm'            => $userPictureForm->createView(),
 			'userPasswordForm'           => $userPasswordForm->createView(),
 			'userActivationReports'      => $this->consumeSavedReports(self::FORM_ACTIVATION),
 			'allowUserAdmin'             => $allowUserAdmin,

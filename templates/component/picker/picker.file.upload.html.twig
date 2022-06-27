@@ -1,0 +1,38 @@
+<div class="media-picker picker-file-upload h-100" data-controller="sowapps--so-core--picker-upload"
+	 data-sowapps--so-core--picker-upload-messages-value="{{ translations('widget.mediaPicker.upload', ['invalidFileType']) | json }}"
+	 data-sowapps--so-core--picker-upload-upload-url-value="{{ url('file_upload', {purpose: "{purpose}"}) }}"
+	 data-key="upload" data-label="{{ 'widget.mediaPicker.upload.label' | trans }}">
+	
+	<div class="drop-zone h-100" data-sowapps--so-core--picker-upload-target="dropZone" hidden
+		 data-action="dragover->sowapps--so-core--picker-upload#acceptNewFile dragleave->sowapps--so-core--picker-upload#cancelDrop drop->sowapps--so-core--picker-upload#dropFile click->sowapps--so-core--picker-upload#browse">
+		<div class="drop-alert h-100 p-5 d-flex flex-column justify-content-center">
+			{# Visibility is handled by drop-zone css class #}
+			<div class="drop-alert-waiting text-center my-4">
+				<i class="fa-solid fa-upload fa-4x mb-3"></i><br>
+				{{- 'widget.mediaPicker.upload.dropMessage' | trans -}}
+			</div>
+			<div class="drop-alert-over text-center my-4">
+				<i class="fa-solid fa-hands-holding fa-4x mb-3"></i><br>
+				{{- 'widget.mediaPicker.upload.dropOverMessage' | trans -}}
+			</div>
+			<div class="drop-alert-error text-center my-4">
+				<i class="fa-solid fa-triangle-exclamation fa-4x mb-3"></i><br>
+				<span class="error-message" data-sowapps--so-core--picker-upload-target="dropError"></span>
+			</div>
+		</div>
+	</div>
+	
+	<div class="upload-sending h-100" data-sowapps--so-core--picker-upload-target="uploadZone" hidden>
+		<div class="h-100 d-flex flex-column justify-content-center">
+			<div class="row justify-content-center">
+				<div class="col-12 col-lg-6">
+					<div>{{ 'widget.mediaPicker.upload.sending' | trans }}</div>
+					<div class="progress">
+						<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+</div>

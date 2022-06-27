@@ -3,9 +3,9 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Core\Form;
+namespace Sowapps\SoCore\Core\Form;
 
-use Sowapps\SoCoreBundle\Service\AbstractUserService;
+use Sowapps\SoCore\Service\AbstractUserService;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AbstractUserForm extends AbstractForm {

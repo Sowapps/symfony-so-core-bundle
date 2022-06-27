@@ -3,7 +3,7 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Exception;
+namespace Sowapps\SoCore\Exception;
 
 use Symfony\Component\Security\Core\Exception\AccountStatusException;
 

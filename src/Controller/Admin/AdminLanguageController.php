@@ -3,13 +3,13 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Controller\Admin;
+namespace Sowapps\SoCore\Controller\Admin;
 
-use Sowapps\SoCoreBundle\Core\Controller\AbstractAdminController;
-use Sowapps\SoCoreBundle\Core\Form\AppForm;
-use Sowapps\SoCoreBundle\Entity\Language;
-use Sowapps\SoCoreBundle\Form\LanguageForm;
-use Sowapps\SoCoreBundle\Service\LanguageService;
+use Sowapps\SoCore\Core\Controller\AbstractAdminController;
+use Sowapps\SoCore\Core\Form\AppForm;
+use Sowapps\SoCore\Entity\Language;
+use Sowapps\SoCore\Form\LanguageForm;
+use Sowapps\SoCore\Service\LanguageService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

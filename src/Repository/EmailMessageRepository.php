@@ -1,11 +1,11 @@
 <?php
 
-namespace Sowapps\SoCoreBundle\Repository;
+namespace Sowapps\SoCore\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Sowapps\SoCoreBundle\Entity\EmailMessage;
+use Sowapps\SoCore\Entity\EmailMessage;
 
 /**
  * @method EmailMessage|null find($id, $lockMode = null, $lockVersion = null)

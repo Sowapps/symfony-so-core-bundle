@@ -1,6 +1,6 @@
 <?php
 
-namespace Sowapps\SoCoreBundle\Core\File;
+namespace Sowapps\SoCore\Core\File;
 
 use Closure;
 use Symfony\Component\String\AbstractUnicodeString;

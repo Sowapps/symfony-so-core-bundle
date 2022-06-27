@@ -3,11 +3,11 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Core\Locale;
+namespace Sowapps\SoCore\Core\Locale;
 
 use NumberFormatter;
-use Sowapps\SoCoreBundle\Contracts\CurrencyInterface;
-use Sowapps\SoCoreBundle\Entity\Language;
+use Sowapps\SoCore\Contracts\CurrencyInterface;
+use Sowapps\SoCore\Entity\Language;
 
 class LocaleFormatter {
 	

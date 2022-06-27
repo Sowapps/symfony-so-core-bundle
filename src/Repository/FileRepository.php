@@ -1,11 +1,11 @@
 <?php
 
-namespace Sowapps\SoCoreBundle\Repository;
+namespace Sowapps\SoCore\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Sowapps\SoCoreBundle\Entity\File;
+use Sowapps\SoCore\Entity\File;
 
 /**
  * @method File|null find($id, $lockMode = null, $lockVersion = null)

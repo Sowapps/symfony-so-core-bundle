@@ -3,10 +3,10 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Entity;
+namespace Sowapps\SoCore\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Sowapps\SoCoreBundle\Repository\LanguageRepository;
+use Sowapps\SoCore\Repository\LanguageRepository;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: LanguageRepository::class)]

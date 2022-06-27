@@ -1,9 +1,10 @@
 <?php
 
-namespace Sowapps\SoCoreBundle\Form\User;
+namespace Sowapps\SoCore\Form\User;
 
-use Sowapps\SoCoreBundle\Core\Form\AbstractUserForm;
-use Sowapps\SoCoreBundle\Entity\AbstractUser;
+use Sowapps\SoCore\Core\Form\AbstractUserForm;
+use Sowapps\SoCore\Entity\AbstractUser;
+use Sowapps\SoCore\Form\FileType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -21,6 +22,7 @@ class UserType extends AbstractUserForm {
 	const MODEL_CALCULATED = 'calculated';
 	const MODEL_NAME = 'name';
 	const MODEL_EMAIL = 'email';
+	const MODEL_PICTURE = 'picture';
 	const MODEL_PASSWORD = 'password';
 	const MODEL_PASSWORD_ADMIN = 'password_admin';
 	const MODEL_REQUIRE_PASSWORD = 'require_password';
@@ -65,6 +67,9 @@ class UserType extends AbstractUserForm {
 				'disabled' => $this->isModelDisabled(self::MODEL_EMAIL),
 			]);
 		}
+		if( $this->hasModel(self::MODEL_PICTURE) ) {
+			$builder->add('avatar', FileType::class);
+		}
 		if( $this->hasModel(self::MODEL_PASSWORD_ADMIN) ) {
 			$builder->add('plainPassword', TextType::class, static::getPasswordOptions() + [
 					'label' => 'user.field.password',
@@ -106,7 +111,7 @@ class UserType extends AbstractUserForm {
 		if( $this->hasModel(self::MODEL_CALCULATED) ) {
 			$builder->add('timezone', HiddenType::class, [
 				'attr' => [
-					'data-controller' => 'sowapps--so-core--timezone',
+					'data-controller' => 'sowapps--so-core--input-timezone',
 				],
 			]);
 		}

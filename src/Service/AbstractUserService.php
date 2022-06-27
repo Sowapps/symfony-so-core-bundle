@@ -3,12 +3,12 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Service;
+namespace Sowapps\SoCore\Service;
 
 use DateInterval;
 use DateTime;
-use Sowapps\SoCoreBundle\Entity\AbstractUser;
-use Sowapps\SoCoreBundle\Repository\AbstractUserRepository;
+use Sowapps\SoCore\Entity\AbstractUser;
+use Sowapps\SoCore\Repository\AbstractUserRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -181,7 +181,7 @@ abstract class AbstractUserService extends AbstractEntityService {
 	}
 	
 	/**
-	 * @param \Sowapps\SoCoreBundle\Entity\AbstractUser|int $user
+	 * @param \Sowapps\SoCore\Entity\AbstractUser|int $user
 	 * @param string|null $activationKey
 	 * @return AbstractUser
 	 */

@@ -1,5 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
-import { isJquery } from "../vendor/orpheus/js/orpheus.js";
+// import { isJquery } from "../vendor/orpheus/js/orpheus.js";
 import { Modal } from "bootstrap";
 
 export class AbstractController extends Controller {
@@ -14,9 +14,9 @@ export class AbstractController extends Controller {
 			if( element._element ) {
 				// Auto handle BS Modals
 				element = element._element;
-			} else if( isJquery(element) ) {
-				// Auto handle jQuery Elements
-				element = element[0];
+			// } else if( isJquery(element) ) {
+			// 	// Auto handle jQuery Elements
+			// 	element = element[0];
 			}
 		}
 		try {

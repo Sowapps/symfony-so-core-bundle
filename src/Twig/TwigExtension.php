@@ -4,18 +4,18 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Twig;
+namespace Sowapps\SoCore\Twig;
 
 use App\Exception\UserException;
 use DateTime;
-use Sowapps\SoCoreBundle\Contracts\ContextInterface;
-use Sowapps\SoCoreBundle\Core\File\LocalHttpFile;
-use Sowapps\SoCoreBundle\Core\Form\AbstractForm;
-use Sowapps\SoCoreBundle\Entity\AbstractEntity;
-use Sowapps\SoCoreBundle\Entity\AbstractUser;
-use Sowapps\SoCoreBundle\Entity\File;
-use Sowapps\SoCoreBundle\Service\FileService;
-use Sowapps\SoCoreBundle\Service\LanguageService;
+use Sowapps\SoCore\Contracts\ContextInterface;
+use Sowapps\SoCore\Core\File\LocalHttpFile;
+use Sowapps\SoCore\Core\Form\AbstractForm;
+use Sowapps\SoCore\Entity\AbstractEntity;
+use Sowapps\SoCore\Entity\AbstractUser;
+use Sowapps\SoCore\Entity\File;
+use Sowapps\SoCore\Service\FileService;
+use Sowapps\SoCore\Service\LanguageService;
 use Symfony\Bridge\Twig\Mime\WrappedTemplatedEmail;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
@@ -47,6 +47,8 @@ class TwigExtension extends AbstractExtension {
 	protected string $publicPath;
 	
 	protected array $uniqueId = [];
+	
+	protected array $flags = [];
 	
 	/**
 	 * AppTwigExtension constructor
@@ -86,17 +88,10 @@ class TwigExtension extends AbstractExtension {
 			new TwigFilter('base64', [$this, 'formatToBase64']),
 			new TwigFilter('bool', 'boolval'),
 			new TwigFilter('json', 'json_encode'),
-//			new TwigFilter('json', [$this, 'formatJson'], ['is_safe' => ['html']]),
 			new TwigFilter('smallImage', [$this, 'formatSmallImage']),
 			new TwigFilter('largeImage', [$this, 'formatLargeImage']),
 			new TwigFilter('pushTo', [$this, 'pushTo']),
 			new TwigFilter('attributes', [$this, 'formatAttributes'], ['is_safe' => ['html']]),
-			//			new TwigFilter('price', [$this, 'formatPrice']),
-			//			new TwigFilter('labelize', [$this, 'labelize']),
-			//			new TwigFilter('paragraphize', [$this, 'paragraphize'], ['is_safe' => ['html']]),
-			//			new TwigFilter('normalize', [$this, 'normalize']),
-			//			new TwigFilter('interval', [$this, 'formatInterval']),
-			//			new TwigFilter('asMinutes', [$this, 'formatIntervalAsMinutes']),
 		];
 	}
 	
@@ -110,20 +105,17 @@ class TwigExtension extends AbstractExtension {
 			new TwigFunction('encore_entry_css_source', [$this, 'getEncoreEntryCssSource']),
 			new TwigFunction('translations', [$this, 'getTranslations']),
 			new TwigFunction('datatableTranslations', [$this, 'getDataTableTranslations']),
-			//			new TwigFunction('parameter', [$this, 'getParameter'], ['is_safe' => ['html']]),
-			//			new TwigFunction('label', [$this, 'getFieldLabel']),
-			//			new TwigFunction('inputAttr', [$this, 'renderInputAttr'], ['is_safe' => ['html']]),
-			//			new TwigFunction('inputLabelled', [$this, 'renderInputLabelled'], ['is_safe' => ['html']]),
-			//			new TwigFunction('inputDateAttr', [$this, 'renderInputDateAttr'], ['is_safe' => ['html']]),
-			//			new TwigFunction('arrayValue', [$this, 'renderArrayValue'], ['is_safe' => ['html']]),
-			//			new TwigFunction('arrayChecked', [$this, 'renderArrayChecked'], ['is_safe' => ['html']]),
-			//			new TwigFunction('selectOptions', [$this, 'renderSelectOptions'], ['is_safe' => ['html']]),
-			//			new TwigFunction('validityCssClass', [$this, 'renderValidityCssClass'], ['is_safe' => ['html']]),
-			//			new TwigFunction('errorAlert', [$this, 'renderErrorAlert'], ['is_safe' => ['html']]),
-			//			new TwigFunction('repeatString', [$this, 'repeatString'], ['is_safe' => ['html']]),
-			//			new TwigFunction('setTheme', [$this, 'setTheme']),
-			//			new TwigFunction('theme', [$this, 'getTheme']),
+			new TwigFunction('setFlag', [$this, 'setFlag']),
+			new TwigFunction('hasFlag', [$this, 'hasFlag']),
 		];
+	}
+	
+	public function setFlag(string $flag): void {
+		$this->flags[$flag] = true;
+	}
+	
+	public function hasFlag(string $flag): bool {
+		return !empty($this->flags[$flag]);
 	}
 	
 	public function formatJson($data): string {

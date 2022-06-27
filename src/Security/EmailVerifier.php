@@ -1,10 +1,10 @@
 <?php
 
-namespace Sowapps\SoCoreBundle\Security;
+namespace Sowapps\SoCore\Security;
 
-use Sowapps\SoCoreBundle\Entity\AbstractUser;
-use Sowapps\SoCoreBundle\Service\AbstractUserService;
-use Sowapps\SoCoreBundle\Service\MailingService;
+use Sowapps\SoCore\Entity\AbstractUser;
+use Sowapps\SoCore\Service\AbstractUserService;
+use Sowapps\SoCore\Service\MailingService;
 use Symfony\Component\HttpFoundation\Request;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
