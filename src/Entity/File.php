@@ -3,7 +3,6 @@
 namespace Sowapps\SoCore\Entity;
 
 use DateTime;
-use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Sowapps\SoCore\DBAL\EnumFileStorageType;
 use Sowapps\SoCore\Repository\FileRepository;
@@ -45,15 +44,24 @@ class File extends AbstractEntity {
 	
 	#[ORM\Column(type: "smallint")]
 	private int $position = 0;
-
+	
 	#[ORM\Column(type: "enum_file_storage")]
 	private string $storage = EnumFileStorageType::LOCAL;// On which support ?
-
-	#[ORM\Column(type: "string")]
+	
+	#[ORM\Column(type: "string", nullable: true)]
 	private ?string $path = null;// Path on support
 	
 	#[ORM\Column(type: "string", length: 255, nullable: true)]
 	private ?string $outputName = null;
+	
+	public function toArray(string $model): array {
+		return parent::toArray($model) + [
+				'position'  => $this->getPosition(),
+				'purpose'   => $this->getPurpose(),
+				'mimeType'  => $this->getMimeType(),
+				'extension' => $this->getExtension(),
+			];
+	}
 	
 	public function getLabel(): string {
 		return $this->getName();

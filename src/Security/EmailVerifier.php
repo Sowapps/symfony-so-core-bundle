@@ -23,7 +23,7 @@ class EmailVerifier {
 	}
 	
 	public function sendEmailConfirmation(AbstractUser $user): void {
-		$signatureComponents = $this->verifyEmailHelper->generateSignature('admin_verify_email', $user->getId(), $user->getEmail(), ['id' => $user->getId()]);
+		$signatureComponents = $this->verifyEmailHelper->generateSignature('so_core_admin_verify_email', $user->getId(), $user->getEmail(), ['id' => $user->getId()]);
 		
 		$context = [];
 		$context['activateUrl'] = $signatureComponents->getSignedUrl();

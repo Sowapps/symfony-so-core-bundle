@@ -6,7 +6,7 @@
 	<div class="row">
 		<div class="col-12 col-md-6 col-xl-4">
 			{% include "@SoCore/component/panel.admin.html.twig" with {
-				title: 'page.admin_user_edit.picture.title' | trans({}, 'admin'),
+				title: 'page.so_core_admin_user_edit.picture.title' | trans({}, 'admin'),
 				form: userPictureForm,
 				submit: {
 					value: securityToken
@@ -16,7 +16,7 @@
 		
 		<div class="col-12 col-md-6 col-xl-4">
 			{% include "@SoCore/component/panel.admin.html.twig" with {
-				title: 'page.admin_user_edit.user.title' | trans({}, 'admin'),
+				title: 'page.so_core_admin_user_edit.user.title' | trans({}, 'admin'),
 				form: userAdminForm,
 				submit: {
 					value: securityToken
@@ -26,13 +26,13 @@
 		
 		<div class="col-12 col-md-6 col-xl-4">
 			{% embed "@SoCore/component/panel.admin.html.twig" with {
-				title: 'page.admin_user_edit.password.title' | trans({}, 'admin'),
+				title: 'page.so_core_admin_user_edit.password.title' | trans({}, 'admin'),
 				form: userPasswordForm
 			} %}
 				{% block footer %}
 					{% if allowUserAccountRecover %}
 						<button class="btn btn-outline-primary me-1" type="button" data-bs-toggle="modal" data-bs-target="#DialogAccountRecover">
-							{{- 'page.admin_user_edit.accountRecover.action' | trans({}, 'admin') -}}
+							{{- 'page.so_core_admin_user_edit.accountRecover.action' | trans({}, 'admin') -}}
 						</button>
 					{% endif %}
 					{{ parent() }}
@@ -42,7 +42,7 @@
 				{# Account Recover Dialog #}
 				{% embed '@SoCore/component/dialog.html.twig' with {
 					dialogId: 'DialogAccountRecover',
-					title: 'page.admin_user_edit.accountRecover.title' | trans({}, 'admin'),
+					title: 'page.so_core_admin_user_edit.accountRecover.title' | trans({}, 'admin'),
 					form: true,
 					submit: {
 						label: 'action.send' | trans,
@@ -51,14 +51,14 @@
 					}
 				} only %}
 					{% block body %}
-						<p>{{ 'page.admin_user_edit.accountRecover.legend' | trans({}, 'admin') | nl2br | raw }}</p>
+						<p>{{ 'page.so_core_admin_user_edit.accountRecover.legend' | trans({}, 'admin') | nl2br | raw }}</p>
 					{% endblock %}
 				{% endembed %}
 			{% endif %}
 			
 			{% if allowUserAccountActivation %}
 				<form method="post">
-				{% embed "@SoCore/component/panel.admin.html.twig" with {title: 'page.admin_user_edit.activation.title' | trans({}, 'admin')} %}
+				{% embed "@SoCore/component/panel.admin.html.twig" with {title: 'page.so_core_admin_user_edit.activation.title' | trans({}, 'admin')} %}
 					{% block body_contents %}
 						{{ reports(userActivationReports, 'admin') }}
 						{% if user.disabled %}
@@ -96,7 +96,7 @@
 						{% endif %}
 						{%- if allowUserActivationResend -%}
 							<button name="submitActivationResend" class="btn btn-outline-primary ms-1" value="{{ securityToken }}"
-									type="submit">{{ 'page.admin_user_edit.activationResend.action' | trans({}, 'admin') }}</button>
+									type="submit">{{ 'page.so_core_admin_user_edit.activationResend.action' | trans({}, 'admin') }}</button>
 						{%- endif -%}
 					{% endblock %}
 				{% endembed %}

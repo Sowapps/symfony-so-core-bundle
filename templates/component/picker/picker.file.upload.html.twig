@@ -1,6 +1,6 @@
 <div class="media-picker picker-file-upload h-100" data-controller="sowapps--so-core--picker-upload"
 	 data-sowapps--so-core--picker-upload-messages-value="{{ translations('widget.mediaPicker.upload', ['invalidFileType']) | json }}"
-	 data-sowapps--so-core--picker-upload-upload-url-value="{{ url('file_upload', {purpose: "{purpose}"}) }}"
+	 data-sowapps--so-core--picker-upload-upload-url-value="{{ url('so_core_file_upload', {purpose: "{purpose}"}) }}"
 	 data-key="upload" data-label="{{ 'widget.mediaPicker.upload.label' | trans }}">
 	
 	<div class="drop-zone h-100" data-sowapps--so-core--picker-upload-target="dropZone" hidden

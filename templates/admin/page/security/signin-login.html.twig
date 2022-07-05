@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block title %}
-	{{ 'page.admin_login.title' | trans([], 'admin') }}
+	{{ 'page.so_core_admin_login.title' | trans([], 'admin') }}
 {% endblock %}
 
 {% block body %}
@@ -30,16 +30,16 @@
 	<input name="isAdmin" type="hidden" value="1"/>
 	<div class="form-floating mb-3">
 		<input id="InputLoginEmail" name="_username" type="email" class="form-control" required autocomplete="username"
-			   placeholder="{{ 'page.admin_login.email' | trans([], 'admin') }}" {{ login.email ? 'value="%s"'|format(login.email)|raw : '' }}/>
-		<label for="InputLoginEmail">{{ 'page.admin_login.email' | trans([], 'admin') }}</label>
+			   placeholder="{{ 'page.so_core_admin_login.email' | trans([], 'admin') }}" {{ login.email ? 'value="%s"'|format(login.email)|raw : '' }}/>
+		<label for="InputLoginEmail">{{ 'page.so_core_admin_login.email' | trans([], 'admin') }}</label>
 	</div>
 	<div class="form-floating mb-3">
 		<input id="InputLoginPassword" name="_password" type="password" class="form-control" autocomplete="current-password" required
-			   placeholder="{{ 'page.admin_login.password' | trans([], 'admin') }}"/>
-		<label for="InputLoginPassword">{{ 'page.admin_login.password' | trans([], 'admin') }}</label>
+			   placeholder="{{ 'page.so_core_admin_login.password' | trans([], 'admin') }}"/>
+		<label for="InputLoginPassword">{{ 'page.so_core_admin_login.password' | trans([], 'admin') }}</label>
 	</div>
 	<div class="d-flex align-items-center justify-content-between mt-4 mb-0">
-		<a class="small" href="{{ path('security_recover_request') }}">{{ 'page.admin_login.recoverAction' | trans([], 'admin') }}</a>
+		<a class="small" href="{{ path('so_core_security_recover_request') }}">{{ 'page.so_core_admin_login.recoverAction' | trans([], 'admin') }}</a>
 		<button type="submit" class="btn btn-primary">{{ 'action.login' | trans }}</button>
 	</div>
 	</form>
@@ -47,8 +47,8 @@
 
 {% block footer %}
 	<div class="small">
-		<a href="{{ path('admin_register') }}">
-			{{- 'page.admin_login.registerAction' | trans([], 'admin') -}}
+		<a href="{{ path('so_core_admin_register') }}">
+			{{- 'page.so_core_admin_login.registerAction' | trans([], 'admin') -}}
 		</a>
 	</div>
 {% endblock %}

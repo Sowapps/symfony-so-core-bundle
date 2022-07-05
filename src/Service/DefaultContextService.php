@@ -13,6 +13,7 @@ use Sowapps\SoCore\Entity\Language;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DefaultContextService implements ContextInterface {
 	
@@ -22,6 +23,8 @@ class DefaultContextService implements ContextInterface {
 	
 	protected RequestStack $requestStack;
 	
+	protected TranslatorInterface $translator;
+	
 	protected UrlGeneratorInterface $router;
 	
 	protected ?LocaleFormatter $localeFormatter = null;
@@ -30,9 +33,10 @@ class DefaultContextService implements ContextInterface {
 	
 	protected ?Language $currentLanguage = null;
 	
-	public function __construct(Kernel $kernel, RequestStack $requestStack, UrlGeneratorInterface $router, Environment $environment) {
+	public function __construct(Kernel $kernel, RequestStack $requestStack, TranslatorInterface $translator, UrlGeneratorInterface $router, Environment $environment) {
 		$this->kernel = $kernel;
 		$this->requestStack = $requestStack;
+		$this->translator = $translator;
 		$this->router = $router;
 		$this->environment = $environment;
 	}
@@ -57,10 +61,6 @@ class DefaultContextService implements ContextInterface {
 		return $this->environment->isProd() ? 'L' : strtoupper($this->getEnvironmentName()[0]);
 	}
 	
-	public function setDefaultLanguage() {
-		$this->setCurrentLocale(self::DEFAULT_LANGUAGE);
-	}
-	
 	protected function setCurrentLocale(string $locale) {
 		$this->requestStack->getMainRequest()->setLocale($locale);
 		$this->router->getContext()->setParameter('_locale', $locale);
@@ -75,8 +75,8 @@ class DefaultContextService implements ContextInterface {
 	
 	public function setCurrentLanguage(Language $language, CurrencyInterface $currency) {
 		$this->currentLanguage = $language;
-		$this->setCurrentLocale($language->getKey());
-		$this->localeFormatter = new LocaleFormatter($language, $currency);
+		$this->setCurrentLocale($language->getLocale());
+		$this->localeFormatter = new LocaleFormatter($this->translator, $language, $currency);
 	}
 	
 	/**

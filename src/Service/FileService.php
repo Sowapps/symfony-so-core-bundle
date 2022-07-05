@@ -6,7 +6,6 @@
 namespace Sowapps\SoCore\Service;
 
 use DateTime;
-use DateTimeImmutable;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
 use Sowapps\SoCore\Core\Entity\Persistable;
@@ -194,8 +193,27 @@ class FileService extends AbstractEntityService {
 		return $this->urlHelper->getAbsoluteUrl($this->packages->getUrl($path));
 	}
 	
+	public function parseSize(int $size, ?string $unit = null): array {
+		$units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+		foreach( $units as $rowUnit ) {
+			if( $unit && $unit === $rowUnit ) {
+				return [$size, $rowUnit];
+			}
+			if( $size < 1024 && !$unit ) {
+				return [floor($size), $rowUnit];
+			}
+			$size /= 1024;
+		}
+		
+		return [0, 'B'];
+	}
+	
+	public function getFileSize(File $file): int {
+		return filesize($this->getFileLocalPath($file));
+	}
+	
 	public function getFileUrl(File $file, bool $download = true): string {
-		return $this->router->generate('file_download', [
+		return $this->router->generate('so_core_file_download', [
 			'id'        => $file->getId(),
 			'key'       => $file->getPrivateKey(),
 			'extension' => $file->getExtension(),

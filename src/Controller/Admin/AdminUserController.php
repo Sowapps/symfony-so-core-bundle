@@ -37,7 +37,7 @@ class AdminUserController extends AbstractAdminController {
 			}
 			$user = $userService->getUser($request->get('submitActivate'));
 			$userService->activate($user);
-			$formSuccess = [['page.admin_user_list.activate.success', ['user' => $user->getLabel()]]];
+			$formSuccess = [['page.so_core_admin_user_list.activate.success', ['user' => $user->getLabel()]]];
 		}
 		
 		$userQuery = $userService->getUserRepository()->query();
@@ -62,11 +62,11 @@ class AdminUserController extends AbstractAdminController {
 	
 	public function edit(Request $request, MailingService $mailingService, AbstractUserService $userService, AbstractUser $user, bool $mySettings = false): Response {
 		if( !$mySettings ) {
-			$this->addRouteToBreadcrumb('admin_user_list');
-			$this->addRouteToBreadcrumb('admin_user_edit', $user->getLabel(), false);
+			$this->addRouteToBreadcrumb('so_core_admin_user_list');
+			$this->addRouteToBreadcrumb('so_core_admin_user_edit', $user->getLabel(), false);
 		}
-		//		$this->addRouteToBreadcrumb('admin_user_edit', $user->getLabel(), ['id' => $user->getId()]);// Child
-		//		$this->addRouteToBreadcrumb('admin_user_edit', $user->getLabel(), false);
+		//		$this->addRouteToBreadcrumb('so_core_admin_user_edit', $user->getLabel(), ['id' => $user->getId()]);// Child
+		//		$this->addRouteToBreadcrumb('so_core_admin_user_edit', $user->getLabel(), false);
 		
 		// Permissions
 		$allowUserSelf = $mySettings;
@@ -116,7 +116,7 @@ class AdminUserController extends AbstractAdminController {
 				$user->setRoles($userRoles);
 			}
 			$userService->update($user);
-			$userAdminForm->addSuccess('page.admin_user_edit.edit.success');
+			$userAdminForm->addSuccess('page.so_core_admin_user_edit.edit.success');
 			
 			return $this->redirectToRequest($request, $userAdminForm);
 		}
@@ -127,7 +127,7 @@ class AdminUserController extends AbstractAdminController {
 			}
 			$user->setPassword($this->userService->encodePassword($userPasswordForm->get('plainPassword')->getData(), $user));
 			$userService->update($user);
-			$userPasswordForm->addSuccess('page.admin_user_edit.edit.success');
+			$userPasswordForm->addSuccess('page.so_core_admin_user_edit.edit.success');
 			
 			return $this->redirectToRequest($request, $userPasswordForm);
 		}
@@ -137,7 +137,7 @@ class AdminUserController extends AbstractAdminController {
 				throw $this->createForbiddenOperationException();
 			}
 			$userService->update($user);
-			$userAdminForm->addSuccess('page.admin_user_edit.picture.success');
+			$userAdminForm->addSuccess('page.so_core_admin_user_edit.picture.success');
 			
 			return $this->redirectToRequest($request, $userPasswordForm);
 		}
@@ -150,7 +150,7 @@ class AdminUserController extends AbstractAdminController {
 			$this->userService->requestRecover($user);
 			$userService->update($user);
 			$mailingService->sendRecoveryEmail($user);
-			$userPasswordForm->addSuccess('page.admin_user_edit.accountRecover.success');
+			$userPasswordForm->addSuccess('page.so_core_admin_user_edit.accountRecover.success');
 			
 			return $this->redirectToRequest($request, $userPasswordForm);
 		}
@@ -163,7 +163,7 @@ class AdminUserController extends AbstractAdminController {
 			
 			$user->setDisabled(true);
 			$userService->update($user);
-			$this->saveSuccesses([['page.admin_user_edit.disable.success']], self::FORM_ACTIVATION);
+			$this->saveSuccesses([['page.so_core_admin_user_edit.disable.success']], self::FORM_ACTIVATION);
 			
 			return $this->redirectToRequest($request);
 		}
@@ -176,7 +176,7 @@ class AdminUserController extends AbstractAdminController {
 			
 			$user->setDisabled(false);
 			$userService->update($user);
-			$this->saveSuccesses([['page.admin_user_edit.enable.success']], self::FORM_ACTIVATION);
+			$this->saveSuccesses([['page.so_core_admin_user_edit.enable.success']], self::FORM_ACTIVATION);
 			
 			return $this->redirectToRequest($request);
 		}
@@ -189,7 +189,7 @@ class AdminUserController extends AbstractAdminController {
 			$userService->startNewActivation($user);
 			$userService->update($user);
 			$mailingService->sendRegistrationEmail($user);
-			$this->saveSuccesses([['page.admin_user_edit.activationResend.success']], self::FORM_ACTIVATION);
+			$this->saveSuccesses([['page.so_core_admin_user_edit.activationResend.success']], self::FORM_ACTIVATION);
 			
 			return $this->redirectToRequest($request);
 		}

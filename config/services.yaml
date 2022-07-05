@@ -83,6 +83,7 @@ services:
         arguments:
             - '@kernel'
             - '@request_stack'
+            - '@translator'
             - '@router'
             - '@so_core.environment'
     Sowapps\SoCore\Contracts\ContextInterface: '@so_core.context'
@@ -182,10 +183,18 @@ services:
             - '@so_core.controller'
             - '@so_core.file'
 
-    Sowapps\SoCore\Core\Form\FormExtension:
-        tags: [ 'form.type_extension' ]
+    ### Api Controllers
+
+    Sowapps\SoCore\Controller\Api\FileApiController:
+        tags: [ 'controller.service_arguments' ]
+        arguments:
+            - '@so_core.controller'
+            - '@so_core.file'
 
     #   Forms
+
+    Sowapps\SoCore\Core\Form\FormExtension:
+        tags: [ 'form.type_extension' ]
 
     Sowapps\SoCore\Form\LanguageForm: [ ]
 

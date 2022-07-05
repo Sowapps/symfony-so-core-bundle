@@ -63,17 +63,13 @@ class FileController extends AbstractController {
 	}
 	
 	public function upload(Request $request, string $purpose): JsonResponse {
-		var_dump($purpose);
-		die('TEST {WESH}');
 		$uploadedFile = $request->files->get('file');
 		$file = $this->fileService->upload($uploadedFile, $purpose, new DateTime('+1 day'));
 		if( !$file ) {
 			throw new InvalidArgumentException();
 		}
 		
-		return $this->json([
-			'file' => $file,
-		]);
+		return $this->json($file);
 	}
 	
 }

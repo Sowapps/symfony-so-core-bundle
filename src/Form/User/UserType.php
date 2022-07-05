@@ -74,7 +74,7 @@ class UserType extends AbstractUserForm {
 			$builder->add('plainPassword', TextType::class, static::getPasswordOptions() + [
 					'label' => 'user.field.password',
 					'attr'  => ['autocomplete' => 'new-password'],
-					'help'  => $this->translator->trans('page.admin_user_edit.password.password.help', [], 'admin'),
+					'help'  => $this->translator->trans('page.so_core_admin_user_edit.password.password.help', [], 'admin'),
 				]);
 		} elseif( $this->hasModel(self::MODEL_PASSWORD) ) {
 			$builder->add('plainPassword', RepeatedType::class, static::getPasswordOptions() + [

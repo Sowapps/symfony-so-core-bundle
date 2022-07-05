@@ -79,7 +79,7 @@ class AdminSecurityController extends AbstractController {
 			
 			// generate a signed url and email it to the user
 			$this->emailVerifier->sendEmailConfirmation($user);
-			$this->addFlash('auth_success', $this->translator->trans('page.admin_register.success', [], 'admin'));
+			$this->addFlash('auth_success', $this->translator->trans('page.so_core_admin_register.success', [], 'admin'));
 			
 			return $this->redirectToRoute('admin_login');
 		}

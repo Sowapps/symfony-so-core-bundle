@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block title %}
-	{{ 'page.admin_register.title' | trans([], 'admin') }}
+	{{ 'page.so_core_admin_register.title' | trans([], 'admin') }}
 {% endblock %}
 
 {% block body %}
@@ -23,8 +23,8 @@
 
 {% block footer %}
 	<div class="small">
-		<a href="{{ path('admin_login') }}">
-			{{- 'page.admin_register.loginAction' | trans([], 'admin') -}}
+		<a href="{{ path('so_core_admin_login') }}">
+			{{- 'page.so_core_admin_register.loginAction' | trans([], 'admin') -}}
 		</a>
 	</div>
 {% endblock %}

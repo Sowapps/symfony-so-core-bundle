@@ -18,8 +18,6 @@ interface ContextInterface {
 	
 	function getApplicationLetter(): string;
 	
-	public function setDefaultLanguage();
-	
 	public function setCurrentLanguage(Language $language, CurrencyInterface $currency);
 	
 	function getCurrentLanguage(): ?Language;

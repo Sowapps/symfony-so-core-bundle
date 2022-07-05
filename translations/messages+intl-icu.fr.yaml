@@ -1,3 +1,14 @@
+format:
+    unit: "{value} {unit}"
+    fileSize:
+        short:
+            B: 'o'
+            KB: 'Ko'
+            MB: 'Mo'
+            GB: 'Go'
+            TB: 'To'
+            PB: 'Po'
+
 language:
     field:
         locale: "Locale"
@@ -49,6 +60,13 @@ widget:
         createAction: "Nouveau"
         updateAction: "Modifier"
         empty: "Aucun fichier"
+        name: "Nom"
+        size: "Taille"
+        mimeType: "Type"
+        selection:
+            title: "Sélection"
+            none: "Aucun fichier sélectionné"
+            many: "{count} fichiers sélectionnés"
     mediaPicker:
         title: "Sélectionner un fichier"
         # Pickers

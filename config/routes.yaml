@@ -1,81 +1,86 @@
+## API
+
+so_core_api_routes:
+    resource: 'routes/api.yaml'
+
 ## Security
 
-security_logout:
+so_core_security_logout:
     path: /log-out.html
     methods: GET
     controller: Sowapps\SoCore\Controller\Admin\AdminSecurityController::logout
 
-security_recover_request:
+so_core_security_recover_request:
     path: /lost-password.html
     methods: GET|POST
     controller: Sowapps\SoCore\Controller\Admin\AdminSecurityController::requestRecover
 
-security_recover_password:
+so_core_security_recover_password:
     path: /lost-password/{id<\d+>}/{recoveryKey}/recover.html
     methods: GET|POST
     controller: Sowapps\SoCore\Controller\Admin\AdminSecurityController::recoverPassword
 
-admin_login:
+so_core_admin_login:
     path: /admin-login.html
     controller: Sowapps\SoCore\Controller\Admin\AdminSecurityController::login
 
-admin_register:
+so_core_admin_register:
     path: /admin-register.html
     controller: Sowapps\SoCore\Controller\Admin\AdminSecurityController::register
 
-admin_verify_email:
+so_core_admin_verify_email:
     path: /admin-verify-email.html
     controller: Sowapps\SoCore\Controller\Admin\AdminSecurityController::verifyUserEmail
 
 ### Administration
 
-admin_home:
+so_core_admin_home:
     path: /admin/
     methods: GET
     controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::redirectAction
     defaults:
-        route: admin_dashboard
+        route: so_core_admin_dashboard
         permanent: true
         keepQueryParams: true
 
-admin_dashboard:
+so_core_admin_dashboard:
     path: /admin/dashboard.html
     methods: GET
     controller: Sowapps\SoCore\Controller\Admin\AdminDashboardController::dashboard
 
-admin_user_list:
+so_core_admin_user_list:
     path: /admin/user/list.html
     methods: GET
     controller: Sowapps\SoCore\Controller\Admin\AdminUserController::list
 
-admin_user_edit:
+so_core_admin_user_edit:
     path: /admin/user/{id}/update.html
     methods: GET|POST
     controller: Sowapps\SoCore\Controller\Admin\AdminUserController::edit
 
-admin_my_settings:
+so_core_admin_my_settings:
     path: /admin/my-account/settings.html
     methods: GET
     controller: Sowapps\SoCore\Controller\Admin\AdminUserController::mySettings
 
-admin_language_list:
+so_core_admin_language_list:
     path: /admin/language/list.html
     methods: GET|POST
     controller: Sowapps\SoCore\Controller\Admin\AdminLanguageController::list
 
 ### Specials
 
-email_message_view:
+so_core_email_message_view:
     path: /email/{messageId<\d+>}/{messageKey}/view.html
     methods: GET
     controller: Sowapps\SoCore\Controller\EmailController::view
 
-file_download:
+so_core_file_download:
     path: /file/{action}/{key}/{id<\d+>}.{extension}
     methods: GET
     controller: Sowapps\SoCore\Controller\FileController::download
 
-file_upload:
+so_core_file_upload:
     path: /file/{purpose}.json
     methods: POST
     controller: Sowapps\SoCore\Controller\FileController::upload

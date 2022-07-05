@@ -1,0 +1,93 @@
+<div class="media-picker picker-file-library h-100" data-controller="sowapps--so-core--picker-library"
+	 data-sowapps--so-core--picker-library-messages-value="{{ translations('widget.mediaPicker.library', ['invalidFileType']) | json }}"
+	 data-sowapps--so-core--picker-library-list-url-value="{{ url('so_core_api_file_list') }}"
+	 data-key="library" data-label="{{ 'widget.mediaPicker.library.label' | trans }}">
+	
+	<div class="row-view h-100">
+		{# View row #}
+		<div class="view-list h-100" data-controller="sowapps--so-core--list-file-row" data-type="row"
+			 data-sowapps--so-core--picker-library-target="rowView">
+			<div class="row">
+				<div class="col-12 col-lg-8">
+					<div class="list-group mb-2">
+						<li class="list-group-item border border-info">
+							<div class="item-file item-header">
+								{#                        <div class="item-select me-2"> #}
+								{#                            <input class="form-check-input" type="checkbox"> #}
+								{#                        </div> #}
+								<div class="item-icon">
+									<i class="fa-solid fa-file fa-fw"></i>
+								</div>
+								<div class="item-name">{{ 'widget.file.name' | trans }}</div>
+								<div class="item-actions ms-2">{{ 'actions' | trans }}</div>
+							</div>
+						</li>
+					</div>
+					<div class="list-group" data-sowapps--so-core--list-file-row-target="list">
+					</div>
+				</div>
+				<div class="d-none d-lg-block col-lg-4">
+					<h5>{{ 'widget.file.selection.title' | trans }}</h5>
+					<div data-sowapps--so-core--list-file-row-target="preview">
+					</div>
+					<template data-sowapps--so-core--list-file-row-target="previewNoneTemplate">
+						<p>{{ 'widget.file.selection.none' | trans }}</p>
+					</template>
+					<template data-sowapps--so-core--list-file-row-target="previewOneTemplate">
+						<div>
+							<div class="py-3">{ image }</div>
+							<h6 class="text-center">{ file.label }</h6>
+							<div><span class="pe-2">{{ 'widget.file.mimeType' | trans }} :</span> <span class="fw-bold">{ file.mimeType }</span></div>
+							<div><span class="pe-2">{{ 'widget.file.size' | trans }} :</span> <span class="fw-bold">{ file.size.label }</span></div>
+						</div>
+					</template>
+					<template data-sowapps--so-core--list-file-row-target="previewManyTemplate">
+						<p>{{ 'widget.file.selection.many' | trans({count: '{ count }'}) }}</p>
+					</template>
+				</div>
+			</div>
+			{#            <div class="item-file" data-controller="sowapps--so-core--item-file" data-selectable="true"> #}
+			{#            </div> #}
+			<template data-sowapps--so-core--list-file-row-target="itemTemplate">
+				<li class="list-group-item">
+					{#                    <div class="item-file" data-controller="sowapps--so-core--item-file" data-selectable="true"> #}
+					<div class="item-file" data-controller="sowapps--so-core--item-file" data-selectable="true">
+						{#                    <div class="item-select me-2"> #}
+						{#                        <input class="form-check-input" type="checkbox" data-action="change->sowapps--so-core--item-file#refreshSelect"> #}
+						{#                    </div> #}
+						<div class="item-icon">{ icon }</div>
+						<div class="item-name">{ file.label }</div>
+						<div class="item-actions ms-2" onclick="event.stopPropagation();">
+							<div class="btn-group btn-group-sm" role="group">
+								{#                                <button type="button" class="btn btn-outline-info" data-action="click->sowapps--so-core--item-file#open"> #}
+								{#                                    <i class="fa-solid fa-circle-info fa-fw"></i> #}
+								{#                                </button> #}
+								<a href="{ file.viewUrl }" class="btn btn-outline-primary" target="_blank">
+									<i class="fa-solid fa-eye fa-fw"></i>
+								</a>
+								<a href="{ file.downloadUrl }" class="btn btn-outline-primary">
+									<i class="fa-solid fa-download fa-fw"></i>
+								</a>
+								<button type="button" class="btn btn-outline-warning" data-action="click->sowapps--so-core--item-file#remove">
+									<i class="fa-solid fa-trash fa-fw"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+				</li>
+			</template>
+		</div>
+		
+		{# View thumbnail #}
+		<div class="view-thumbnail h-100">
+			<div data-sowapps--so-core--picker-library-target="thumbnailView"></div>
+			{#            <div class="h-100" data-controller="sowapps--so-core--list-file" data-sowapps--so-core--list-file-type-value="thumbnail" #}
+			{#                 data-sowapps--so-core--picker-library-target="thumbnailView"> #}
+			{#            </div> #}
+			{#            <template data-sowapps--so-core--list-file-target="itemTemplate"> #}
+			{#                <div></div> #}
+			{#            </template> #}
+		</div>
+	</div>
+
+</div>

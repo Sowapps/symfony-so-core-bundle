@@ -30,7 +30,7 @@ export default class extends Controller {
 	generateOptionLabels() {
 		return this.hasLabelsValue ? this.labelsValue : null;
 		// return {
-		// 	placeholder: t('page.admin_user_list.dataTable.placeholder'), // The search input placeholder
+		// 	placeholder: t('page.so_core_admin_user_list.dataTable.placeholder'), // The search input placeholder
 		// 	perPage: "{select} entrées par page", // per-page dropdown label
 		// 	noRows: "Aucune entrée trouvée", // Message shown when there are no records to show
 		// 	noResults: "Aucun résultat pour votre recherche", // Message shown when there are no search results

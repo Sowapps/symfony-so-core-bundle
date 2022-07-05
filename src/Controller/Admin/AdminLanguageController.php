@@ -59,7 +59,7 @@ class AdminLanguageController extends AbstractAdminController {
 			$language = $form->getData();
 			$languageService->create($language);
 			
-			$this->success[] = ['page.admin_language_list.create.success', ['key' => $language->getKey()]];
+			$this->success[] = ['page.so_core_admin_language_list.create.success', ['key' => $language->getKey()]];
 			$form = $this->createForm(LanguageForm::class);
 		}
 		
@@ -83,7 +83,7 @@ class AdminLanguageController extends AbstractAdminController {
 			$language->setEnabled(false);
 			$languageService->update($language);
 			
-			$this->success[] = ['page.admin_language_list.update.success', ['key' => $language->getKey()]];
+			$this->success[] = ['page.so_core_admin_language_list.update.success', ['key' => $language->getKey()]];
 			$form = $this->createNamedForm('language_update_form', LanguageForm::class);
 		}
 		
@@ -98,7 +98,7 @@ class AdminLanguageController extends AbstractAdminController {
 		$language = $languageService->getLanguage($languageId);
 		$language->setEnabled(true);
 		$languageService->update($language);
-		$this->success[] = ['page.admin_language_list.enable.success', ['key' => $language->getKey()]];
+		$this->success[] = ['page.so_core_admin_language_list.enable.success', ['key' => $language->getKey()]];
 		
 		return true;
 	}
@@ -111,7 +111,7 @@ class AdminLanguageController extends AbstractAdminController {
 		$language = $languageService->getLanguage($languageId);
 		$language->setEnabled(false);
 		$languageService->update($language);
-		$this->success[] = ['page.admin_language_list.disable.success', ['key' => $language->getKey()]];
+		$this->success[] = ['page.so_core_admin_language_list.disable.success', ['key' => $language->getKey()]];
 		
 		return true;
 	}
