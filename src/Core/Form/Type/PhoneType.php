@@ -3,7 +3,7 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Core\Form\Type;
+namespace Sowapps\SoCore\Core\Form\Type;
 
 use Misd\PhoneNumberBundle\Form\Type\PhoneNumberType;
 use Symfony\Component\Form\FormInterface;

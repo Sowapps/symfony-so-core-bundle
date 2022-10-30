@@ -3,7 +3,7 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Entity;
+namespace Sowapps\SoCore\Entity;
 
 use DateInterval;
 use DateTime;
@@ -16,7 +16,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Superclass must be in Sowapps\SoCoreBundle\Entity namespace
+ * Superclass must be in Sowapps\SoCore\Entity namespace
  */
 #[ORM\MappedSuperclass]
 #[UniqueEntity(fields: ['email'], message: 'user.email.exists')]
@@ -67,6 +67,9 @@ class AbstractUser extends AbstractEntity implements UserInterface, PasswordAuth
 	#[ORM\ManyToOne(targetEntity: Language::class)]
 	#[ORM\JoinColumn(nullable: false)]
 	private ?Language $language = null;
+	
+	#[ORM\OneToOne(targetEntity: File::class, cascade: ["persist", "remove"])]
+	private ?File $avatar = null;
 	
 	/**
 	 * A visual identifier that represents this user.
@@ -251,6 +254,17 @@ class AbstractUser extends AbstractEntity implements UserInterface, PasswordAuth
 	
 	public function setLanguage(Language $language): self {
 		$this->language = $language;
+		
+		return $this;
+	}
+	
+	public function getAvatar(): ?File {
+		return $this->avatar;
+	}
+	
+	public function setAvatar(?File $avatar): self {
+//		dump('Set avatar to', $avatar);
+		$this->avatar = $avatar;
 		
 		return $this;
 	}

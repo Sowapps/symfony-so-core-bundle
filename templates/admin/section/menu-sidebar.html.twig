@@ -5,82 +5,21 @@
 		<div class="nav">
 			{{ menu.heading('admin.navigation' | trans([], 'admin')) }}
 			{%- block menu_main -%}
-				{{ menu.item('page.admin_home.label' | trans([], 'admin'), path('admin_home'), 'fas fa-tachometer-alt') }}
-				{{ menu.item('page.admin_user_list.label' | trans([], 'admin'), path('admin_user_list'), 'fas fa-users') }}
+				{{ menu.item('page.so_core_admin_home.label' | trans([], 'admin'), path('so_core_admin_home'), 'fas fa-tachometer-alt') }}
+				{{ menu.item('page.so_core_admin_user_list.label' | trans([], 'admin'), path('so_core_admin_user_list'), 'fas fa-users') }}
 			{%- endblock -%}
 			{# Current item with submenu #}
 			{#
 			{% embed "@SoCore/component/menu-item.html.twig" with {
-				label: 'page.admin_home.label' | trans([], 'admin'), link: path('admin_home'), icon: 'fas fa-tachometer-alt'
+				label: 'page.so_core_admin_home.label' | trans([], 'admin'), link: path('so_core_admin_home'), icon: 'fas fa-tachometer-alt'
 			} %}
 				{% block collapse %}
 					{% import "@SoCore/component/menu.html.twig" as menu %}
-					{{ menu.item('page.admin_home.label' | trans([], 'admin'), path('admin_home'), 'fas fa-tachometer-alt') }}
-					{{ menu.item('page.admin_home.label' | trans([], 'admin'), path('admin_home'), 'fas fa-tachometer-alt') }}
-					{{ menu.item('page.admin_home.label' | trans([], 'admin'), path('admin_home'), 'fas fa-tachometer-alt') }}
+					{{ menu.item('page.so_core_admin_home.label' | trans([], 'admin'), path('so_core_admin_home'), 'fas fa-tachometer-alt') }}
+					{{ menu.item('page.so_core_admin_home.label' | trans([], 'admin'), path('so_core_admin_home'), 'fas fa-tachometer-alt') }}
+					{{ menu.item('page.so_core_admin_home.label' | trans([], 'admin'), path('so_core_admin_home'), 'fas fa-tachometer-alt') }}
 				{% endblock %}
 			{% endembed %}
-			#}
-			{# Experimental - Require token node parser #}
-			{#            {% inline('page.admin_home.label' | trans([], 'admin'), path('admin_home'), 'fas fa-tachometer-alt') %} #}
-			{#            {% endinline %} #}
-			{#
-			<div class="sb-sidenav-menu-heading">Interface</div>
-			<a class="nav-link" href="charts.html">
-				<div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-				Charts
-			</a>
-			<a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-				<div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-				Layouts
-				<div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-			</a>
-			<div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-				<nav class="sb-sidenav-menu-nested nav">
-					<a class="nav-link" href="layout-static.html">Static Navigation</a>
-					<a class="nav-link" href="layout-sidenav-light.html">Light Sidenav</a>
-				</nav>
-			</div>
-			<a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
-				<div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-				Pages
-				<div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-			</a>
-			<div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
-				<nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-					<a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth">
-						Authentication
-						<div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-					</a>
-					<div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
-						<nav class="sb-sidenav-menu-nested nav">
-							<a class="nav-link" href="login.html">Login</a>
-							<a class="nav-link" href="register.html">Register</a>
-							<a class="nav-link" href="password.html">Forgot Password</a>
-						</nav>
-					</div>
-					<a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
-						Error
-						<div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-					</a>
-					<div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
-						<nav class="sb-sidenav-menu-nested nav">
-							<a class="nav-link" href="401.html">401 Page</a>
-							<a class="nav-link" href="404.html">404 Page</a>
-							<a class="nav-link" href="500.html">500 Page</a>
-						</nav>
-					</div>
-				</nav>
-			</div>
-			<div class="sb-sidenav-menu-heading">Addons</div>
-			<a class="nav-link" href="charts.html">
-				<div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-				Charts
-			</a>
-			<a class="nav-link" href="tables.html">
-				<div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-				Tables
-			</a>
 			#}
 		</div>
 	</div>

@@ -1,13 +1,13 @@
 <?php
 
-namespace Sowapps\SoCoreBundle\Entity;
+namespace Sowapps\SoCore\Entity;
 
 use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Sowapps\SoCoreBundle\Repository\EmailSubscriptionRepository;
+use Sowapps\SoCore\Repository\EmailSubscriptionRepository;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 

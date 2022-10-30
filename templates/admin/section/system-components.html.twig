@@ -1,3 +1,10 @@
+{# Using overlay order : The last is on top the previous ones #}
+
+{# Media Library Dialog #}
+{% if hasFlag('require_media_library') %}
+	{% include '@SoCore/component/dialog/dialog.media-library.html.twig' %}
+{% endif %}
+
 {# Handle system confirm when user request an operation that require to be confirmed #}
 {% embed '@SoCore/component/dialog.html.twig' with {
 	dialogId: 'DialogSystemConfirm',
@@ -7,14 +14,30 @@
 	controllers: 'sowapps--so-core--dialog sowapps--so-core--confirm-dialog',
 	controllerActions: 'so.confirm.request@window->sowapps--so-core--confirm-dialog#request'
 } %}
-	{#    title: '', #}
-	{#    legend: '', #}
 	{%- block footer -%}
 		<button type="button" class="btn btn-outline-secondary" data-sowapps--so-core--confirm-dialog-target="cancel"
 				data-action="click->sowapps--so-core--confirm-dialog#cancel">
 			{{- 'action.cancel' | trans -}}
 		</button>
-		<button type="submit" name="submitConfirm" class="btn btn-primary" data-sowapps--so-core--confirm-dialog-target="confirm">
+		<button type="button" name="submitConfirm" class="btn btn-primary" data-sowapps--so-core--confirm-dialog-target="confirm"
+				data-action="click->sowapps--so-core--confirm-dialog#confirm">
+			{{- 'action.ok' | trans -}}
+		</button>
+	{%- endblock -%}
+{% endembed %}
+
+{# Handle system alert to confirm user understand something happened #}
+{% embed '@SoCore/component/dialog.html.twig' with {
+	dialogId: 'DialogSystemAlert',
+	legend: true,
+	form: false,
+	disableWhenHidden: true,
+	controllers: 'sowapps--so-core--dialog sowapps--so-core--alert-dialog',
+	controllerActions: 'so.alert.request@window->sowapps--so-core--alert-dialog#request'
+} %}
+	{%- block footer -%}
+		<button type="button" name="submitConfirm" class="btn btn-primary" data-sowapps--so-core--alert-dialog-target="confirm"
+				data-action="click->sowapps--so-core--alert-dialog#confirm">
 			{{- 'action.ok' | trans -}}
 		</button>
 	{%- endblock -%}

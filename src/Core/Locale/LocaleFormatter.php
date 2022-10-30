@@ -3,13 +3,16 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Core\Locale;
+namespace Sowapps\SoCore\Core\Locale;
 
 use NumberFormatter;
-use Sowapps\SoCoreBundle\Contracts\CurrencyInterface;
-use Sowapps\SoCoreBundle\Entity\Language;
+use Sowapps\SoCore\Contracts\CurrencyInterface;
+use Sowapps\SoCore\Entity\Language;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LocaleFormatter {
+	
+	private TranslatorInterface $translator;
 	
 	private Language $language;
 	
@@ -23,7 +26,8 @@ class LocaleFormatter {
 	 * @param Language $language
 	 * @param CurrencyInterface $currency
 	 */
-	public function __construct(Language $language, CurrencyInterface $currency) {
+	public function __construct(TranslatorInterface $translator, Language $language, CurrencyInterface $currency) {
+		$this->translator = $translator;
 		$this->language = $language;
 		$this->currency = $currency;
 		$this->currencyFormatter = new NumberFormatter($language->getLocale(), NumberFormatter::CURRENCY);
@@ -48,6 +52,12 @@ class LocaleFormatter {
 	 */
 	public function getCurrencyFormatter(): NumberFormatter {
 		return $this->currencyFormatter;
+	}
+	
+	public function formatFileSize(array $size): string {
+		$unit = $this->translator->trans('format.fileSize.short.' . $size[1]);
+		
+		return $this->translator->trans('format.unit', ['value' => $size[0], 'unit' => $unit]);
 	}
 	
 }

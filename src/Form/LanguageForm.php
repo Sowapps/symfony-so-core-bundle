@@ -3,10 +3,10 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Form;
+namespace Sowapps\SoCore\Form;
 
-use Sowapps\SoCoreBundle\Core\Form\AbstractForm;
-use Sowapps\SoCoreBundle\Entity\Language;
+use Sowapps\SoCore\Core\Form\AbstractForm;
+use Sowapps\SoCore\Entity\Language;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;

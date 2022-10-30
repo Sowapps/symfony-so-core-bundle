@@ -3,13 +3,18 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Controller;
+namespace Sowapps\SoCore\Controller;
 
-use Sowapps\SoCoreBundle\Entity\File;
-use Sowapps\SoCoreBundle\Service\FileService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use DateTime;
+use InvalidArgumentException;
+use Sowapps\SoCore\Core\Controller\AbstractController;
+use Sowapps\SoCore\Entity\File;
+use Sowapps\SoCore\Service\ControllerService;
+use Sowapps\SoCore\Service\FileService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class FileController extends AbstractController {
@@ -17,7 +22,20 @@ class FileController extends AbstractController {
 	const ACTION_DISPLAY = 'display';
 	const ACTION_DOWNLOAD = 'download';
 	
-	public function download(File $file, string $key, string $extension, string $action, FileService $fileService): Response {
+	private FileService $fileService;
+	
+	/**
+	 * FileController constructor
+	 *
+	 * @param ControllerService $controllerService
+	 * @param FileService $fileService
+	 */
+	public function __construct(ControllerService $controllerService, FileService $fileService) {
+		parent::__construct($controllerService);
+		$this->fileService = $fileService;
+	}
+	
+	public function download(File $file, string $key, string $extension, string $action): Response {
 		$download = $action === self::ACTION_DOWNLOAD;
 		
 		if( $key !== $file->getPrivateKey() ) {
@@ -38,10 +56,20 @@ class FileController extends AbstractController {
 			$headers['Content-Type'] = 'image/svg+xml';
 		}
 		
-		$response = new BinaryFileResponse($fileService->getLocalFile($file), 200, $headers, true);
+		$response = new BinaryFileResponse($this->fileService->getLocalFile($file), 200, $headers, true);
 		$response->setContentDisposition($download ? 'attachment' : 'inline', $file->getOutputName() ?: $file->getName());
 		
 		return $response;
+	}
+	
+	public function upload(Request $request, string $purpose): JsonResponse {
+		$uploadedFile = $request->files->get('file');
+		$file = $this->fileService->upload($uploadedFile, $purpose, new DateTime('+1 day'));
+		if( !$file ) {
+			throw new InvalidArgumentException();
+		}
+		
+		return $this->json($file);
 	}
 	
 }

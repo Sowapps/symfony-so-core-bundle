@@ -1,10 +1,11 @@
 <?php
 
-namespace Sowapps\SoCoreBundle\Form\User;
+namespace Sowapps\SoCore\Form\User;
 
-use Sowapps\SoCoreBundle\Core\Form\AbstractForm;
-use Sowapps\SoCoreBundle\Core\Form\Creator\FormCreator;
+use Sowapps\SoCore\Core\Form\AbstractForm;
+use Sowapps\SoCore\Core\Form\Creator\FormCreator;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UserAdminPasswordForm extends AbstractForm {
 	
@@ -13,6 +14,13 @@ class UserAdminPasswordForm extends AbstractForm {
 		$creator->addForm('user', UserType::class)
 			->addModel(UserType::MODEL_PASSWORD_ADMIN)
 			->end();
+	}
+	
+	public function configureOptions(OptionsResolver $resolver) {
+		parent::configureOptions($resolver);
+		$resolver->setDefaults([
+			'label_attr' => ['class' => 'd-none'],
+		]);
 	}
 	
 }

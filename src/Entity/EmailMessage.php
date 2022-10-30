@@ -1,11 +1,11 @@
 <?php
 
-namespace Sowapps\SoCoreBundle\Entity;
+namespace Sowapps\SoCore\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Sowapps\SoCoreBundle\DBAL\EnumEmailPurposeType;
-use Sowapps\SoCoreBundle\Repository\EmailMessageRepository;
+use Sowapps\SoCore\DBAL\EnumEmailPurposeType;
+use Sowapps\SoCore\Repository\EmailMessageRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EmailMessageRepository::class)]

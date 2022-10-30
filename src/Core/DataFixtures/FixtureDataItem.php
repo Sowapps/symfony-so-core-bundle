@@ -3,14 +3,14 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Core\DataFixtures;
+namespace Sowapps\SoCore\Core\DataFixtures;
 
 use DateTime;
 use DateTimeImmutable;
 use DateTimeZone;
 use RuntimeException;
-use Sowapps\SoCoreBundle\Entity\AbstractEntity;
-use Sowapps\SoCoreBundle\Graphic\PresentationPicture;
+use Sowapps\SoCore\Entity\AbstractEntity;
+use Sowapps\SoCore\Graphic\PresentationPicture;
 
 class FixtureDataItem {
 	

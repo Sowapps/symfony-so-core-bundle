@@ -3,15 +3,18 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Controller\Admin;
+namespace Sowapps\SoCore\Controller\Admin;
 
-use Sowapps\SoCoreBundle\Core\Controller\AbstractAdminController;
-use Sowapps\SoCoreBundle\Entity\AbstractUser;
-use Sowapps\SoCoreBundle\Form\User\UserAdminForm;
-use Sowapps\SoCoreBundle\Form\User\UserAdminPasswordForm;
-use Sowapps\SoCoreBundle\Form\User\UserUpdateForm;
-use Sowapps\SoCoreBundle\Service\AbstractUserService;
-use Sowapps\SoCoreBundle\Service\MailingService;
+use App\TestEntity;
+use App\TestForm;
+use Sowapps\SoCore\Core\Controller\AbstractAdminController;
+use Sowapps\SoCore\Entity\AbstractUser;
+use Sowapps\SoCore\Form\User\UserAdminForm;
+use Sowapps\SoCore\Form\User\UserAdminPasswordForm;
+use Sowapps\SoCore\Form\User\UserPictureForm;
+use Sowapps\SoCore\Form\User\UserUpdateForm;
+use Sowapps\SoCore\Service\AbstractUserService;
+use Sowapps\SoCore\Service\MailingService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -36,7 +39,7 @@ class AdminUserController extends AbstractAdminController {
 			}
 			$user = $userService->getUser($request->get('submitActivate'));
 			$userService->activate($user);
-			$formSuccess = [['page.admin_user_list.activate.success', ['user' => $user->getLabel()]]];
+			$formSuccess = [['page.so_core_admin_user_list.activate.success', ['user' => $user->getLabel()]]];
 		}
 		
 		$userQuery = $userService->getUserRepository()->query();
@@ -61,11 +64,11 @@ class AdminUserController extends AbstractAdminController {
 	
 	public function edit(Request $request, MailingService $mailingService, AbstractUserService $userService, AbstractUser $user, bool $mySettings = false): Response {
 		if( !$mySettings ) {
-			$this->addRouteToBreadcrumb('admin_user_list');
-			$this->addRouteToBreadcrumb('admin_user_edit', $user->getLabel(), false);
+			$this->addRouteToBreadcrumb('so_core_admin_user_list');
+			$this->addRouteToBreadcrumb('so_core_admin_user_edit', $user->getLabel(), false);
 		}
-		//		$this->addRouteToBreadcrumb('admin_user_edit', $user->getLabel(), ['id' => $user->getId()]);// Child
-		//		$this->addRouteToBreadcrumb('admin_user_edit', $user->getLabel(), false);
+		//		$this->addRouteToBreadcrumb('so_core_admin_user_edit', $user->getLabel(), ['id' => $user->getId()]);// Child
+		//		$this->addRouteToBreadcrumb('so_core_admin_user_edit', $user->getLabel(), false);
 		
 		// Permissions
 		$allowUserSelf = $mySettings;
@@ -83,7 +86,8 @@ class AdminUserController extends AbstractAdminController {
 		
 		$userAdminForm = $this->createForm($allowUserAdmin ? UserAdminForm::class : UserUpdateForm::class, ['user' => $user]);
 		$userPasswordForm = $this->createForm(UserAdminPasswordForm::class, ['user' => $user]);
-		$formSuccess = [];
+		//		$userPictureForm = $this->createForm(UserPictureForm::class, $user);
+		//		$formSuccess = [];
 		
 		if( $userAdminForm->isValidRequest($request) ) {
 			if( !$allowUserAdmin && !$allowUserSelf ) {
@@ -114,7 +118,7 @@ class AdminUserController extends AbstractAdminController {
 				$user->setRoles($userRoles);
 			}
 			$userService->update($user);
-			$userAdminForm->addSuccess('page.admin_user_edit.edit.success');
+			$userAdminForm->addSuccess('page.so_core_admin_user_edit.edit.success');
 			
 			return $this->redirectToRequest($request, $userAdminForm);
 		}
@@ -125,9 +129,20 @@ class AdminUserController extends AbstractAdminController {
 			}
 			$user->setPassword($this->userService->encodePassword($userPasswordForm->get('plainPassword')->getData(), $user));
 			$userService->update($user);
-			$userPasswordForm->addSuccess('page.admin_user_edit.edit.success');
+			$userPasswordForm->addSuccess('page.so_core_admin_user_edit.edit.success');
 			
 			return $this->redirectToRequest($request, $userPasswordForm);
+		}
+		
+		$userPictureForm = $this->createForm(UserPictureForm::class, ['user' => $user]);
+		if( $userPictureForm->isValidRequest($request) ) {
+			if( !$allowUserAdmin && !$allowUserSelf ) {
+				throw $this->createForbiddenOperationException();
+			}
+			$userService->update($user);
+			$userPictureForm->addSuccess('page.so_core_admin_user_edit.picture.success');
+			
+			//			return $this->redirectToRequest($request, $userPasswordForm);
 		}
 		
 		// Send account recover to user's email
@@ -138,7 +153,7 @@ class AdminUserController extends AbstractAdminController {
 			$this->userService->requestRecover($user);
 			$userService->update($user);
 			$mailingService->sendRecoveryEmail($user);
-			$userPasswordForm->addSuccess('page.admin_user_edit.accountRecover.success');
+			$userPasswordForm->addSuccess('page.so_core_admin_user_edit.accountRecover.success');
 			
 			return $this->redirectToRequest($request, $userPasswordForm);
 		}
@@ -151,7 +166,7 @@ class AdminUserController extends AbstractAdminController {
 			
 			$user->setDisabled(true);
 			$userService->update($user);
-			$this->saveSuccesses([['page.admin_user_edit.disable.success']], self::FORM_ACTIVATION);
+			$this->saveSuccesses([['page.so_core_admin_user_edit.disable.success']], self::FORM_ACTIVATION);
 			
 			return $this->redirectToRequest($request);
 		}
@@ -164,7 +179,7 @@ class AdminUserController extends AbstractAdminController {
 			
 			$user->setDisabled(false);
 			$userService->update($user);
-			$this->saveSuccesses([['page.admin_user_edit.enable.success']], self::FORM_ACTIVATION);
+			$this->saveSuccesses([['page.so_core_admin_user_edit.enable.success']], self::FORM_ACTIVATION);
 			
 			return $this->redirectToRequest($request);
 		}
@@ -177,17 +192,19 @@ class AdminUserController extends AbstractAdminController {
 			$userService->startNewActivation($user);
 			$userService->update($user);
 			$mailingService->sendRegistrationEmail($user);
-			$this->saveSuccesses([['page.admin_user_edit.activationResend.success']], self::FORM_ACTIVATION);
+			$this->saveSuccesses([['page.so_core_admin_user_edit.activationResend.success']], self::FORM_ACTIVATION);
 			
 			return $this->redirectToRequest($request);
 		}
 		
-		dump($userPasswordForm->getSuccesses());
+		// Show password form
+		$userPasswordForm->setViewOption('user/plainPassword/help', $this->translator->trans('page.so_core_admin_user_edit.password.password.help', [], 'admin'));
 		
 		return $this->render('@SoCore/admin/page/user-edit.html.twig', [
 			'securityToken'              => $newSecurityToken,
 			'user'                       => $user,
 			'userAdminForm'              => $userAdminForm->createView(),
+			'userPictureForm'            => $userPictureForm->createView(),
 			'userPasswordForm'           => $userPasswordForm->createView(),
 			'userActivationReports'      => $this->consumeSavedReports(self::FORM_ACTIVATION),
 			'allowUserAdmin'             => $allowUserAdmin,

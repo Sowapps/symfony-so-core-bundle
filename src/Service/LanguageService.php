@@ -3,11 +3,11 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Service;
+namespace Sowapps\SoCore\Service;
 
 use DateTimeInterface;
-use Sowapps\SoCoreBundle\Entity\Language;
-use Sowapps\SoCoreBundle\Repository\LanguageRepository;
+use Sowapps\SoCore\Entity\Language;
+use Sowapps\SoCore\Repository\LanguageRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;

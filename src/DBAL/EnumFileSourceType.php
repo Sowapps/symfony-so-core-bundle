@@ -3,9 +3,9 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\DBAL;
+namespace Sowapps\SoCore\DBAL;
 
-use Sowapps\SoCoreBundle\Core\DBAL\AbstractEnumType;
+use Sowapps\SoCore\Core\DBAL\AbstractEnumType;
 
 class EnumFileSourceType extends AbstractEnumType {
 	

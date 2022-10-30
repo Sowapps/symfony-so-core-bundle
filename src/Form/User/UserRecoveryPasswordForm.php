@@ -1,9 +1,9 @@
 <?php
 
-namespace Sowapps\SoCoreBundle\Form\User;
+namespace Sowapps\SoCore\Form\User;
 
-use Sowapps\SoCoreBundle\Core\Form\AbstractForm;
-use Sowapps\SoCoreBundle\Core\Form\Creator\FormCreator;
+use Sowapps\SoCore\Core\Form\AbstractForm;
+use Sowapps\SoCore\Core\Form\Creator\FormCreator;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class UserRecoveryPasswordForm extends AbstractForm {

@@ -1,9 +1,10 @@
 <?php
 
-namespace Sowapps\SoCoreBundle\Form\User;
+namespace Sowapps\SoCore\Form\User;
 
-use Sowapps\SoCoreBundle\Core\Form\AbstractUserForm;
-use Sowapps\SoCoreBundle\Entity\AbstractUser;
+use Sowapps\SoCore\Core\Form\AbstractUserForm;
+use Sowapps\SoCore\Entity\AbstractUser;
+use Sowapps\SoCore\Form\ImageType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -21,6 +22,7 @@ class UserType extends AbstractUserForm {
 	const MODEL_CALCULATED = 'calculated';
 	const MODEL_NAME = 'name';
 	const MODEL_EMAIL = 'email';
+	const MODEL_PICTURE = 'picture';
 	const MODEL_PASSWORD = 'password';
 	const MODEL_PASSWORD_ADMIN = 'password_admin';
 	const MODEL_REQUIRE_PASSWORD = 'require_password';
@@ -65,12 +67,16 @@ class UserType extends AbstractUserForm {
 				'disabled' => $this->isModelDisabled(self::MODEL_EMAIL),
 			]);
 		}
+		if( $this->hasModel(self::MODEL_PICTURE) ) {
+			$builder->add('avatar', ImageType::class, [
+				'preview_width' => '10rem',
+			]);
+		}
 		if( $this->hasModel(self::MODEL_PASSWORD_ADMIN) ) {
-			$builder->add('plainPassword', TextType::class, static::getPasswordOptions() + [
-					'label' => 'user.field.password',
-					'attr'  => ['autocomplete' => 'new-password'],
-					'help'  => $this->translator->trans('page.admin_user_edit.password.password.help', [], 'admin'),
-				]);
+			$fieldOptions = static::getPasswordOptions();
+			$fieldOptions['label'] = 'user.field.password';
+			$fieldOptions['attr'] = ['autocomplete' => 'new-password'];
+			$builder->add('plainPassword', TextType::class, $fieldOptions);
 		} elseif( $this->hasModel(self::MODEL_PASSWORD) ) {
 			$builder->add('plainPassword', RepeatedType::class, static::getPasswordOptions() + [
 					'type'        => PasswordType::class,
@@ -106,7 +112,7 @@ class UserType extends AbstractUserForm {
 		if( $this->hasModel(self::MODEL_CALCULATED) ) {
 			$builder->add('timezone', HiddenType::class, [
 				'attr' => [
-					'data-controller' => 'sowapps--so-core--timezone',
+					'data-controller' => 'sowapps--so-core--input-timezone',
 				],
 			]);
 		}

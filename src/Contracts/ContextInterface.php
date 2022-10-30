@@ -3,10 +3,10 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Contracts;
+namespace Sowapps\SoCore\Contracts;
 
-use Sowapps\SoCoreBundle\Core\Locale\LocaleFormatter;
-use Sowapps\SoCoreBundle\Entity\Language;
+use Sowapps\SoCore\Core\Locale\LocaleFormatter;
+use Sowapps\SoCore\Entity\Language;
 
 interface ContextInterface {
 	
@@ -17,8 +17,6 @@ interface ContextInterface {
 	function getEnvironmentId(): string;
 	
 	function getApplicationLetter(): string;
-	
-	public function setDefaultLanguage();
 	
 	public function setCurrentLanguage(Language $language, CurrencyInterface $currency);
 	

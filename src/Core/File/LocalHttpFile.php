@@ -3,9 +3,9 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Core\File;
+namespace Sowapps\SoCore\Core\File;
 
-use Sowapps\SoCoreBundle\Entity\File;
+use Sowapps\SoCore\Entity\File;
 use Symfony\Component\HttpFoundation\File\File as SymfonyFile;
 
 class LocalHttpFile extends SymfonyFile {

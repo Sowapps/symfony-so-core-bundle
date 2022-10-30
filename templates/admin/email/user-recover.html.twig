@@ -6,7 +6,7 @@
 	
 	<h2 class="mb-4">{{ 'recoveryEmail.title' | trans }}</h2>
 	<p>{{ 'recoveryEmail.message' | trans }}</p>
-	{% set recoveryLink = url('security_recover_password', {id: user.id, recoveryKey: user.recoveryKey}) %}
+	{% set recoveryLink = url('so_core_security_recover_password', {id: user.id, recoveryKey: user.recoveryKey}) %}
 	<a class="small" href="{{ recoveryLink }}" target="_blank">
 		{{- recoveryLink -}}
 	</a>

@@ -3,20 +3,20 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Controller\Admin;
+namespace Sowapps\SoCore\Controller\Admin;
 
 use Doctrine\ORM\EntityManagerInterface;
 use LogicException;
-use Sowapps\SoCoreBundle\Core\Controller\AbstractController;
-use Sowapps\SoCoreBundle\Entity\AbstractUser;
-use Sowapps\SoCoreBundle\Form\User\UserRecoveryPasswordForm;
-use Sowapps\SoCoreBundle\Form\User\UserRecoveryRequestForm;
-use Sowapps\SoCoreBundle\Form\User\UserRegisterForm;
-use Sowapps\SoCoreBundle\Security\EmailVerifier;
-use Sowapps\SoCoreBundle\Service\AbstractUserService;
-use Sowapps\SoCoreBundle\Service\ControllerService;
-use Sowapps\SoCoreBundle\Service\LanguageService;
-use Sowapps\SoCoreBundle\Service\MailingService;
+use Sowapps\SoCore\Core\Controller\AbstractController;
+use Sowapps\SoCore\Entity\AbstractUser;
+use Sowapps\SoCore\Form\User\UserRecoveryPasswordForm;
+use Sowapps\SoCore\Form\User\UserRecoveryRequestForm;
+use Sowapps\SoCore\Form\User\UserRegisterForm;
+use Sowapps\SoCore\Security\EmailVerifier;
+use Sowapps\SoCore\Service\AbstractUserService;
+use Sowapps\SoCore\Service\ControllerService;
+use Sowapps\SoCore\Service\LanguageService;
+use Sowapps\SoCore\Service\MailingService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -79,7 +79,7 @@ class AdminSecurityController extends AbstractController {
 			
 			// generate a signed url and email it to the user
 			$this->emailVerifier->sendEmailConfirmation($user);
-			$this->addFlash('auth_success', $this->translator->trans('page.admin_register.success', [], 'admin'));
+			$this->addFlash('auth_success', $this->translator->trans('page.so_core_admin_register.success', [], 'admin'));
 			
 			return $this->redirectToRoute('admin_login');
 		}

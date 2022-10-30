@@ -3,7 +3,7 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Core\DataFixtures;
+namespace Sowapps\SoCore\Core\DataFixtures;
 
 class FixtureDataSet {
 	

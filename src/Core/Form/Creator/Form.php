@@ -1,6 +1,6 @@
 <?php
 
-namespace Sowapps\SoCoreBundle\Core\Form\Creator;
+namespace Sowapps\SoCore\Core\Form\Creator;
 
 class Form {
 	
@@ -31,12 +31,18 @@ class Form {
 	
 	public function end(): FormCreator {
 		$builder = $this->creator->getBuilder();
-		$data = $builder->getData();
-//		dump($data, $this->name, $this->type, is_object($data) ? $data : $data[$this->name] ?? null);
+		$builder->setAttribute('class', 'no-label');
+		//		$data = $builder->getData();
+		//		dump(sprintf('$data 1 (%s)', $this->name), $data);
+		//		$data = is_object($data) ? $data : $data[$this->name] ?? null;
+		//		dump('$data 2 : ' . gettype($data) . ' : '.(is_object($data) ? get_class($data): 'NAO'));
+		//		dump($data, $this->name, $this->type, is_object($data) ? $data : $data[$this->name] ?? null);
+		//		dump($builder->getData());
+		//		$builder->add($this->name, $this->type, $this->creator->getOptions() + [
 		$builder->add($this->name, $this->type, [
 			'label'  => false,
 			// Instance of entity, array containing name as key or null
-			'data'   => is_object($data) ? $data : $data[$this->name] ?? null,
+			'data'   => $builder->getData()[$this->name],
 			'models' => $this->models,
 		]);
 		

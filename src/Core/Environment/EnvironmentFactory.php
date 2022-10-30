@@ -3,7 +3,7 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Core\Environment;
+namespace Sowapps\SoCore\Core\Environment;
 
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Contracts\Cache\CacheInterface;

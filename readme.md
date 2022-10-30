@@ -100,6 +100,7 @@ Add controllers to the `assets/controllers.json` file under `@sowapps/so-core`
 ## Webpack
 
 For now, only `yarn add file:../so-core-bundle/assets;` works, but updating source requires to restart watch.
+The package is in assets folder to prevent embedding all the bundle in the node module.
 
 H:\Workspaces\git\so-core-bundle
 

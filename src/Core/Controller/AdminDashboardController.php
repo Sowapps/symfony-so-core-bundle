@@ -3,7 +3,7 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Core\Controller;
+namespace Sowapps\SoCore\Core\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 

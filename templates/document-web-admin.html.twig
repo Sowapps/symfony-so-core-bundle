@@ -48,6 +48,13 @@
 		<div id="ExternalLibraryWrapper"></div>
 		
 		{% include '@SoCore/admin/section/system-components.html.twig' %}
+		
+		<script type="text/javascript">
+		onDomReady(() => {
+			{% include '@SoCore/admin/embed/translation.js.twig' %}
+			{% include '@SoCore/admin/embed/routing.js.twig' %}
+		});
+		</script>
 	{% endblock -%}
 	
 	</body>

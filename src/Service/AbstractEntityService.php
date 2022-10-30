@@ -3,7 +3,7 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Service;
+namespace Sowapps\SoCore\Service;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,8 +11,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use ErrorException;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
-use Sowapps\SoCoreBundle\Core\Entity\EntityReference;
-use Sowapps\SoCoreBundle\Entity\AbstractEntity;
+use Sowapps\SoCore\Core\Entity\EntityReference;
+use Sowapps\SoCore\Entity\AbstractEntity;
 
 abstract class AbstractEntityService {
 	
@@ -149,7 +149,7 @@ abstract class AbstractEntityService {
 	}
 	
 	/**
-	 * @param \Sowapps\SoCoreBundle\Entity\AbstractEntity $entity
+	 * @param \Sowapps\SoCore\Entity\AbstractEntity $entity
 	 */
 	public function update(AbstractEntity $entity) {
 		$this->prepareUpdate($entity);
@@ -164,7 +164,7 @@ abstract class AbstractEntityService {
 	}
 	
 	/**
-	 * @param \Sowapps\SoCoreBundle\Entity\AbstractEntity $entity
+	 * @param \Sowapps\SoCore\Entity\AbstractEntity $entity
 	 * @return bool
 	 */
 	public function prepareRemove(AbstractEntity $entity): bool {

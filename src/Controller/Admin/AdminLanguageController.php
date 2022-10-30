@@ -3,13 +3,13 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Controller\Admin;
+namespace Sowapps\SoCore\Controller\Admin;
 
-use Sowapps\SoCoreBundle\Core\Controller\AbstractAdminController;
-use Sowapps\SoCoreBundle\Core\Form\AppForm;
-use Sowapps\SoCoreBundle\Entity\Language;
-use Sowapps\SoCoreBundle\Form\LanguageForm;
-use Sowapps\SoCoreBundle\Service\LanguageService;
+use Sowapps\SoCore\Core\Controller\AbstractAdminController;
+use Sowapps\SoCore\Core\Form\AppForm;
+use Sowapps\SoCore\Entity\Language;
+use Sowapps\SoCore\Form\LanguageForm;
+use Sowapps\SoCore\Service\LanguageService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -59,7 +59,7 @@ class AdminLanguageController extends AbstractAdminController {
 			$language = $form->getData();
 			$languageService->create($language);
 			
-			$this->success[] = ['page.admin_language_list.create.success', ['key' => $language->getKey()]];
+			$this->success[] = ['page.so_core_admin_language_list.create.success', ['key' => $language->getKey()]];
 			$form = $this->createForm(LanguageForm::class);
 		}
 		
@@ -83,7 +83,7 @@ class AdminLanguageController extends AbstractAdminController {
 			$language->setEnabled(false);
 			$languageService->update($language);
 			
-			$this->success[] = ['page.admin_language_list.update.success', ['key' => $language->getKey()]];
+			$this->success[] = ['page.so_core_admin_language_list.update.success', ['key' => $language->getKey()]];
 			$form = $this->createNamedForm('language_update_form', LanguageForm::class);
 		}
 		
@@ -98,7 +98,7 @@ class AdminLanguageController extends AbstractAdminController {
 		$language = $languageService->getLanguage($languageId);
 		$language->setEnabled(true);
 		$languageService->update($language);
-		$this->success[] = ['page.admin_language_list.enable.success', ['key' => $language->getKey()]];
+		$this->success[] = ['page.so_core_admin_language_list.enable.success', ['key' => $language->getKey()]];
 		
 		return true;
 	}
@@ -111,7 +111,7 @@ class AdminLanguageController extends AbstractAdminController {
 		$language = $languageService->getLanguage($languageId);
 		$language->setEnabled(false);
 		$languageService->update($language);
-		$this->success[] = ['page.admin_language_list.disable.success', ['key' => $language->getKey()]];
+		$this->success[] = ['page.so_core_admin_language_list.disable.success', ['key' => $language->getKey()]];
 		
 		return true;
 	}

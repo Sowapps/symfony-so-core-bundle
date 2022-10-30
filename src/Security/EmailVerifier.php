@@ -1,10 +1,10 @@
 <?php
 
-namespace Sowapps\SoCoreBundle\Security;
+namespace Sowapps\SoCore\Security;
 
-use Sowapps\SoCoreBundle\Entity\AbstractUser;
-use Sowapps\SoCoreBundle\Service\AbstractUserService;
-use Sowapps\SoCoreBundle\Service\MailingService;
+use Sowapps\SoCore\Entity\AbstractUser;
+use Sowapps\SoCore\Service\AbstractUserService;
+use Sowapps\SoCore\Service\MailingService;
 use Symfony\Component\HttpFoundation\Request;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
@@ -23,7 +23,7 @@ class EmailVerifier {
 	}
 	
 	public function sendEmailConfirmation(AbstractUser $user): void {
-		$signatureComponents = $this->verifyEmailHelper->generateSignature('admin_verify_email', $user->getId(), $user->getEmail(), ['id' => $user->getId()]);
+		$signatureComponents = $this->verifyEmailHelper->generateSignature('so_core_admin_verify_email', $user->getId(), $user->getEmail(), ['id' => $user->getId()]);
 		
 		$context = [];
 		$context['activateUrl'] = $signatureComponents->getSignedUrl();

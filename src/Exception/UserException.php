@@ -3,13 +3,14 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Exception;
+namespace Sowapps\SoCore\Exception;
 
-use JetBrains\PhpStorm\ArrayShape;
 use RuntimeException;
 use Throwable;
 
 class UserException extends RuntimeException {
+	
+	static int $DEFAULT_CODE = 500;
 	
 	private array $parameters;
 	
@@ -23,8 +24,8 @@ class UserException extends RuntimeException {
 	 * @param string|null $domain
 	 * @param Throwable|null $previous
 	 */
-	public function __construct(string $message, array $parameters = [], ?string $domain = null, ?Throwable $previous = null) {
-		parent::__construct($message, 0, $previous);
+	public function __construct(string $message, array $parameters = [], ?string $domain = null, ?Throwable $previous = null, ?int $code = null) {
+		parent::__construct($message, $code ?? static::$DEFAULT_CODE, $previous);
 		
 		$this->parameters = $parameters;
 		$this->domain = $domain;
@@ -34,7 +35,6 @@ class UserException extends RuntimeException {
 	 * @param string|null $domain
 	 * @return array
 	 */
-	#[ArrayShape(['message' => "string", 'parameters' => "array", 'domain' => "null|string"])]
 	public function asArray(?string $domain = null): array {
 		return [
 			'message'    => $this->getMessage(),

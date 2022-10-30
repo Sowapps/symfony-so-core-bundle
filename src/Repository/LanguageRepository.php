@@ -1,12 +1,12 @@
 <?php
 
-namespace Sowapps\SoCoreBundle\Repository;
+namespace Sowapps\SoCore\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Sowapps\SoCoreBundle\Entity\Language;
+use Sowapps\SoCore\Entity\Language;
 
 /**
  * @method Language|null find($id, $lockMode = null, $lockVersion = null)

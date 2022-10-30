@@ -3,10 +3,10 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace Sowapps\SoCoreBundle\Service;
+namespace Sowapps\SoCore\Service;
 
 use Psr\Log\LoggerInterface;
-use Sowapps\SoCoreBundle\Contracts\ContextInterface;
+use Sowapps\SoCore\Contracts\ContextInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -17,7 +17,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Class ControllerService
  * Service to include controller service easily
  *
- * @package Sowapps\SoCoreBundle\Service
+ * @package Sowapps\SoCore\Service
  */
 class ControllerService {
 	
