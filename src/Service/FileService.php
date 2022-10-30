@@ -201,10 +201,10 @@ class FileService extends AbstractEntityService {
 	}
 	
 	public function getAlternativeFile(LocalHttpFile $file, string $type): string|File {
-		if( !$file->getFile() && $type === self::TYPE_SMALL ) {
-			// For files by name : "-large" must be present in file name and alternative "-small" should be provided
-			$this->getHttpFile(str_replace('-large', '-small', $file->getPath()));
-		}
+		//		if( !$file->getFile() && $type === self::TYPE_SMALL ) {
+		//			// For files by name : "-large" must be present in file name and alternative "-small" should be provided
+		//			$this->getHttpFile(str_replace('-large', '-small', $file->getPath()));
+		//		}
 		
 		return $file;
 	}
@@ -223,6 +223,9 @@ class FileService extends AbstractEntityService {
 	}
 	
 	public function getAssetUrl($path): string {
+		if( $path instanceof LocalHttpFile ) {
+			return $path->getUrl();
+		}
 		if( $path instanceof File ) {
 			return $this->getFileUrl($path, false);
 		}

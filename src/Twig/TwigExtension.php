@@ -182,14 +182,15 @@ class TwigExtension extends AbstractExtension {
 		}
 		$ignoreMissing ??= $image instanceof AbstractEntity;
 		try {
-			$image = $this->getFile($image);
+			$image = $this->getFile($image, FileService::TYPE_SMALL);
 		} catch( FileNotFoundException $e ) {
 			if( $ignoreMissing ) {
 				return '';
 			}
 			throw $e;
 		}
-		$image = $this->fileService->getAlternativeFile($image, FileService::TYPE_SMALL);
+		
+		//		$image = $this->fileService->getAlternativeFile($image, FileService::TYPE_SMALL);
 		
 		return $this->formatContextImageUrl($image, $email);
 	}
@@ -215,10 +216,9 @@ class TwigExtension extends AbstractExtension {
 		return $array;
 	}
 	
-	public function getFile(AbstractUser|string|File $image): LocalHttpFile {
+	public function getFile(AbstractUser|string|File $image, ?string $variant = null): LocalHttpFile {
 		if( $image instanceof AbstractUser ) {
-			//			$image = $image->getAvatar();
-			$image = 'bundles/socore/img/avatar-neutral-blue-416.jpg';
+			$image = $image->getAvatar() ?? 'bundles/socore/img/avatar-neutral-blue-416.jpg';
 		}
 		if( is_string($image) || $image instanceof File ) {
 			return $this->fileService->getHttpFile($image);
@@ -315,7 +315,7 @@ class TwigExtension extends AbstractExtension {
 	 * @param WrappedTemplatedEmail|null $email
 	 * @return string
 	 */
-	public function formatContextImageUrl(string|File $file, ?WrappedTemplatedEmail $email): string {
+	public function formatContextImageUrl(string|File|LocalHttpFile $file, ?WrappedTemplatedEmail $email): string {
 		if( !$email ) {
 			// Web templating
 			return $this->fileService->getAssetUrl($file);
