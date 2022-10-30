@@ -263,6 +263,7 @@ class AbstractUser extends AbstractEntity implements UserInterface, PasswordAuth
 	}
 	
 	public function setAvatar(?File $avatar): self {
+//		dump('Set avatar to', $avatar);
 		$this->avatar = $avatar;
 		
 		return $this;

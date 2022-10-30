@@ -1,10 +1,10 @@
 {% set dialogId = dialogId | default(form is defined and form is iterable and dialogId is not defined ? ('Dialog_' ~ form.vars.id) : uniqueId('Dialog_')) %}
 {% set standaloneForm = standaloneForm | default(form is defined and (form is not iterable or not form.parent)) %}
 {% set dialogClass = dialogClass | default('') %}
-{#{% set dialogClasses = ['modal-auto-close-components'] %}#}
-{#{% if disableWhenHidden is defined and disableWhenHidden %}#}
-{#	{% set dialogClasses = 'modal-hide-is-disabling' | pushTo(dialogClasses) %}#}
-{#{% endif %}#}
+{# {% set dialogClasses = ['modal-auto-close-components'] %} #}
+{# {% if disableWhenHidden is defined and disableWhenHidden %} #}
+{#    {% set dialogClasses = 'modal-hide-is-disabling' | pushTo(dialogClasses) %} #}
+{# {% endif %} #}
 {% set sizeClass = sizeClass | default(large is defined and large ? 'modal-lg' : '') %}
 {% set attr = attr | default('') %}
 {% set options = options | default({ keyboard: 'false' }) %}
@@ -35,17 +35,19 @@
 					<button type="button" aria-label="{{ 'action.close' | trans }}" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body">
-					{% block body %}
-						{% if legend is defined %}
-							<p class="dialog-legend">{{ legend | raw }}</p>
-						{% endif %}
-						<div class="report-list" data-{{ reportController | default(controller) }}-target="{{ reportTarget | default('reportList') }}"></div>
-						{% if form is defined and form is iterable %}
-							{% block body_form %}
-								{{ form_widget(form) }}
-							{% endblock %}
-						{% endif %}
-					{% endblock %}
+					<div class="container-fluid">
+						{% block body %}
+							{% if legend is defined %}
+								<p class="dialog-legend">{{ legend | raw }}</p>
+							{% endif %}
+							<div class="report-list" data-{{ reportController | default(controller) }}-target="{{ reportTarget | default('reportList') }}"></div>
+							{% if form is defined and form is iterable %}
+								{% block body_form %}
+									{{ form_widget(form) }}
+								{% endblock %}
+							{% endif %}
+						{% endblock %}
+					</div>
 				</div>
 				{% if block('footer') is defined %}
 					<div class="modal-footer">

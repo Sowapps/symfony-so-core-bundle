@@ -6,6 +6,7 @@
 namespace Sowapps\SoCore\Core\Form;
 
 use IteratorAggregate;
+use RuntimeException;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormConfigInterface;
 use Symfony\Component\Form\FormError;
@@ -30,6 +31,8 @@ class AppForm implements FormInterface, IteratorAggregate {
 	
 	private array $successes = [];
 	
+	private array $viewOptions = [];
+	
 	/**
 	 * AppForm constructor
 	 *
@@ -39,6 +42,44 @@ class AppForm implements FormInterface, IteratorAggregate {
 	public function __construct(FormInterface $form, ?string $domain = null) {
 		$this->form = $form;
 		$this->domain = $domain;
+	}
+	
+	public function setViewOption(string $path, $value) {
+		$form = $this->form;
+		$pathKeys = explode('/', $path);
+		$name = array_pop($pathKeys);
+		// Check path
+		foreach( $pathKeys as $key ) {
+			if( !isset($form[$key]) ) {
+				throw new RuntimeException("Unable to find key {$key} in form path");
+			}
+			$form = $form[$key];
+		}
+		// Save option
+		$this->viewOptions[] = [$pathKeys, $name, $value];
+	}
+	
+	public function createView(FormView $parent = null): FormView {
+		$view = $this->form->createView($parent);
+		$view->vars['successes'] = $this->successes;
+		$view->vars['success_domain'] = $this->domain;
+		foreach( $this->viewOptions as [$keys, $name, $value] ) {
+			$optionView = $view;
+			foreach( $keys as $key ) {
+				$optionView = $optionView[$key];
+			}
+			$optionView->vars[$name] = $value;
+		}
+		
+		//		if(isset($view['user']['plainPassword'])) {
+		//			dump($view['user']['plainPassword']);
+		//			$view['user']['plainPassword']->vars['help'] = 'page.so_core_admin_user_edit.password.password.help';
+		//			$view['user']['plainPassword']->vars['translation_domain'] = 'admin';
+		//		}
+		//		$this->form->get('user');
+		//		$view->children
+		
+		return $view;
 	}
 	
 	/**
@@ -95,14 +136,6 @@ class AppForm implements FormInterface, IteratorAggregate {
 	 */
 	public function addSuccess(string $message, array $params = [], ?string $domain = null) {
 		$this->successes[] = [$message, $params, $domain];
-	}
-	
-	public function createView(FormView $parent = null): FormView {
-		$view = $this->form->createView($parent);
-		$view->vars['successes'] = $this->successes;
-		$view->vars['success_domain'] = $this->domain;
-		
-		return $view;
 	}
 	
 	/**

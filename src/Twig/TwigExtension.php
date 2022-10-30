@@ -88,6 +88,7 @@ class TwigExtension extends AbstractExtension {
 			new TwigFilter('base64', [$this, 'formatToBase64']),
 			new TwigFilter('bool', 'boolval'),
 			new TwigFilter('json', 'json_encode'),
+			new TwigFilter('fileArray', [$this, 'formatFileAsArray']),
 			new TwigFilter('smallImage', [$this, 'formatSmallImage']),
 			new TwigFilter('largeImage', [$this, 'formatLargeImage']),
 			new TwigFilter('pushTo', [$this, 'pushTo']),
@@ -110,6 +111,10 @@ class TwigExtension extends AbstractExtension {
 		];
 	}
 	
+	public function formatFileAsArray(?File $file): ?array {
+		return $file ? $this->fileService->formatFileArray($file, null, $this->contextService) : null;
+	}
+	
 	public function setFlag(string $flag): void {
 		$this->flags[$flag] = true;
 	}
@@ -126,10 +131,14 @@ class TwigExtension extends AbstractExtension {
 		return $this->getTranslations($path, ['placeholder', 'perPage', 'noRows', 'noResults', 'info'], $domain);
 	}
 	
-	public function getTranslations(string $path, array $keys, ?string $domain = null): array {
+	public function getTranslations(string|array $path, ?array $keys = null, ?string $domain = null): array {
 		$translations = [];
+		if( !$keys && is_array($path) ) {
+			$keys = $path;
+			$path = null;
+		}
 		foreach( $keys as $key ) {
-			$translations[$key] = $this->translator->trans(sprintf('%s.%s', $path, $key), [], $domain);
+			$translations[$key] = $this->translator->trans($path ? sprintf('%s.%s', $path, $key) : $key, [], $domain);
 		}
 		
 		return $translations;

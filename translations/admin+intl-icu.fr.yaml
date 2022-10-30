@@ -3,6 +3,12 @@ admin:
     name: "Administration"
     navigation: "Navigation"
 
+file:
+    remove:
+        success: "Le fichier a été supprimé avec succès."
+        error: "Impossible de supprimer le fichier."
+        forbidden: "Opération non autorisée"
+
 page:
     so_core_admin_register:
         title: "Inscription"

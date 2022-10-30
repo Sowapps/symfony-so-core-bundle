@@ -1,0 +1,28 @@
+<h5>{{ 'widget.file.selection.title' | trans }}</h5>
+<div data-sowapps--so-core--list-file-row-target="preview">
+</div>
+<template data-sowapps--so-core--list-file-row-target="previewNoneTemplate">
+	<p>{{ 'widget.file.selection.none' | trans }}</p>
+</template>
+<template data-sowapps--so-core--list-file-row-target="previewOneTemplate">
+	<div>
+		<div class="py-3">{ image }</div>
+		<h6 class="text-center">{ file.label }</h6>
+		<div><span class="pe-2">{{ 'widget.file.mimeType' | trans }} :</span> <span class="fw-bold">{ file.mimeType }</span></div>
+		<div><span class="pe-2">{{ 'widget.file.size' | trans }} :</span> <span class="fw-bold">{ file.size.label }</span></div>
+		<div class="text-center py-2 d-grid gap-2">
+			<a href="{ file.viewUrl }" class="btn btn-outline-secondary" target="_blank">
+				<i class="fa-solid fa-eye fa-fw"></i> {{ 'action.see' | trans }}
+			</a>
+			<a href="{ file.downloadUrl }" class="btn btn-outline-secondary">
+				<i class="fa-solid fa-download fa-fw"></i> {{ 'action.download' | trans }}
+			</a>
+			<button type="button" class="btn btn-outline-warning action-on-selected" data-action="click->sowapps--so-core--list-file-row#removeSelectedItem">
+				<i class="fa-solid fa-trash fa-fw"></i> {{ 'action.delete' | trans }}
+			</button>
+		</div>
+	</div>
+</template>
+<template data-sowapps--so-core--list-file-row-target="previewManyTemplate">
+	<p>{{ 'widget.file.selection.many' | trans({count: '{ count }'}) }}</p>
+</template>

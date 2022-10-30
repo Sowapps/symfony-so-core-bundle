@@ -55,6 +55,15 @@ page:
             title: "Mot de passe modifié"
             legend: "Votre nouveau mot de passe a été enregistré, Vous pouvez maintenant vous connecter en l'utilisant."
 
+so:
+    error:
+        title: "Une erreur est survenue"
+    file:
+        remove:
+            confirm:
+                title: "Supprimer un fichier ?"
+                message: "Voulez-vous vraiment supprimer le fichier « {label} » ?"
+
 widget:
     file:
         createAction: "Nouveau"
@@ -63,6 +72,7 @@ widget:
         name: "Nom"
         size: "Taille"
         mimeType: "Type"
+        url: "Lien"
         selection:
             title: "Sélection"
             none: "Aucun fichier sélectionné"

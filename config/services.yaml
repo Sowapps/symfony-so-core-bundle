@@ -223,6 +223,9 @@ services:
     Sowapps\SoCore\Form\FileType:
         - '@doctrine'
 
+    Sowapps\SoCore\Form\ImageType:
+        - '@doctrine'
+
     #   Commands
 
     Sowapps\SoCore\Command\EmailTestCommand:

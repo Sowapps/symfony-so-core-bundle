@@ -10,7 +10,7 @@ use Throwable;
 class InvalidStatusException extends UserException {
 	
 	public function __construct(string $message = 'invalidStatus', array $parameters = [], ?string $domain = null, ?Throwable $previous = null) {
-		parent::__construct($message, $parameters, $domain, $previous);
+		parent::__construct($message, $parameters, $domain, $previous, 500);
 	}
 	
 }

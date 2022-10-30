@@ -8,9 +8,9 @@ namespace Sowapps\SoCore\Form;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
 use Sowapps\SoCore\DataTransformer\EntityTransformer;
-use Sowapps\SoCore\Entity\File;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Exception\RuntimeException;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -27,7 +27,8 @@ class EntityType extends AbstractType {
 	}
 	
 	public function buildForm(FormBuilderInterface $builder, array $options) {
-		$builder->addModelTransformer(new EntityTransformer($options['em'], $options['class']));
+		//		$builder->addModelTransformer(new EntityTransformer($options['em'], $options['class']));
+		$builder->addViewTransformer(new EntityTransformer($options['em'], $options['class']));
 	}
 	
 	public function configureOptions(OptionsResolver $resolver) {
@@ -49,10 +50,12 @@ class EntityType extends AbstractType {
 			return $em;
 		};
 		
+		$resolver->setRequired('class');
 		$resolver->setDefaults([
-			'em'       => null,
-			'class'    => File::class,
-//			'expanded' => false,
+			'em' => null,
+			//			'class'    => File::class,
+			//			'expanded' => false,
+			//			'compound' => false,
 		]);
 		
 		$resolver->setNormalizer('em', $entityManagerNormalizer);
@@ -60,6 +63,10 @@ class EntityType extends AbstractType {
 	
 	public function getBlockPrefix(): string {
 		return 'so_entity';
+	}
+	
+	public function getParent(): string {
+		return TextType::class;
 	}
 	
 }

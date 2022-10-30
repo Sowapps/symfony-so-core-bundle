@@ -54,7 +54,7 @@ class EntityTransformer implements DataTransformerInterface {
 	}
 	
 	/**
-	 * Transforms an entity address to a form address
+	 * Transforms an entity to an id
 	 *
 	 * @param AbstractEntity|null $entity
 	 * @return int|null
@@ -68,17 +68,20 @@ class EntityTransformer implements DataTransformerInterface {
 	}
 	
 	/**
-	 * Transforms a form address to an entity address
+	 * Transforms an id to an entity
 	 *
 	 * @param AbstractEntity|int|null $value
 	 * @return AbstractEntity|null
 	 * @throws TransformationFailedException if object (issue) is not found.
 	 */
 	public function reverseTransform($value): ?AbstractEntity {
+		//		dump('EntityTransformer::reverseTransform', $value);
 		if( !$value ) {
+			//			dump('EntityTransformer::reverseTransform - NULL');
 			return null;
 		}
 		if( $value instanceof AbstractEntity ) {
+			//			dump('EntityTransformer::reverseTransform - ALREADY ENTITY');
 			return $value;
 		}
 		// Id
@@ -90,6 +93,8 @@ class EntityTransformer implements DataTransformerInterface {
 			]);
 			throw $failure;
 		}
+		
+		//		dump('EntityTransformer::reverseTransform', $entity);
 		
 		return $entity;
 	}

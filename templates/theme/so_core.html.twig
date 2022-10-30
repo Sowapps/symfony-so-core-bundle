@@ -5,21 +5,50 @@
 
 {% block so_file_widget -%}
 	{% do setFlag('require_media_library') %}
+	{% dump(form.vars) %}
 	
 	<div class="form-widget widget-file" data-controller="sowapps--so-core--input-file" data-sowapps--so-core--input-file-purpose-value="user_avatar">
 		{% if form.vars.value is empty %}
-			<input class="form-control" type="text" value="{{ 'widget.file.empty' | trans }}" disabled>
-			<button class="btn btn-outline-primary" type="button" data-action="click->sowapps--so-core--input-file#openDialog">
+			<input class="form-control" type="text" value="{{ 'widget.file.empty' | trans }}" disabled data-sowapps--so-core--input-file-target="label">
+			<button class="btn btn-outline-primary" type="button" data-action="click->sowapps--so-core--input-file#pick" data-max="1">
 				{{- 'widget.file.createAction' | trans -}}
 			</button>
 		{% else %}
-			<input class="form-control" type="text" value="{{ form.vars.data }}" disabled>
-			<button class="btn btn-outline-primary" type="button" data-action="click->sowapps--so-core--input-file#openDialog">
+			<input class="form-control" type="text" value="{{ form.vars.data }}" disabled data-sowapps--so-core--input-file-target="label">
+			<button class="btn btn-outline-primary" type="button" data-action="click->sowapps--so-core--input-file#pick" data-max="1">
 				{{- 'widget.file.updateAction' | trans -}}
 			</button>
 		{% endif %}
 		
 		{% set type = 'hidden' %}
+		{% set attr = attr|merge({
+			'data-sowapps--so-core--input-file-target': 'input'
+		}) %}
+		{{- block('form_widget_simple') -}}
+	</div>
+{%- endblock %}
+
+{% block so_image_widget -%}
+	{% do setFlag('require_media_library') %}
+	{% dump(form.vars) %}
+	{% set file = form.vars.data | fileArray %}
+	{#    {% set file = null %} #}
+	
+	<div class="form-widget widget-image" data-controller="sowapps--so-core--input-file" data-sowapps--so-core--input-file-purpose-value="user_avatar"
+		 data-sowapps--so-core--input-file-empty-url-value="{{ asset("bundles/socore/img/image-empty.svg") }}"
+		 data-sowapps--so-core--input-file-empty-text-value="{{ 'widget.file.empty' | trans }}"
+		 {% if file %}data-sowapps--so-core--input-file-file-value="{{ file | json }}"{% endif %}>
+		<button class="btn btn-preview" type="button" data-action="click->sowapps--so-core--input-file#pick" data-max="1">
+			<img src="{{ file ? file.viewUrl : asset("bundles/socore/img/image-empty.svg") }}"
+				 style="{% if form.vars.preview_width %}width: {{ form.vars.preview_width }};{% endif %}{% if form.vars.preview_height %}height: {{ form.vars.preview_height }};{% endif %}"
+				 alt="{{ file ? file.label : 'widget.file.empty' | trans }}" title="{{ file ? file.label : 'widget.file.empty' | trans }}"
+				 data-sowapps--so-core--input-file-target="preview">
+		</button>
+		
+		{% set type = 'hidden' %}
+		{% set attr = attr|merge({
+			'data-sowapps--so-core--input-file-target': 'input'
+		}) %}
 		{{- block('form_widget_simple') -}}
 	</div>
 {%- endblock %}

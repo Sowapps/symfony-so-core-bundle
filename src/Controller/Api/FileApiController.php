@@ -5,8 +5,10 @@
 
 namespace Sowapps\SoCore\Controller\Api;
 
+use Exception;
 use Sowapps\SoCore\Core\Controller\AbstractApiController;
 use Sowapps\SoCore\Entity\File;
+use Sowapps\SoCore\Exception\ForbiddenOperationException;
 use Sowapps\SoCore\Service\ControllerService;
 use Sowapps\SoCore\Service\FileService;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,8 +29,23 @@ class FileApiController extends AbstractApiController {
 		$this->fileService = $fileService;
 	}
 	
+	public function delete(File $file): JsonResponse {
+		try {
+			throw new ForbiddenOperationException($this->translator->trans('file.remove.forbidden', [], 'admin'));
+			if( !$this->fileService->allowFileEdit($file, $this->getUser()) ) {
+				throw new ForbiddenOperationException($this->translator->trans('file.remove.forbidden', [], 'admin'));
+			}
+			
+			//			$this->fileService->remove($file);
+			return $this->json($this->translator->trans('file.remove.success', [], 'admin'));
+		} catch( Exception $e ) {
+			return $this->json($this->formatException($e, $this->translator->trans('file.remove.error', [], 'admin')), $e->getCode() ?: 500);
+		}
+	}
+	
 	public function list(Request $request): JsonResponse {
 		$filters = $this->getRequestFilters($request);
+		$user = $this->getUser();
 		
 		$search = $this->searchEntityTerm($this->fileService->getFileRepository());
 		$query = $search->getQuery();
@@ -36,7 +53,7 @@ class FileApiController extends AbstractApiController {
 		// Filter user allowed
 		$query
 			->andWhere('file.createUser = :user')
-			->setParameter('user', $this->getUser());
+			->setParameter('user', $user);
 		
 		// Filter by purpose
 		if( !empty($filters['purpose']) ) {
@@ -45,29 +62,15 @@ class FileApiController extends AbstractApiController {
 				->setParameter('purpose', $filters['purpose']);
 		}
 		
+		$query->orderBy('file.id', 'DESC');
+		
 		$data = [];
 		foreach( $this->formatSearchResults([$search], [], 50) as $file ) {
 			/** @var File $file */
-			$data[] = $file->jsonSerialize() + [
-					'size'        => $this->formatFileSize($file),
-					'downloadUrl' => $this->fileService->getFileUrl($file),
-					'viewUrl'     => $this->fileService->getFileUrl($file, false),
-				];
+			$data[] = $this->fileService->formatFileArray($file, $user, $this->contextService);
 		}
 		
 		return $this->json($data);
-	}
-	
-	protected function formatFileSize(File $file): array {
-		$localeFormatter = $this->getContextService()->getLocaleFormatter();
-		$bytes = $this->fileService->getFileSize($file);
-		$size = $this->fileService->parseSize($bytes);
-		
-		return [
-			'value' => $bytes,
-			'size'  => $size,
-			'label' => $localeFormatter->formatFileSize($size),
-		];
 	}
 	
 }

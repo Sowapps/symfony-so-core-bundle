@@ -4,7 +4,7 @@ namespace Sowapps\SoCore\Form\User;
 
 use Sowapps\SoCore\Core\Form\AbstractUserForm;
 use Sowapps\SoCore\Entity\AbstractUser;
-use Sowapps\SoCore\Form\FileType;
+use Sowapps\SoCore\Form\ImageType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -68,14 +68,15 @@ class UserType extends AbstractUserForm {
 			]);
 		}
 		if( $this->hasModel(self::MODEL_PICTURE) ) {
-			$builder->add('avatar', FileType::class);
+			$builder->add('avatar', ImageType::class, [
+				'preview_width' => '10rem',
+			]);
 		}
 		if( $this->hasModel(self::MODEL_PASSWORD_ADMIN) ) {
-			$builder->add('plainPassword', TextType::class, static::getPasswordOptions() + [
-					'label' => 'user.field.password',
-					'attr'  => ['autocomplete' => 'new-password'],
-					'help'  => $this->translator->trans('page.so_core_admin_user_edit.password.password.help', [], 'admin'),
-				]);
+			$fieldOptions = static::getPasswordOptions();
+			$fieldOptions['label'] = 'user.field.password';
+			$fieldOptions['attr'] = ['autocomplete' => 'new-password'];
+			$builder->add('plainPassword', TextType::class, $fieldOptions);
 		} elseif( $this->hasModel(self::MODEL_PASSWORD) ) {
 			$builder->add('plainPassword', RepeatedType::class, static::getPasswordOptions() + [
 					'type'        => PasswordType::class,

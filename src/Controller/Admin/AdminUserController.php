@@ -5,6 +5,8 @@
 
 namespace Sowapps\SoCore\Controller\Admin;
 
+use App\TestEntity;
+use App\TestForm;
 use Sowapps\SoCore\Core\Controller\AbstractAdminController;
 use Sowapps\SoCore\Entity\AbstractUser;
 use Sowapps\SoCore\Form\User\UserAdminForm;
@@ -84,7 +86,7 @@ class AdminUserController extends AbstractAdminController {
 		
 		$userAdminForm = $this->createForm($allowUserAdmin ? UserAdminForm::class : UserUpdateForm::class, ['user' => $user]);
 		$userPasswordForm = $this->createForm(UserAdminPasswordForm::class, ['user' => $user]);
-		$userPictureForm = $this->createForm(UserPictureForm::class, ['user' => $user]);
+		//		$userPictureForm = $this->createForm(UserPictureForm::class, $user);
 		//		$formSuccess = [];
 		
 		if( $userAdminForm->isValidRequest($request) ) {
@@ -132,14 +134,15 @@ class AdminUserController extends AbstractAdminController {
 			return $this->redirectToRequest($request, $userPasswordForm);
 		}
 		
+		$userPictureForm = $this->createForm(UserPictureForm::class, ['user' => $user]);
 		if( $userPictureForm->isValidRequest($request) ) {
 			if( !$allowUserAdmin && !$allowUserSelf ) {
 				throw $this->createForbiddenOperationException();
 			}
 			$userService->update($user);
-			$userAdminForm->addSuccess('page.so_core_admin_user_edit.picture.success');
+			$userPictureForm->addSuccess('page.so_core_admin_user_edit.picture.success');
 			
-			return $this->redirectToRequest($request, $userPasswordForm);
+			//			return $this->redirectToRequest($request, $userPasswordForm);
 		}
 		
 		// Send account recover to user's email
@@ -193,6 +196,9 @@ class AdminUserController extends AbstractAdminController {
 			
 			return $this->redirectToRequest($request);
 		}
+		
+		// Show password form
+		$userPasswordForm->setViewOption('user/plainPassword/help', $this->translator->trans('page.so_core_admin_user_edit.password.password.help', [], 'admin'));
 		
 		return $this->render('@SoCore/admin/page/user-edit.html.twig', [
 			'securityToken'              => $newSecurityToken,

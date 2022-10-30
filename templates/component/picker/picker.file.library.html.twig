@@ -1,11 +1,13 @@
-<div class="media-picker picker-file-library h-100" data-controller="sowapps--so-core--picker-library"
-	 data-sowapps--so-core--picker-library-messages-value="{{ translations('widget.mediaPicker.library', ['invalidFileType']) | json }}"
+<div class="media-picker picker-file-library" data-controller="sowapps--so-core--picker-library"
+		{#- No translation for now -#}
+	 data-sowapps--so-core--picker-library-messages-value="{{ translations('widget.mediaPicker.library', []) | json }}"
 	 data-sowapps--so-core--picker-library-list-url-value="{{ url('so_core_api_file_list') }}"
 	 data-key="library" data-label="{{ 'widget.mediaPicker.library.label' | trans }}">
 	
-	<div class="row-view h-100">
-		{# View row #}
-		<div class="view-list h-100" data-controller="sowapps--so-core--list-file-row" data-type="row"
+	<div class="list-view">
+		
+		{# View list as rows #}
+		<div class="view-row" data-controller="sowapps--so-core--list-file-row" data-type="row"
 			 data-sowapps--so-core--picker-library-target="rowView">
 			<div class="row">
 				<div class="col-12 col-lg-8">
@@ -19,7 +21,22 @@
 									<i class="fa-solid fa-file fa-fw"></i>
 								</div>
 								<div class="item-name">{{ 'widget.file.name' | trans }}</div>
-								<div class="item-actions ms-2">{{ 'actions' | trans }}</div>
+								<div class="item-actions ms-2">
+									<div class="btn-group btn-group-sm" role="group">
+										<button type="button" class="btn btn-outline-secondary"
+												data-action="click->sowapps--so-core--picker-library#changeView"
+												data-sowapps--so-core--picker-library-target="rowButton"
+												data-sowapps--so-core--picker-library-view-param="row">
+											<i class="fa-solid fa-list fa-fw"></i>
+										</button>
+										<button type="button" class="btn btn-outline-secondary"
+												data-action="click->sowapps--so-core--picker-library#changeView"
+												data-sowapps--so-core--picker-library-target="thumbnailButton"
+												data-sowapps--so-core--picker-library-view-param="thumbnail">
+											<i class="fa-solid fa-images fa-fw"></i>
+										</button>
+									</div>
+								</div>
 							</div>
 						</li>
 					</div>
@@ -27,23 +44,7 @@
 					</div>
 				</div>
 				<div class="d-none d-lg-block col-lg-4">
-					<h5>{{ 'widget.file.selection.title' | trans }}</h5>
-					<div data-sowapps--so-core--list-file-row-target="preview">
-					</div>
-					<template data-sowapps--so-core--list-file-row-target="previewNoneTemplate">
-						<p>{{ 'widget.file.selection.none' | trans }}</p>
-					</template>
-					<template data-sowapps--so-core--list-file-row-target="previewOneTemplate">
-						<div>
-							<div class="py-3">{ image }</div>
-							<h6 class="text-center">{ file.label }</h6>
-							<div><span class="pe-2">{{ 'widget.file.mimeType' | trans }} :</span> <span class="fw-bold">{ file.mimeType }</span></div>
-							<div><span class="pe-2">{{ 'widget.file.size' | trans }} :</span> <span class="fw-bold">{ file.size.label }</span></div>
-						</div>
-					</template>
-					<template data-sowapps--so-core--list-file-row-target="previewManyTemplate">
-						<p>{{ 'widget.file.selection.many' | trans({count: '{ count }'}) }}</p>
-					</template>
+					{% include '@SoCore/component/picker/section.file.preview.html.twig' %}
 				</div>
 			</div>
 			{#            <div class="item-file" data-controller="sowapps--so-core--item-file" data-selectable="true"> #}
@@ -58,35 +59,52 @@
 						<div class="item-icon">{ icon }</div>
 						<div class="item-name">{ file.label }</div>
 						<div class="item-actions ms-2" onclick="event.stopPropagation();">
-							<div class="btn-group btn-group-sm" role="group">
-								{#                                <button type="button" class="btn btn-outline-info" data-action="click->sowapps--so-core--item-file#open"> #}
-								{#                                    <i class="fa-solid fa-circle-info fa-fw"></i> #}
-								{#                                </button> #}
-								<a href="{ file.viewUrl }" class="btn btn-outline-primary" target="_blank">
-									<i class="fa-solid fa-eye fa-fw"></i>
-								</a>
-								<a href="{ file.downloadUrl }" class="btn btn-outline-primary">
-									<i class="fa-solid fa-download fa-fw"></i>
-								</a>
-								<button type="button" class="btn btn-outline-warning" data-action="click->sowapps--so-core--item-file#remove">
-									<i class="fa-solid fa-trash fa-fw"></i>
-								</button>
-							</div>
+							{% include "@SoCore/component/picker/actions.file.list.html.twig" %}
 						</div>
 					</div>
 				</li>
 			</template>
 		</div>
 		
-		{# View thumbnail #}
-		<div class="view-thumbnail h-100">
-			<div data-sowapps--so-core--picker-library-target="thumbnailView"></div>
-			{#            <div class="h-100" data-controller="sowapps--so-core--list-file" data-sowapps--so-core--list-file-type-value="thumbnail" #}
-			{#                 data-sowapps--so-core--picker-library-target="thumbnailView"> #}
-			{#            </div> #}
-			{#            <template data-sowapps--so-core--list-file-target="itemTemplate"> #}
-			{#                <div></div> #}
-			{#            </template> #}
+		{# View list as thumbnails #}
+		<div class="view-thumbnail">
+			<div data-controller="sowapps--so-core--list-file-thumbnail" data-type="thumbnail" data-sowapps--so-core--picker-library-target="thumbnailView">
+				<div class="list-header d-flex border border-info rounded-2 mb-2">
+					<div class="item-actions ms-auto px-3 py-2">
+						<div class="btn-group btn-group-sm" role="group">
+							<button type="button" class="btn btn-outline-secondary"
+									data-action="click->sowapps--so-core--picker-library#changeView"
+									data-sowapps--so-core--picker-library-target="rowButton"
+									data-sowapps--so-core--picker-library-view-param="row">
+								<i class="fa-solid fa-list fa-fw"></i>
+							</button>
+							<button type="button" class="btn btn-outline-secondary"
+									data-action="click->sowapps--so-core--picker-library#changeView"
+									data-sowapps--so-core--picker-library-target="thumbnailButton"
+									data-sowapps--so-core--picker-library-view-param="thumbnail">
+								<i class="fa-solid fa-images fa-fw"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="row" data-sowapps--so-core--list-file-thumbnail-target="list">
+				</div>
+				<template data-sowapps--so-core--list-file-thumbnail-target="itemTemplate">
+					<div class="col col-lg-3">
+						<div class="item-file p-2 watch-hover" data-controller="sowapps--so-core--item-file" data-selectable="true">
+							<div class="mb-2">{ image }</div>
+							<h6 class="text-center">{ file.label }</h6>
+							<div class="show-selected mb-1 text-center">
+								<div class="fw-bold">{ file.mimeType }</div>
+								<div class="fw-bold">{ file.size.label }</div>
+							</div>
+							<div class="item-actions mt-2 text-center show-hover" onclick="event.stopPropagation();">
+								{% include "@SoCore/component/picker/actions.file.list.html.twig" %}
+							</div>
+						</div>
+					</div>
+				</template>
+			</div>
 		</div>
 	</div>
 

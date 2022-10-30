@@ -7,4 +7,6 @@ namespace Sowapps\SoCore\Exception;
 
 class ForbiddenOperationException extends UserException {
 	
+	static int $DEFAULT_CODE = 403;
+	
 }

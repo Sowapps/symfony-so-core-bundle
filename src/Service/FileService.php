@@ -8,11 +8,13 @@ namespace Sowapps\SoCore\Service;
 use DateTime;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
+use Sowapps\SoCore\Contracts\ContextInterface;
 use Sowapps\SoCore\Core\Entity\Persistable;
 use Sowapps\SoCore\Core\File\FileNameSlugger;
 use Sowapps\SoCore\Core\File\LocalHttpFile;
 use Sowapps\SoCore\DBAL\EnumFileSourceType;
 use Sowapps\SoCore\Entity\AbstractEntity;
+use Sowapps\SoCore\Entity\AbstractUser;
 use Sowapps\SoCore\Entity\File;
 use Sowapps\SoCore\Repository\FileRepository;
 use Symfony\Component\Asset\Packages;
@@ -64,6 +66,41 @@ class FileService extends AbstractEntityService {
 		$this->router = $router;
 		$this->stringHelper = $stringHelper;
 		$this->config = $configFile;
+	}
+	
+	public function formatFileArray(File $file, ?AbstractUser $user = null, ?ContextInterface $contextService = null): array {
+		return $file->jsonSerialize() + [
+				'size'        => $this->formatFileSize($file, $contextService),
+				'actions'     => $this->formatFileActions($file, $user),
+				'downloadUrl' => $this->getFileUrl($file),
+				'viewUrl'     => $this->getFileUrl($file, false),
+			];
+	}
+	
+	protected function formatFileActions(File $file, ?AbstractUser $user): array {
+		$isOwner = $user && $this->allowFileEdit($file, $user);
+		
+		return [
+			'download' => $isOwner,
+			'edit'     => $isOwner,
+			'delete'   => $isOwner,
+		];
+	}
+	
+	protected function formatFileSize(File $file, ?ContextInterface $contextService = null): array {
+		$localeFormatter = $contextService ? $contextService->getLocaleFormatter() : null;
+		$bytes = $this->getFileSize($file);
+		$size = $this->parseSize($bytes);
+		
+		return [
+			'value' => $bytes,
+			'size'  => $size,
+			'label' => $localeFormatter ? $localeFormatter->formatFileSize($size) : null,
+		];
+	}
+	
+	public function allowFileEdit(File $file, AbstractUser $user): bool {
+		return $user->equals($file->getCreateUser());
 	}
 	
 	public function onSave(AbstractEntity $entity) {

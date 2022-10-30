@@ -2,3 +2,8 @@ so_core_api_file_list:
     path: /api/file/list.json
     methods: GET
     controller: Sowapps\SoCore\Controller\Api\FileApiController::list
+
+so_core_api_file_delete:
+    path: /api/file/{id}/delete.json
+    methods: DELETE
+    controller: Sowapps\SoCore\Controller\Api\FileApiController::delete

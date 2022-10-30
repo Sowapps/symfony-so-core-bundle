@@ -6,12 +6,31 @@
 namespace Sowapps\SoCore\Core\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Exception;
 use Sowapps\SoCore\Core\Entity\EntitySearch;
 use Sowapps\SoCore\Core\Repository\AbstractEntityRepository;
 use Sowapps\SoCore\Entity\AbstractEntity;
+use Sowapps\SoCore\Exception\UserException;
 use Symfony\Component\HttpFoundation\Request;
 
 class AbstractApiController extends AbstractController {
+	
+	public function formatException(Exception $exception, string $message): array {
+		$data = [
+			'text' => $exception instanceof UserException ? $exception->getMessage() : $message,
+			'data' => $exception instanceof UserException ? $exception->asArray() : null,
+			'code' => $exception->getCode(),
+		];
+		if( $this->kernel->isDebug() ) {
+			$data['class'] = get_class($exception);
+			$data['message'] = $exception->getMessage();
+			$data['file'] = $exception->getFile();
+			$data['line'] = $exception->getLine();
+			$data['trace'] = $exception->getTrace();
+		}
+		
+		return $data;
+	}
 	
 	public function getRequestFilters(Request $request): array {
 		$filters = $request->get('filter', []);

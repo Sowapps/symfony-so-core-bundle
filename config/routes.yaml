@@ -60,7 +60,7 @@ so_core_admin_user_edit:
 
 so_core_admin_my_settings:
     path: /admin/my-account/settings.html
-    methods: GET
+    methods: GET|POST
     controller: Sowapps\SoCore\Controller\Admin\AdminUserController::mySettings
 
 so_core_admin_language_list:
