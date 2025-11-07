@@ -1,23 +1,23 @@
 {
 	"name": "sowapps/so-core",
 	"type": "symfony-bundle",
-	"keywords": [
-		"symfony-ux"
-	],
 	"license": "MIT",
-	"minimum-stability": "stable",
-	"prefer-stable": true,
+	"keywords": ["symfony-bundle"],
 	"require": {
 		"php": ">=8.1",
 		"ext-ctype": "*",
 		"ext-iconv": "*",
 		"ext-intl": "*",
-		"doctrine/doctrine-fixtures-bundle": "*",
-		"symfony/flex": "2.*",
-		"symfony/twig-bundle": "6.4.*",
+		"symfony/framework-bundle": "^7.0",
+		"symfony/security-bundle": "^7.2",
+		"symfony/twig-bundle": "6.*",
 		"twig/cssinliner-extra": "3.*",
 		"twig/extra-bundle": "^2.12|^3.0",
-		"twig/twig": "^2.12|^3.0"
+		"twig/twig": "^3.0"
+	},
+	"require-dev": {
+		"symfony/phpunit-bridge": "^7.3",
+		"phpunit/phpunit": "^12.4"
 	},
 	"autoload": {
 		"psr-4": {
@@ -29,24 +29,15 @@
 			"Sowapps\\SoCore\\Tests\\": "tests/"
 		}
 	},
-	"extra": {
-		"symfony": {
-			"allow-contrib": false,
-			"require": "6.4.*"
-		}
+	"suggest": {
+		"doctrine/orm": "Requis si vous activez les fonctionnalités Doctrine de ce bundle"
 	},
 	"authors": [
 		{
 			"name": "Florent HAZARD",
 			"email": "contact@sowapps.com",
-			"homepage": "http://sowapps.com",
+			"homepage": "https://sowapps.com",
 			"role": "Developer"
 		}
-	],
-	"config": {
-		"allow-plugins": {
-			"symfony/flex": true,
-			"symfony/runtime": true
-		}
-	}
+	]
 }
