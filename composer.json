@@ -14,7 +14,7 @@
 		"ext-intl": "*",
 		"doctrine/doctrine-fixtures-bundle": "*",
 		"symfony/flex": "2.*",
-		"symfony/twig-bundle": "6.1.*",
+		"symfony/twig-bundle": "6.4.*",
 		"twig/cssinliner-extra": "3.*",
 		"twig/extra-bundle": "^2.12|^3.0",
 		"twig/twig": "^2.12|^3.0"
@@ -32,7 +32,7 @@
 	"extra": {
 		"symfony": {
 			"allow-contrib": false,
-			"require": "6.1.*"
+			"require": "6.4.*"
 		}
 	},
 	"authors": [
