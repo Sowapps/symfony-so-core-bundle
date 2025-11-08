@@ -14,12 +14,10 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class EntityTransformer implements DataTransformerInterface {
 	
-	protected EntityManagerInterface $entityManager;
 	protected ObjectRepository $repository;
 	protected string $notFoundMessage = 'entity.getById.notFound';
 	
-	public function __construct(EntityManagerInterface $entityManager, ?string $class = null) {
-		$this->entityManager = $entityManager;
+	public function __construct(protected EntityManagerInterface $entityManager, ?string $class = null) {
 		if( $class ) {
 			$this->setRepositoryOfClass($class);
 		}

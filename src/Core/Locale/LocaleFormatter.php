@@ -12,13 +12,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LocaleFormatter {
 	
-	private TranslatorInterface $translator;
-	
-	private Language $language;
-	
-	private CurrencyInterface $currency;
-	
-	private NumberFormatter $currencyFormatter;
+	private readonly NumberFormatter $currencyFormatter;
 	
 	/**
 	 * LocaleFormatter constructor
@@ -26,11 +20,8 @@ class LocaleFormatter {
 	 * @param Language $language
 	 * @param CurrencyInterface $currency
 	 */
-	public function __construct(TranslatorInterface $translator, Language $language, CurrencyInterface $currency) {
-		$this->translator = $translator;
-		$this->language = $language;
-		$this->currency = $currency;
-		$this->currencyFormatter = new NumberFormatter($language->getLocale(), NumberFormatter::CURRENCY);
+	public function __construct(private readonly TranslatorInterface $translator, private readonly Language $language, private readonly CurrencyInterface $currency) {
+		$this->currencyFormatter = new NumberFormatter($this->language->getLocale(), NumberFormatter::CURRENCY);
 	}
 	
 	public function getNumberFormatter(int $style): NumberFormatter {

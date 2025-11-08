@@ -22,7 +22,7 @@ class AbstractApiController extends AbstractController {
 			'code' => $exception->getCode(),
 		];
 		if( $this->kernel->isDebug() ) {
-			$data['class'] = get_class($exception);
+			$data['class'] = $exception::class;
 			$data['message'] = $exception->getMessage();
 			$data['file'] = $exception->getFile();
 			$data['line'] = $exception->getLine();
@@ -116,18 +116,18 @@ class AbstractApiController extends AbstractController {
 		$score = 0;
 		foreach( $terms as $termIndex => $term ) {
 			$termScore = 0;
-			if( !$value || stripos($value, $term) === false ) {
+			if( !$value || stripos($value, (string) $term) === false ) {
 				// Value not matching, losing score for term
-				$termScore -= strlen($term);
+				$termScore -= strlen((string) $term);
 			} else {
 				// Value match the term, earn score for term
-				$termScore += 100 + strlen($term);
+				$termScore += 100 + strlen((string) $term);
 			}
-			$termLength = strlen($term);
+			$termLength = strlen((string) $term);
 			// Add levenshtein score (number of characters in difference), max 10
 			$termScore += max(10 - levenshtein($term, $value), 0);
 			// Add order score (first is valued)
-			if( !$termIndex && str_starts_with($value, $term) ) {
+			if( !$termIndex && str_starts_with((string) $value, (string) $term) ) {
 				// If starting by first term (Value "Paris 1" against "Damparis")
 				$termScore += min($termLength, 5);
 			}

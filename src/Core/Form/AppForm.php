@@ -25,10 +25,6 @@ use Traversable;
  */
 class AppForm implements FormInterface, IteratorAggregate {
 	
-	protected ?string $domain;
-	
-	private FormInterface $form;
-	
 	private array $successes = [];
 	
 	private array $viewOptions = [];
@@ -39,10 +35,9 @@ class AppForm implements FormInterface, IteratorAggregate {
 	 * @param FormInterface $form
 	 * @param string|null $domain
 	 */
-	public function __construct(FormInterface $form, ?string $domain = null) {
-		$this->form = $form;
-		$this->domain = $domain;
-	}
+	public function __construct(private readonly FormInterface $form, protected ?string $domain = null)
+    {
+    }
 	
 	public function setViewOption(string $path, $value) {
 		$form = $this->form;

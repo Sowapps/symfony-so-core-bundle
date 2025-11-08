@@ -51,16 +51,14 @@ class CalendarHelper {
 		self::UNIT_MICROSECOND => null,
 	];
 	
-	protected TranslatorInterface $translator;
-	
 	/**
 	 * CalendarHelper constructor
 	 *
 	 * @param TranslatorInterface $translator
 	 */
-	public function __construct(TranslatorInterface $translator) {
-		$this->translator = $translator;
-	}
+	public function __construct(protected TranslatorInterface $translator)
+    {
+    }
 	
 	public function isOverlapping(TimeBoundable $subject, TimeBoundable $other): bool {
 		return $subject->getEnd() > $other->getStart() && $subject->getStart() < $other->getEnd();
@@ -87,7 +85,7 @@ class CalendarHelper {
 	}
 	
 	public function compare(DateTimeInterface $date1, DateTimeInterface $date2): bool {
-		return $date1 < $date2 ? -1 : ($date1 > $date2 ? 1 : 0);
+		return $date1 <=> $date2;
 	}
 	
 	public function isSameDate(DateTimeInterface $date1, DateTimeInterface $date2): bool {
@@ -169,13 +167,10 @@ class CalendarHelper {
 	 */
 	public function convertToAbsolute(DateInterval $interval, $units): DateInterval {
 		if( is_string($units) ) {
-			switch( $units ) {
-				case self::UNIT_SET_TIME:
-					$units = [self::UNIT_HOUR, self::UNIT_MINUTE];
-					break;
-				default:
-					throw new RuntimeException(sprintf('Invalid unit set "%s"', $units));
-			}
+			$units = match ($units) {
+                self::UNIT_SET_TIME => [self::UNIT_HOUR, self::UNIT_MINUTE],
+                default => throw new RuntimeException(sprintf('Invalid unit set "%s"', $units)),
+            };
 		}
 		$absInterval = new DateInterval('PT0S');
 		$absInterval->invert = $interval->invert;

@@ -28,29 +28,17 @@ class EmailService extends AbstractEntityService {
 	
 	protected MailerInterface $mailer;
 	
-	protected TwigService $twig;
-	
-	protected UrlGeneratorInterface $router;
-	
-	protected StringHelper $stringHelper;
-	
-	protected array $config;
-	
 	/**
-	 * EmailService constructor
-	 *
-	 * @param MailerInterface $mailer
-	 * @param TwigService $twig
-	 * @param UrlGeneratorInterface $router
-	 * @param StringHelper $stringHelper
-	 * @param array $configEmail
-	 */
-	public function __construct(MailerInterface $mailer, TwigService $twig, UrlGeneratorInterface $router, StringHelper $stringHelper, array $configEmail) {
+     * EmailService constructor
+     *
+     * @param MailerInterface $mailer
+     * @param TwigService $twig
+     * @param UrlGeneratorInterface $router
+     * @param StringHelper $stringHelper
+     * @param array $config
+     */
+    public function __construct(MailerInterface $mailer, protected TwigService $twig, protected UrlGeneratorInterface $router, protected StringHelper $stringHelper, protected array $config) {
 		$this->mailer = $mailer;
-		$this->twig = $twig;
-		$this->router = $router;
-		$this->stringHelper = $stringHelper;
-		$this->config = $configEmail;
 	}
 	
 	/**

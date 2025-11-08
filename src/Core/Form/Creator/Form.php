@@ -4,12 +4,6 @@ namespace Sowapps\SoCore\Core\Form\Creator;
 
 class Form {
 	
-	private FormCreator $creator;
-	
-	private string $name;
-	
-	private string $type;
-	
 	private array $models = [];
 	
 	/**
@@ -17,11 +11,9 @@ class Form {
 	 * @param string $name
 	 * @param string $type
 	 */
-	public function __construct(FormCreator $creator, string $name, string $type) {
-		$this->creator = $creator;
-		$this->name = $name;
-		$this->type = $type;
-	}
+	public function __construct(private readonly FormCreator $creator, private readonly string $name, private readonly string $type)
+    {
+    }
 	
 	public function addModel(string $name, bool $enabled = true): static {
 		$this->models[$name] = $enabled;

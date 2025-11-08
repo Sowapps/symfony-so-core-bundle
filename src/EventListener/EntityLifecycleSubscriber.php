@@ -14,16 +14,14 @@ use Sowapps\SoCore\Service\AbstractUserService;
 
 class EntityLifecycleSubscriber implements EventSubscriber {
 	
-	protected AbstractUserService $userService;
-	
 	/**
 	 * EntityLifecycleSubscriber constructor
 	 *
 	 * @param AbstractUserService $userService
 	 */
-	public function __construct(AbstractUserService $userService) {
-		$this->userService = $userService;
-	}
+	public function __construct(protected AbstractUserService $userService)
+    {
+    }
 	
 	/**
 	 * @inheritDoc
@@ -50,7 +48,7 @@ class EntityLifecycleSubscriber implements EventSubscriber {
 			}
 		}
 		if( !$entity->getCreateIp() ) {
-			$entity->setCreateIp(isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1');
+			$entity->setCreateIp($_SERVER['REMOTE_ADDR'] ?? '127.0.0.1');
 		}
 	}
 	

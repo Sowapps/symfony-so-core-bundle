@@ -20,11 +20,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class EntityType extends AbstractType {
 	
-	protected ManagerRegistry $registry;
-	
-	public function __construct(ManagerRegistry $registry) {
-		$this->registry = $registry;
-	}
+	public function __construct(protected ManagerRegistry $registry)
+    {
+    }
 	
 	public function buildForm(FormBuilderInterface $builder, array $options) {
 		//		$builder->addModelTransformer(new EntityTransformer($options['em'], $options['class']));

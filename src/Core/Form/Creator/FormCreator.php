@@ -9,18 +9,13 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class FormCreator {
 	
-	private FormBuilderInterface $builder;
-	
-	private array $options;
-	
 	/**
 	 * @param FormBuilderInterface $builder
 	 * @param array $options
 	 */
-	public function __construct(FormBuilderInterface $builder, array $options) {
-		$this->builder = $builder;
-		$this->options = $options;
-	}
+	public function __construct(private readonly FormBuilderInterface $builder, private readonly array $options)
+    {
+    }
 	
 	public function addForm(string $name, string $type): Form {
 		return new Form($this, $name, $type);

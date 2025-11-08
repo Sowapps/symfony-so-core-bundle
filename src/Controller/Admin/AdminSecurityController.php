@@ -25,17 +25,8 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class AdminSecurityController extends AbstractController {
 	
-	protected AbstractUserService $userService;
-	
-	protected array $configAdmin;
-	
-	private EmailVerifier $emailVerifier;
-	
-	public function __construct(ControllerService $controllerService, EmailVerifier $emailVerifier, AbstractUserService $userService, array $configAdmin) {
+	public function __construct(ControllerService $controllerService, private readonly EmailVerifier $emailVerifier, protected AbstractUserService $userService, protected array $configAdmin) {
 		parent::__construct($controllerService);
-		$this->emailVerifier = $emailVerifier;
-		$this->userService = $userService;
-		$this->configAdmin = $configAdmin;
 	}
 	
 	protected function render(string $view, array $parameters = [], Response $response = null): Response {
@@ -45,7 +36,7 @@ class AdminSecurityController extends AbstractController {
 		return parent::render($view, $parameters, $response);
 	}
 	
-	public function logout() {
+	public function logout(): never {
 		// By-passed by security firewall
 		throw new LogicException('Not implemented for now.');
 	}

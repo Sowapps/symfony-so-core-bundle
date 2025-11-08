@@ -31,15 +31,8 @@ class UserType extends AbstractUserForm {
 		return [
 			'mapped'      => false,
 			'constraints' => [
-				new NotBlank([
-					'message' => 'user.password.empty',
-				]),
-				new Length([
-					'min'        => 6,
-					'max'        => 4096,
-					'minMessage' => 'user.password.length',
-					// max length allowed by Symfony for security reasons
-				]),
+				new NotBlank(message: 'user.password.empty'),
+				new Length(min: 6, max: 4096, minMessage: 'user.password.length'),
 			],
 		];
 	}

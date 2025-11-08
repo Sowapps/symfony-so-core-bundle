@@ -21,22 +21,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class ControllerService {
 	
-	protected KernelInterface $kernel;
-	
-	protected RequestStack $requestStack;
-	
-	protected LoggerInterface $logger;
-	
-	protected TranslatorInterface $translator;
-	
-	protected RouterInterface $router;
-	
-	protected ContextInterface $contextService;
-	
-	protected AbstractUserService $userService;
-	
-	protected StringHelper $stringHelper;
-	
 	/**
 	 * AbstractController constructor
 	 *
@@ -48,17 +32,9 @@ class ControllerService {
 	 * @param AbstractUserService $userService
 	 * @param StringHelper $stringHelper
 	 */
-	public function __construct(KernelInterface  $kernel, RequestStack $requestStack, LoggerInterface $logger, TranslatorInterface $translator, RouterInterface $router,
-								ContextInterface $contextService, AbstractUserService $userService, StringHelper $stringHelper) {
-		$this->kernel = $kernel;
-		$this->requestStack = $requestStack;
-		$this->logger = $logger;
-		$this->translator = $translator;
-		$this->router = $router;
-		$this->contextService = $contextService;
-		$this->userService = $userService;
-		$this->stringHelper = $stringHelper;
-	}
+	public function __construct(protected KernelInterface  $kernel, protected RequestStack $requestStack, protected LoggerInterface $logger, protected TranslatorInterface $translator, protected RouterInterface $router, protected ContextInterface $contextService, protected AbstractUserService $userService, protected StringHelper $stringHelper)
+    {
+    }
 	
 	/**
 	 * @return Kernel

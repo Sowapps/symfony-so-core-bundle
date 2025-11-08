@@ -20,15 +20,7 @@ use Symfony\Component\Security\Core\Security;
  */
 abstract class AbstractUserService extends AbstractEntityService {
 	
-	protected UserPasswordHasherInterface $passwordEncoder;
-	
-	protected AccessDecisionManagerInterface $accessDecisionManager;
-	
 	protected Security $security;
-	
-	protected StringHelper $stringHelper;
-	
-	protected array $config;
 	
 	/*
 	 * Muse be overridden
@@ -44,21 +36,17 @@ abstract class AbstractUserService extends AbstractEntityService {
 	protected ?AbstractUser $superUser = null;
 	
 	/**
-	 * UserService constructor
-	 *
-	 * @param UserPasswordHasherInterface $passwordEncoder
-	 * @param AccessDecisionManagerInterface $accessDecisionManager
-	 * @param Security $security
-	 * @param StringHelper $stringHelper
-	 * @param array $configUser
-	 */
-	public function __construct(UserPasswordHasherInterface $passwordEncoder, AccessDecisionManagerInterface $accessDecisionManager, Security $security,
-								StringHelper                $stringHelper, array $configUser) {
-		$this->passwordEncoder = $passwordEncoder;
-		$this->accessDecisionManager = $accessDecisionManager;
+     * UserService constructor
+     *
+     * @param UserPasswordHasherInterface $passwordEncoder
+     * @param AccessDecisionManagerInterface $accessDecisionManager
+     * @param Security $security
+     * @param StringHelper $stringHelper
+     * @param array $config
+     */
+    public function __construct(protected UserPasswordHasherInterface $passwordEncoder, protected AccessDecisionManagerInterface $accessDecisionManager, Security $security,
+								protected StringHelper                $stringHelper, protected array $config) {
 		$this->security = $security;
-		$this->stringHelper = $stringHelper;
-		$this->config = $configUser;
 	}
 	
 	public function getUserClass(): string {

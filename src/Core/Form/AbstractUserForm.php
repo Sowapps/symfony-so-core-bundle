@@ -10,11 +10,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AbstractUserForm extends AbstractForm {
 	
-	protected AbstractUserService $userService;
-	
-	public function __construct(AbstractUserService $userService) {
-		$this->userService = $userService;
-	}
+	public function __construct(protected AbstractUserService $userService)
+    {
+    }
 	
 	public function configureOptions(OptionsResolver $resolver) {
 		parent::configureOptions($resolver);

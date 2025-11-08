@@ -9,20 +9,15 @@ use DateTimeInterface;
 
 class TimeRange implements TimeBoundable {
 	
-	private DateTimeInterface $start;
-	
-	private DateTimeInterface $end;
-	
 	/**
 	 * TimeRange constructor
 	 *
 	 * @param DateTimeInterface $start
 	 * @param DateTimeInterface $end
 	 */
-	public function __construct(DateTimeInterface $start, DateTimeInterface $end) {
-		$this->start = $start;
-		$this->end = $end;
-	}
+	public function __construct(private readonly DateTimeInterface $start, private readonly DateTimeInterface $end)
+    {
+    }
 	
 	/**
 	 * @return DateTimeInterface

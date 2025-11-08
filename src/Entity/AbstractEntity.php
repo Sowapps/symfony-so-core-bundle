@@ -15,7 +15,7 @@ use Sowapps\SoCore\Core\Entity\Persistable;
  * Superclass must be in Sowapps\SoCore\Entity namespace
  */
 #[ORM\MappedSuperclass]
-class AbstractEntity implements JsonSerializable, Persistable {
+class AbstractEntity implements JsonSerializable, Persistable, \Stringable {
 	
 	const MODEL_MINIMALIST = 'min';
 	const MODEL_PUBLIC = 'public';
@@ -31,7 +31,7 @@ class AbstractEntity implements JsonSerializable, Persistable {
 	#[ORM\Column(type: 'string', length: 60)]
 	protected ?string $createIp = null;
 	
-	#[ORM\ManyToOne(targetEntity: 'Sowapps\SoCore\Entity\AbstractUser')]
+	#[ORM\ManyToOne(targetEntity: \Sowapps\SoCore\Entity\AbstractUser::class)]
 	protected ?AbstractUser $createUser = null;
 	
 	public function __construct() {
@@ -59,7 +59,7 @@ class AbstractEntity implements JsonSerializable, Persistable {
 		$this->id = null;
 	}
 	
-	public function __toString() {
+	public function __toString(): string {
 		return $this->getLabel();
 	}
 	
@@ -72,17 +72,17 @@ class AbstractEntity implements JsonSerializable, Persistable {
 	}
 	
 	public function getEntityType(): string {
-		$names = explode('\\', get_called_class());
+		$names = explode('\\', static::class);
 		
 		return strtolower(array_pop($names));
 	}
 	
 	public function getEntityKey(): string {
-		return get_called_class() . '#' . $this->getId();
+		return static::class . '#' . $this->getId();
 	}
 	
 	public function getEntityReference(): EntityReference {
-		return new EntityReference(get_class($this), $this->getId());
+		return new EntityReference(static::class, $this->getId());
 	}
 	
 	public function getId(): ?int {
@@ -94,7 +94,7 @@ class AbstractEntity implements JsonSerializable, Persistable {
 	 * @return bool
 	 */
 	public function equals(mixed $other): bool {
-		return $other && is_object($other) && get_class($this) === get_class($other) && !$this->isNew() && !$other->isNew() && $this->getId() === $other->getId();
+		return $other && is_object($other) && static::class === $other::class && !$this->isNew() && !$other->isNew() && $this->getId() === $other->getId();
 	}
 	
 	/**

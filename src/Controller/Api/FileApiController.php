@@ -16,17 +16,14 @@ use Symfony\Component\HttpFoundation\Request;
 
 class FileApiController extends AbstractApiController {
 	
-	private FileService $fileService;
-	
 	/**
 	 * FileController constructor
 	 *
 	 * @param ControllerService $controllerService
 	 * @param FileService $fileService
 	 */
-	public function __construct(ControllerService $controllerService, FileService $fileService) {
+	public function __construct(ControllerService $controllerService, private readonly FileService $fileService) {
 		parent::__construct($controllerService);
-		$this->fileService = $fileService;
 	}
 	
 	public function delete(File $file): JsonResponse {

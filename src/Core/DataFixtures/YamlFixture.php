@@ -20,14 +20,9 @@ abstract class YamlFixture extends Fixture {
 	
 	protected ?ObjectManager $manager = null;
 	
-	protected AbstractUserService $userService;
-	
-	protected StringHelper $stringHelper;
-	
-	public function __construct(AbstractUserService $userService, StringHelper $stringHelper) {
-		$this->userService = $userService;
-		$this->stringHelper = $stringHelper;
-	}
+	public function __construct(protected AbstractUserService $userService, protected StringHelper $stringHelper)
+    {
+    }
 	
 	public function load(ObjectManager $manager) {
 		if( !$this->file ) {
@@ -48,7 +43,7 @@ abstract class YamlFixture extends Fixture {
 		$fileLocator = new FileLocator('config/fixtures');
 		try {
 			$file = $fileLocator->locate($this->file);
-		} catch( FileLocatorFileNotFoundException $exception ) {
+		} catch( FileLocatorFileNotFoundException ) {
 			// Ignore missing yaml file
 			return null;
 		}

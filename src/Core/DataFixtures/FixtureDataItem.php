@@ -82,21 +82,17 @@ class FixtureDataItem {
 			// Array
 			if( !isset($value['_class']) ) {
 				// 0-indexed & associative arrays
-				return array_map(function ($value) use ($entity, $fixture) {
-					return $this->parseValue($value, $entity, $fixture);
-				}, $value);
+				return array_map(fn($value) => $this->parseValue($value, $entity, $fixture), $value);
 			} else {
 				// Sub entity
 				$class = $value['_class'];
 				unset($value['_class']);
 				if( isset($value['items']) ) {
 					// Array of entities
-					return array_map(function ($value) use ($entity, $fixture) {
-						return $this->parseValue($value, $entity, $fixture);
-					}, $value['items']);
+					return array_map(fn($value) => $this->parseValue($value, $entity, $fixture), $value['items']);
 				} else {
 					// Single entity
-					$ref = isset($value['_ref']) ? $value['_ref'] : null;
+					$ref = $value['_ref'] ?? null;
 					unset($value['_ref']);
 					
 					return $this->buildEntity($fixture, $class, $value, $ref);
@@ -117,7 +113,7 @@ class FixtureDataItem {
 		if( preg_match('#^(\w+)\((.*)\)$#', $value, $matches) ) {
 			// function
 			$function = $matches[1];
-			$subValue = $this->parseValue(array_map('trim', explode(',', $matches[2])), $entity, $fixture);
+			$subValue = $this->parseValue(array_map(trim(...), explode(',', $matches[2])), $entity, $fixture);
 			$method = 'parseValue' . $function;
 			
 			return $this->$method($subValue, $entity, $fixture);

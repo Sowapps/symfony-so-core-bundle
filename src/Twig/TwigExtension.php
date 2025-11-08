@@ -6,7 +6,6 @@
 
 namespace Sowapps\SoCore\Twig;
 
-use App\Exception\UserException;
 use DateTime;
 use Sowapps\SoCore\Contracts\ContextInterface;
 use Sowapps\SoCore\Core\File\LocalHttpFile;
@@ -14,6 +13,7 @@ use Sowapps\SoCore\Core\Form\AbstractForm;
 use Sowapps\SoCore\Entity\AbstractEntity;
 use Sowapps\SoCore\Entity\AbstractUser;
 use Sowapps\SoCore\Entity\File;
+use Sowapps\SoCore\Exception\UserException;
 use Sowapps\SoCore\Service\FileService;
 use Sowapps\SoCore\Service\LanguageService;
 use Symfony\Bridge\Twig\Mime\WrappedTemplatedEmail;
@@ -32,20 +32,6 @@ class TwigExtension extends AbstractExtension {
 	
 	protected EntrypointLookupInterface $entrypointLookup;
 	
-	protected TranslatorInterface $translator;
-	
-	protected TwigService $twig;
-	
-	protected FileService $fileService;
-	
-	protected ContextInterface $contextService;
-	
-	protected LanguageService $languageService;
-	
-	protected ParameterBagInterface $parameters;
-	
-	protected string $publicPath;
-	
 	protected array $uniqueId = [];
 	
 	protected array $flags = [];
@@ -63,17 +49,10 @@ class TwigExtension extends AbstractExtension {
 	 * @param string $publicPath
 	 */
 	public function __construct(
-		EntrypointLookupInterface $entrypointLookup, TranslatorInterface $translator, ParameterBagInterface $parameters, TwigService $twig,
-		FileService               $fileService, ContextInterface $contextService, LanguageService $languageService, string $publicPath
+		EntrypointLookupInterface $entrypointLookup, protected TranslatorInterface $translator, protected ParameterBagInterface $parameters, protected TwigService $twig,
+		protected FileService               $fileService, protected ContextInterface $contextService, protected LanguageService $languageService, protected string $publicPath
 	) {
 		$this->entrypointLookup = $entrypointLookup;
-		$this->translator = $translator;
-		$this->parameters = $parameters;
-		$this->twig = $twig;
-		$this->fileService = $fileService;
-		$this->contextService = $contextService;
-		$this->languageService = $languageService;
-		$this->publicPath = $publicPath;
 	}
 	
 	public function getTests(): array {
@@ -85,29 +64,29 @@ class TwigExtension extends AbstractExtension {
 	
 	public function getFilters(): array {
 		return [
-			new TwigFilter('base64', [$this, 'formatToBase64']),
+			new TwigFilter('base64', $this->formatToBase64(...)),
 			new TwigFilter('bool', 'boolval'),
 			new TwigFilter('json', 'json_encode'),
-			new TwigFilter('fileArray', [$this, 'formatFileAsArray']),
-			new TwigFilter('smallImage', [$this, 'formatSmallImage']),
-			new TwigFilter('largeImage', [$this, 'formatLargeImage']),
-			new TwigFilter('pushTo', [$this, 'pushTo']),
-			new TwigFilter('attributes', [$this, 'formatAttributes'], ['is_safe' => ['html']]),
+			new TwigFilter('fileArray', $this->formatFileAsArray(...)),
+			new TwigFilter('smallImage', $this->formatSmallImage(...)),
+			new TwigFilter('largeImage', $this->formatLargeImage(...)),
+			new TwigFilter('pushTo', $this->pushTo(...)),
+			new TwigFilter('attributes', $this->formatAttributes(...), ['is_safe' => ['html']]),
 		];
 	}
 	
 	public function getFunctions(): array {
 		return [
-			new TwigFunction('bodyClass', [$this, 'getBodyClass']),
-			new TwigFunction('uniqueId', [$this, 'getUniqueId']),
-			new TwigFunction('date', [$this, 'formatDate']),// 'date' Filter is used by Symfony
-			new TwigFunction('reports', [$this, 'renderReports'], ['is_safe' => ['html']]),
-			new TwigFunction('form_success', [$this, 'renderSuccessAlert'], ['is_safe' => ['html']]),
-			new TwigFunction('encore_entry_css_source', [$this, 'getEncoreEntryCssSource']),
-			new TwigFunction('translations', [$this, 'getTranslations']),
-			new TwigFunction('datatableTranslations', [$this, 'getDataTableTranslations']),
-			new TwigFunction('setFlag', [$this, 'setFlag']),
-			new TwigFunction('hasFlag', [$this, 'hasFlag']),
+			new TwigFunction('bodyClass', $this->getBodyClass(...)),
+			new TwigFunction('uniqueId', $this->getUniqueId(...)),
+			new TwigFunction('date', $this->formatDate(...)),// 'date' Filter is used by Symfony
+			new TwigFunction('reports', $this->renderReports(...), ['is_safe' => ['html']]),
+			new TwigFunction('form_success', $this->renderSuccessAlert(...), ['is_safe' => ['html']]),
+			new TwigFunction('encore_entry_css_source', $this->getEncoreEntryCssSource(...)),
+			new TwigFunction('translations', $this->getTranslations(...)),
+			new TwigFunction('datatableTranslations', $this->getDataTableTranslations(...)),
+			new TwigFunction('setFlag', $this->setFlag(...)),
+			new TwigFunction('hasFlag', $this->hasFlag(...)),
 		];
 	}
 	

@@ -13,11 +13,9 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
  */
 class FileTransformer implements DataTransformerInterface {
 	
-	private FileService $fileService;
-	
-	public function __construct(FileService $fileService) {
-		$this->fileService = $fileService;
-	}
+	public function __construct(private readonly FileService $fileService)
+    {
+    }
 	
 	/**
 	 * Transforms an entity address to a form address

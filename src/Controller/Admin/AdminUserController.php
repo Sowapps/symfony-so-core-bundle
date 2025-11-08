@@ -141,7 +141,7 @@ class AdminUserController extends AbstractAdminController {
 			}
 			$userService->update($user);
 			$userPictureForm->addSuccess('page.so_core_admin_user_edit.picture.success');
-			
+
 			//			return $this->redirectToRequest($request, $userPasswordForm);
 		}
 		

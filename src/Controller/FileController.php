@@ -22,17 +22,14 @@ class FileController extends AbstractController {
 	const ACTION_DISPLAY = 'display';
 	const ACTION_DOWNLOAD = 'download';
 	
-	private FileService $fileService;
-	
 	/**
 	 * FileController constructor
 	 *
 	 * @param ControllerService $controllerService
 	 * @param FileService $fileService
 	 */
-	public function __construct(ControllerService $controllerService, FileService $fileService) {
+	public function __construct(ControllerService $controllerService, private readonly FileService $fileService) {
 		parent::__construct($controllerService);
-		$this->fileService = $fileService;
 	}
 	
 	public function download(File $file, string $key, string $extension, string $action): Response {
