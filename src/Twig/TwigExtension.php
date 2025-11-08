@@ -30,8 +30,6 @@ use Twig\TwigTest;
 
 class TwigExtension extends AbstractExtension {
 	
-	protected EntrypointLookupInterface $entrypointLookup;
-	
 	protected array $uniqueId = [];
 	
 	protected array $flags = [];
@@ -48,12 +46,9 @@ class TwigExtension extends AbstractExtension {
 	 * @param LanguageService $languageService
 	 * @param string $publicPath
 	 */
-	public function __construct(
-		EntrypointLookupInterface $entrypointLookup, protected TranslatorInterface $translator, protected ParameterBagInterface $parameters, protected TwigService $twig,
-		protected FileService               $fileService, protected ContextInterface $contextService, protected LanguageService $languageService, protected string $publicPath
-	) {
-		$this->entrypointLookup = $entrypointLookup;
-	}
+	public function __construct(protected EntrypointLookupInterface $entrypointLookup, protected TranslatorInterface $translator, protected ParameterBagInterface $parameters, protected TwigService $twig, protected FileService               $fileService, protected ContextInterface $contextService, protected LanguageService $languageService, protected string $publicPath)
+    {
+    }
 	
 	public function getTests(): array {
 		return [

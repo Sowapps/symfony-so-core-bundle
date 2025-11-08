@@ -37,7 +37,7 @@ class UserType extends AbstractUserForm {
 		];
 	}
 	
-	public function buildForm(FormBuilderInterface $builder, array $options) {
+	public function buildForm(FormBuilderInterface $builder, array $options): void {
 		/** @var AbstractUser $user */
 		$user = $builder->getData();
 		$this->setOptions($options);
@@ -111,7 +111,7 @@ class UserType extends AbstractUserForm {
 		}
 	}
 	
-	public function configureOptions(OptionsResolver $resolver) {
+	public function configureOptions(OptionsResolver $resolver): void {
 		parent::configureOptions($resolver);
 		$resolver->setDefaults([
 			'models' => [self::MODEL_EMAIL => true, self::MODEL_PASSWORD => true],

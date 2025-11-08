@@ -24,12 +24,12 @@ class EntityType extends AbstractType {
     {
     }
 	
-	public function buildForm(FormBuilderInterface $builder, array $options) {
+	public function buildForm(FormBuilderInterface $builder, array $options): void {
 		//		$builder->addModelTransformer(new EntityTransformer($options['em'], $options['class']));
 		$builder->addViewTransformer(new EntityTransformer($options['em'], $options['class']));
 	}
 	
-	public function configureOptions(OptionsResolver $resolver) {
+	public function configureOptions(OptionsResolver $resolver): void {
 		parent::configureOptions($resolver);
 		
 		$entityManagerNormalizer = function (Options $options, $em) {

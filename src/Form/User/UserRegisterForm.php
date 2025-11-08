@@ -12,7 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UserRegisterForm extends AbstractForm {
 	
-	public function buildForm(FormBuilderInterface $builder, array $options) {
+	public function buildForm(FormBuilderInterface $builder, array $options): void {
 		$creator = new FormCreator($builder, $options);
 		$creator->addForm('user', UserType::class)
 			->addModel(UserType::MODEL_NAME)
@@ -22,7 +22,7 @@ class UserRegisterForm extends AbstractForm {
 			->end();
 	}
 	
-	public function configureOptions(OptionsResolver $resolver) {
+	public function configureOptions(OptionsResolver $resolver): void {
 		$resolver->setDefaults([
 			'row_attr' => [
 				'class' => 'form-floating',

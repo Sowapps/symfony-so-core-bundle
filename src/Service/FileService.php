@@ -34,8 +34,6 @@ class FileService extends AbstractEntityService {
 	const TYPE_LARGE = 'large';
 	const TYPE_SMALL = 'small';
 	
-	protected Packages $packages;
-	
 	/**
      * FileService constructor
      *
@@ -46,9 +44,9 @@ class FileService extends AbstractEntityService {
      * @param StringHelper $stringHelper
      * @param array $config
      */
-    public function __construct(Packages $packages, protected TwigService $twig, protected ParameterBagInterface $parameters, protected UrlHelper $urlHelper, protected UrlGeneratorInterface $router, protected StringHelper $stringHelper, protected array $config) {
-		$this->packages = $packages;
-	}
+    public function __construct(protected Packages $packages, protected TwigService $twig, protected ParameterBagInterface $parameters, protected UrlHelper $urlHelper, protected UrlGeneratorInterface $router, protected StringHelper $stringHelper, protected array $config)
+    {
+    }
 	
 	public function formatFileArray(File $file, ?AbstractUser $user = null, ?ContextInterface $contextService = null): array {
 		return $file->jsonSerialize() + [

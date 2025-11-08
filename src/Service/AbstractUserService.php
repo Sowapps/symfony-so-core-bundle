@@ -20,8 +20,6 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
  */
 abstract class AbstractUserService extends AbstractEntityService {
 	
-	protected Security $security;
-	
 	/*
 	 * Muse be overridden
 	 */
@@ -44,10 +42,9 @@ abstract class AbstractUserService extends AbstractEntityService {
      * @param StringHelper $stringHelper
      * @param array $config
      */
-    public function __construct(protected UserPasswordHasherInterface $passwordEncoder, protected AccessDecisionManagerInterface $accessDecisionManager, Security $security,
-								protected StringHelper                $stringHelper, protected array $config) {
-		$this->security = $security;
-	}
+    public function __construct(protected UserPasswordHasherInterface $passwordEncoder, protected AccessDecisionManagerInterface $accessDecisionManager, protected Security $security, protected StringHelper                $stringHelper, protected array $config)
+    {
+    }
 	
 	public function getUserClass(): string {
 		return $this->config['class'];

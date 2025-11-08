@@ -8,7 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class UserRecoveryPasswordForm extends AbstractForm {
 	
-	public function buildForm(FormBuilderInterface $builder, array $options) {
+	public function buildForm(FormBuilderInterface $builder, array $options): void {
 		$creator = new FormCreator($builder, $options);
 		$creator->addForm('user', UserType::class)
 			->addModel(UserType::MODEL_PASSWORD)

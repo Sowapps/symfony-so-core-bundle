@@ -12,6 +12,7 @@ use Sowapps\SoCore\Entity\EmailMessage;
  * @method EmailMessage|null findOneBy(array $criteria, array $orderBy = null)
  * @method EmailMessage[]    findAll()
  * @method EmailMessage[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\Sowapps\SoCore\Entity\EmailMessage>
  */
 class EmailMessageRepository extends ServiceEntityRepository {
 	

@@ -12,6 +12,7 @@ use Sowapps\SoCore\Entity\EmailSubscription;
  * @method EmailSubscription|null findOneBy(array $criteria, array $orderBy = null)
  * @method EmailSubscription[]    findAll()
  * @method EmailSubscription[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\Sowapps\SoCore\Entity\EmailSubscription>
  */
 class EmailSubscriptionRepository extends ServiceEntityRepository {
 	

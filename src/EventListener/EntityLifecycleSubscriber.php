@@ -12,27 +12,18 @@ use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Sowapps\SoCore\Entity\AbstractEntity;
 use Sowapps\SoCore\Service\AbstractUserService;
 
-class EntityLifecycleSubscriber implements EventSubscriber {
-	
-	/**
-	 * EntityLifecycleSubscriber constructor
-	 *
-	 * @param AbstractUserService $userService
-	 */
-	public function __construct(protected AbstractUserService $userService)
+#[\Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener(event: Events::prePersist)]
+class EntityLifecycleSubscriber
+{
+    /**
+     * EntityLifecycleSubscriber constructor
+     *
+     * @param AbstractUserService $userService
+     */
+    public function __construct(protected AbstractUserService $userService)
     {
     }
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function getSubscribedEvents(): array {
-		return [
-			Events::prePersist,
-		];
-	}
-	
-	public function prePersist(LifecycleEventArgs $args) {
+    public function prePersist(LifecycleEventArgs $args) {
 		$entity = $args->getObject();
 		if( !($entity instanceof AbstractEntity) ) {
 			return;
@@ -51,5 +42,4 @@ class EntityLifecycleSubscriber implements EventSubscriber {
 			$entity->setCreateIp($_SERVER['REMOTE_ADDR'] ?? '127.0.0.1');
 		}
 	}
-	
 }

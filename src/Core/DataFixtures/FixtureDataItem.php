@@ -106,7 +106,7 @@ class FixtureDataItem {
 		if( $value[0] === '#' ) {
 			// Ref
 			$ref = substr($value, 1);
-			
+
 			return $fixture->getReference($ref);// TODO FIX
 		}
 		if( preg_match('#^(\w+)\((.*)\)$#', $value, $matches) ) {
