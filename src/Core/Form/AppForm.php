@@ -304,7 +304,7 @@ class AppForm implements FormInterface, IteratorAggregate {
 		return $this->form->isRoot();
 	}
 	
-	public function getIterator(): Traversable|array {
+	public function getIterator(): Traversable {
 		return $this->form->getIterator();
 	}
 	

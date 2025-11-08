@@ -3,7 +3,7 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace App\Doctrine;
+namespace Sowapps\SoCore\Doctrine;
 
 /**
  * https://mariadb.com/kb/en/st_distance_sphere/

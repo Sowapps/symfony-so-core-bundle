@@ -22,35 +22,35 @@ class FileTransformer implements DataTransformerInterface {
 	/**
 	 * Transforms an entity address to a form address
 	 *
-	 * @param File|null $file
+	 * @param File|null $value
 	 * @return File|null
 	 */
-	public function transform($file) {
-		if( !$file ) {
+	public function transform(mixed $value): mixed {
+		if( !$value ) {
 			return null;
 		}
-		return $file;
+		return $value;
 	}
 	
 	/**
 	 * Transforms a form address to an entity address
 	 *
-	 * @param File|null $file
+	 * @param File|null $value
 	 * @return File|null
 	 * @throws TransformationFailedException if object (issue) is not found.
 	 */
-	public function reverseTransform($file) {
-		if( !$file ) {
+	public function reverseTransform(mixed $value): mixed {
+		if( !$value ) {
 			return null;
 		}
 		
-		if( is_numeric($file) ) {
-			return $this->fileService->getFile($file);
+		if( is_numeric($value) ) {
+			return $this->fileService->getFile($value);
 		}
 //		if( $file instanceof UploadedFile ) {
 //			return $this->fileService->upload($file, null, null, new DateTime('+1 day'));
 //		}
 		
-		return $file;
+		return $value;
 	}
 }

@@ -3,7 +3,7 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace App\Doctrine;
+namespace Sowapps\SoCore\Doctrine;
 
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
 use Doctrine\ORM\Query\Lexer;
@@ -29,7 +29,7 @@ class MatchAgainst extends FunctionNode {
 	/** @var bool */
 	protected $queryExpansion = false;
 	
-	public function parse(Parser $parser) {
+	public function parse(Parser $parser): void {
 		// match
 		$parser->match(Lexer::T_IDENTIFIER);
 		$parser->match(Lexer::T_OPEN_PARENTHESIS);
@@ -97,7 +97,7 @@ class MatchAgainst extends FunctionNode {
 		$parser->match(Lexer::T_CLOSE_PARENTHESIS);
 	}
 	
-	public function getSql(SqlWalker $walker) {
+	public function getSql(SqlWalker $walker): string {
 		$fields = [];
 		
 		foreach( $this->pathExp as $pathExp ) {

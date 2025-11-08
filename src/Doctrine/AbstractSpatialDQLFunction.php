@@ -3,7 +3,7 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace App\Doctrine;
+namespace Sowapps\SoCore\Doctrine;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
@@ -46,7 +46,7 @@ class AbstractSpatialDQLFunction extends FunctionNode {
 	/**
 	 * @param Parser $parser
 	 */
-	public function parse(Parser $parser) {
+	public function parse(Parser $parser): void {
 		$lexer = $parser->getLexer();
 		
 		$parser->match(Lexer::T_IDENTIFIER);

@@ -24,7 +24,7 @@ class FormExtension extends AbstractTypeExtension {
 		$resolver->setDefault('require_id', false);
 	}
 	
-	public function buildView(FormView $view, FormInterface $form, array $options) {
+	public function buildView(FormView $view, FormInterface $form, array $options): void {
 		$view->vars['require_id'] = $options['require_id'];
 	}
 	
