@@ -26,7 +26,7 @@ abstract class AbstractEntityRepository extends ServiceEntityRepository {
 		throw new RuntimeException('Undefined getAlias() method');
 	}
 	
-	public function applySearchCondition(EntitySearch $search, string $field) {
+	public function applySearchCondition(EntitySearch $search, string $field): void {
 		// Default is to compare as LIKE '%...%'
 		$search->setFieldLike($field);
 	}
