@@ -13,6 +13,7 @@ use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Sowapps\SoCore\Core\Entity\EntityReference;
 use Sowapps\SoCore\Entity\AbstractEntity;
+use Symfony\Contracts\Service\Attribute\Required;
 
 abstract class AbstractEntityService {
 	
@@ -23,8 +24,8 @@ abstract class AbstractEntityService {
 	/**
 	 * @param LoggerInterface $logger
 	 * @return AbstractEntityService
-	 * @required
 	 */
+	#[Required]
 	public function setLogger(LoggerInterface $logger): AbstractEntityService {
 		$this->logger = $logger;
 		
@@ -34,8 +35,8 @@ abstract class AbstractEntityService {
 	/**
 	 * @param EntityManagerInterface $entityManager
 	 * @return AbstractEntityService
-	 * @required
 	 */
+	#[Required]
 	public function setEntityManager(EntityManagerInterface $entityManager): AbstractEntityService {
 		$this->entityManager = $entityManager;
 		

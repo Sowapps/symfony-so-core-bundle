@@ -5,6 +5,7 @@
 
 namespace Sowapps\SoCore\EventListener;
 
+use RuntimeException;
 use Sowapps\SoCore\Contracts\ContextInterface;
 use Sowapps\SoCore\Core\Locale\Currency\EuroCurrency;
 use Sowapps\SoCore\Service\DefaultContextService;
@@ -20,7 +21,11 @@ class LocaleSubscriber implements EventSubscriberInterface {
     }
 	
 	public function onKernelRequest(RequestEvent $event): void {
-		$this->contextService->setCurrentLanguage($this->languageService->getLanguageByLocale(DefaultContextService::DEFAULT_LANGUAGE), new EuroCurrency());
+		$language = $this->languageService->getLanguageByLocale(DefaultContextService::DEFAULT_LANGUAGE);
+		if( !$language ) {
+			throw new RuntimeException(sprintf('No language found for default locale "%s"', DefaultContextService::DEFAULT_LANGUAGE));
+		}
+		$this->contextService->setCurrentLanguage($language, new EuroCurrency());
 	}
 	
 	public static function getSubscribedEvents(): array {
