@@ -15,7 +15,7 @@ abstract class AbstractEnumType extends Type {
 	
 	protected array $values = [];
 	
-	public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string {
+	public function getSQLDeclaration(array $column, AbstractPlatform $platform): string {
 		$values = array_map(function ($val) {
 			return "'" . $val . "'";
 		}, $this->values);
