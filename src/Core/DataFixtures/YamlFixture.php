@@ -24,7 +24,7 @@ abstract class YamlFixture extends Fixture {
     {
     }
 	
-	public function load(ObjectManager $manager) {
+	public function load(ObjectManager $manager): void {
 		if( !$this->file ) {
 			// This own class is abstract & load nothing
 			return;
