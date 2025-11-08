@@ -4,7 +4,7 @@
  * @license https://opensource.org/licenses/MIT
  */
 
-namespace App\Core\Calendar;
+namespace Sowapps\SoCore\Service;
 
 use App\Core\Entity\TimeBoundable;
 use App\Core\Entity\TimeRange;
@@ -16,14 +16,13 @@ use RuntimeException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Class CalendarHelper
+ * Class CalendarService
  * This class is a helper calendar manipulation
  * Very useful to get absolute interval between two dates using specific units
  *
- * @package App\Core\Calendar
  * @see https://www.php.net/manual/fr/class.dateinterval.php
  */
-class CalendarHelper {
+class CalendarService {
 	
 	const UNIT_SET_TIME = 'time';
 	
@@ -79,7 +78,7 @@ class CalendarHelper {
 	
 	public function countSegments(DateTimeInterface $start, DateTimeInterface $end, int $segmentMinutes = 15): int {
 		// Segment count by 5 minutes
-		$interval = $this->getAbsoluteInterval($start, $end, [CalendarHelper::UNIT_MINUTE]);
+		$interval = $this->getAbsoluteInterval($start, $end, [CalendarService::UNIT_MINUTE]);
 		
 		return ceil($interval->i / $segmentMinutes);
 	}

@@ -3,7 +3,7 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
-namespace App\Core\Entity;
+namespace Sowapps\SoCore\Core\Entity;
 
 use DateTimeInterface;
 

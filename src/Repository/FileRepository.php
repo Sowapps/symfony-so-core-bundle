@@ -14,9 +14,9 @@ use Sowapps\SoCore\Entity\File;
  */
 class FileRepository extends AbstractEntityRepository {
 	
-	public function __construct(ManagerRegistry $registry)
-    {
-    }
+	public function __construct(ManagerRegistry $registry, string $entityClass) {
+		parent::__construct($registry, $entityClass);
+	}
 	
 	public function getAlias(): string {
 		return 'file';

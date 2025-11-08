@@ -54,15 +54,15 @@ class EntityTransformer implements DataTransformerInterface {
 	/**
 	 * Transforms an entity to an id
 	 *
-	 * @param AbstractEntity|null $entity
+	 * @param AbstractEntity|null $value
 	 * @return int|null
 	 */
-	public function transform($entity): ?int {
-		if( !$entity ) {
+	public function transform($value): ?int {
+		if( !$value ) {
 			return null;
 		}
 		
-		return $entity->getId();
+		return $value->getId();
 	}
 	
 	/**
