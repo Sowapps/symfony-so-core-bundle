@@ -9,11 +9,11 @@ use DateInterval;
 use DateTime;
 use Sowapps\SoCore\Entity\AbstractUser;
 use Sowapps\SoCore\Repository\AbstractUserRepository;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
-use Symfony\Component\Security\Core\Security;
 
 /**
  * Please, override this service in your application

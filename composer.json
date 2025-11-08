@@ -11,21 +11,26 @@
 		"doctrine/doctrine-bundle": "^2.12",
 		"doctrine/orm": "^3.0",
 		"doctrine/collections": "^2.4",
-		"symfony/form": "^6.4|^7.0",
+		"symfony/asset": "^6.4",
+		"symfony/form": "^6.4",
 		"symfony/framework-bundle": "^7.0",
 		"symfony/mailer": "^6.4",
 		"symfony/mime": "^6.4",
-		"symfony/security-bundle": "^7.2",
+		"symfony/security-bundle": "^6.4",
 		"symfony/twig-bundle": "6.*",
 		"symfony/validator": "^7.3",
+		"symfony/yaml": "^6.4",
+		"symfonycasts/verify-email-bundle": "^1.17",
 		"twig/cssinliner-extra": "3.*",
 		"twig/extra-bundle": "^2.12|^3.0",
-		"twig/twig": "^3.0"
+		"twig/twig": "^3.0",
+		"symfony/webpack-encore-bundle": "^2.0"
 	},
 	"require-dev": {
 		"symfony/phpunit-bridge": "^7.3",
 		"phpunit/phpunit": "^12.4",
-		"rector/rector": "^2.2"
+		"rector/rector": "^2.2",
+		"doctrine/doctrine-fixtures-bundle": "^4.3"
 	},
 	"autoload": {
 		"psr-4": {

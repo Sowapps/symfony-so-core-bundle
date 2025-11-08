@@ -10,7 +10,6 @@ use DateTimeImmutable;
 use DateTimeZone;
 use RuntimeException;
 use Sowapps\SoCore\Entity\AbstractEntity;
-use Sowapps\SoCore\Graphic\PresentationPicture;
 
 class FixtureDataItem {
 	
@@ -23,7 +22,7 @@ class FixtureDataItem {
 	/**
 	 * FixtureDataItem constructor
 	 *
-	 * @param string $ref
+	 * @param string|null $ref
 	 * @param array $data
 	 */
 	public function __construct(?string $ref, array $data) {

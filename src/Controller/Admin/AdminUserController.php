@@ -5,8 +5,6 @@
 
 namespace Sowapps\SoCore\Controller\Admin;
 
-use App\TestEntity;
-use App\TestForm;
 use Sowapps\SoCore\Core\Controller\AbstractAdminController;
 use Sowapps\SoCore\Entity\AbstractUser;
 use Sowapps\SoCore\Form\User\UserAdminForm;
