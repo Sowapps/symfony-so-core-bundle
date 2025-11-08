@@ -21,7 +21,8 @@
 	},
 	"require-dev": {
 		"symfony/phpunit-bridge": "^7.3",
-		"phpunit/phpunit": "^12.4"
+		"phpunit/phpunit": "^12.4",
+		"rector/rector": "^2.2"
 	},
 	"autoload": {
 		"psr-4": {
