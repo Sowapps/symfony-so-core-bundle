@@ -36,7 +36,6 @@ class TwigExtension {
 	/**
 	 * AppTwigExtension constructor
 	 *
-	 * @param EntrypointLookupInterface $entrypointLookup
 	 * @param TranslatorInterface $translator
 	 * @param ParameterBagInterface $parameters
 	 * @param TwigService $twig
@@ -45,7 +44,14 @@ class TwigExtension {
 	 * @param LanguageService $languageService
 	 * @param string $publicPath
 	 */
-	public function __construct(protected EntrypointLookupInterface $entrypointLookup, protected TranslatorInterface $translator, protected ParameterBagInterface $parameters, protected TwigService $twig, protected FileService               $fileService, protected ContextInterface $contextService, protected LanguageService $languageService, protected string $publicPath)
+	public function __construct(
+		protected TranslatorInterface   $translator,
+		protected ParameterBagInterface $parameters,
+		protected TwigService           $twig,
+		protected FileService           $fileService,
+		protected ContextInterface      $contextService,
+		protected LanguageService       $languageService,
+		protected string                $publicPath)
     {
     }
 	
@@ -271,20 +277,8 @@ class TwigExtension {
 		return $this->renderAlert('success', $messages, $domain);
 	}
 	
-	#[\Twig\Attribute\AsTwigFunction('encore_entry_css_source')]
-	public function getEncoreEntryCssSource(string $entryName): string {
-		$this->entrypointLookup->reset();
-		$files = $this->entrypointLookup->getCssFiles($entryName);
-		$source = '';
-		foreach( $files as $file ) {
-			$source .= file_get_contents($this->publicPath . '/' . $file);
-		}
-		
-		return $source;
-	}
-	
 	/**
-	 * @param string|File $file
+	 * @param string|File|LocalHttpFile $file
 	 * @param WrappedTemplatedEmail|null $email
 	 * @return string
 	 */

@@ -103,11 +103,11 @@ class FixtureDataItem {
 			return $value;
 		}
 		// String
-		if( $value[0] === '#' ) {
+		if( $value[0] === '$' ) {
 			// Ref
-			$ref = substr($value, 1);
+			[$refName, $refClass] = explode(':', substr($value, 1), 2);
 
-			return $fixture->getReference($ref);// TODO FIX
+			return $fixture->getReference($refName, $refClass);
 		}
 		if( preg_match('#^(\w+)\((.*)\)$#', $value, $matches) ) {
 			// function
