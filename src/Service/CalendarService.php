@@ -4,7 +4,7 @@
  * @license https://opensource.org/licenses/MIT
  */
 
-namespace App\Core\Calendar;
+namespace Sowapps\SoCore\Service;
 
 use App\Core\Entity\TimeBoundable;
 use App\Core\Entity\TimeRange;
@@ -16,14 +16,13 @@ use RuntimeException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Class CalendarHelper
+ * Class CalendarService
  * This class is a helper calendar manipulation
  * Very useful to get absolute interval between two dates using specific units
  *
- * @package App\Core\Calendar
  * @see https://www.php.net/manual/fr/class.dateinterval.php
  */
-class CalendarHelper {
+class CalendarService {
 	
 	const UNIT_SET_TIME = 'time';
 	
@@ -51,16 +50,14 @@ class CalendarHelper {
 		self::UNIT_MICROSECOND => null,
 	];
 	
-	protected TranslatorInterface $translator;
-	
 	/**
 	 * CalendarHelper constructor
 	 *
 	 * @param TranslatorInterface $translator
 	 */
-	public function __construct(TranslatorInterface $translator) {
-		$this->translator = $translator;
-	}
+	public function __construct(protected TranslatorInterface $translator)
+    {
+    }
 	
 	public function isOverlapping(TimeBoundable $subject, TimeBoundable $other): bool {
 		return $subject->getEnd() > $other->getStart() && $subject->getStart() < $other->getEnd();
@@ -81,13 +78,13 @@ class CalendarHelper {
 	
 	public function countSegments(DateTimeInterface $start, DateTimeInterface $end, int $segmentMinutes = 15): int {
 		// Segment count by 5 minutes
-		$interval = $this->getAbsoluteInterval($start, $end, [CalendarHelper::UNIT_MINUTE]);
+		$interval = $this->getAbsoluteInterval($start, $end, [CalendarService::UNIT_MINUTE]);
 		
 		return ceil($interval->i / $segmentMinutes);
 	}
 	
 	public function compare(DateTimeInterface $date1, DateTimeInterface $date2): bool {
-		return $date1 < $date2 ? -1 : ($date1 > $date2 ? 1 : 0);
+		return $date1 <=> $date2;
 	}
 	
 	public function isSameDate(DateTimeInterface $date1, DateTimeInterface $date2): bool {
@@ -169,13 +166,10 @@ class CalendarHelper {
 	 */
 	public function convertToAbsolute(DateInterval $interval, $units): DateInterval {
 		if( is_string($units) ) {
-			switch( $units ) {
-				case self::UNIT_SET_TIME:
-					$units = [self::UNIT_HOUR, self::UNIT_MINUTE];
-					break;
-				default:
-					throw new RuntimeException(sprintf('Invalid unit set "%s"', $units));
-			}
+			$units = match ($units) {
+                self::UNIT_SET_TIME => [self::UNIT_HOUR, self::UNIT_MINUTE],
+                default => throw new RuntimeException(sprintf('Invalid unit set "%s"', $units)),
+            };
 		}
 		$absInterval = new DateInterval('PT0S');
 		$absInterval->invert = $interval->invert;

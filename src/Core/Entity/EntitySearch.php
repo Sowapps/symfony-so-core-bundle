@@ -11,8 +11,6 @@ use Sowapps\SoCore\Core\Repository\AbstractEntityRepository;
 
 class EntitySearch {
 	
-	protected AbstractEntityRepository $repository;
-	
 	protected string $alias;
 	
 	protected ?QueryBuilder $query;
@@ -33,9 +31,8 @@ class EntitySearch {
 	 * @param AbstractEntityRepository $repository
 	 * @param string|null $alias
 	 */
-	public function __construct(AbstractEntityRepository $repository, ?string $alias = null) {
-		$this->repository = $repository;
-		$this->alias = $alias ?? $repository->getAlias();
+	public function __construct(protected AbstractEntityRepository $repository, ?string $alias = null) {
+		$this->alias = $alias ?? $this->repository->getAlias();
 		$this->query = null;
 		$this->terms = [];
 		$this->publicOnly = true;
@@ -63,7 +60,7 @@ class EntitySearch {
 	protected function getTermParameter(?string $pattern = null): string {
 		$term = &$this->terms[$this->processingTerm];
 		$value = $pattern ? sprintf($pattern, $term[0]) : $term[0];
-		$key = 'TERM_' . crc32($value) . '_' . count($term[1]);
+		$key = 'TERM_' . crc32((string) $value) . '_' . count($term[1]);
 		// Doctrine is not allowing reuse of parameter name
 		$term[1][] = $key;
 		$this->query->setParameter($key, $value);

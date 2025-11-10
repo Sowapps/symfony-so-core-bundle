@@ -1,23 +1,36 @@
 {
 	"name": "sowapps/so-core",
 	"type": "symfony-bundle",
-	"keywords": [
-		"symfony-ux"
-	],
 	"license": "MIT",
-	"minimum-stability": "stable",
-	"prefer-stable": true,
+	"keywords": ["symfony-bundle"],
 	"require": {
-		"php": ">=8.1",
+		"php": ">=8.2",
 		"ext-ctype": "*",
 		"ext-iconv": "*",
 		"ext-intl": "*",
-		"doctrine/doctrine-fixtures-bundle": "*",
-		"symfony/flex": "2.*",
-		"symfony/twig-bundle": "6.1.*",
+		"doctrine/doctrine-bundle": "^2.12",
+		"doctrine/orm": "^3.0",
+		"doctrine/collections": "^2.4",
+		"symfony/asset": "^7.3",
+		"symfony/form": "^7.3",
+		"symfony/framework-bundle": "^7.3",
+		"symfony/mailer": "^7.3",
+		"symfony/mime": "^7.3",
+		"symfony/security-bundle": "^7.3",
+		"symfony/twig-bundle": "^7.3",
+		"symfony/validator": "^7.3",
+		"symfony/yaml": "^7.3",
+		"symfonycasts/verify-email-bundle": "^1.17",
 		"twig/cssinliner-extra": "3.*",
 		"twig/extra-bundle": "^2.12|^3.0",
-		"twig/twig": "^2.12|^3.0"
+		"twig/twig": "^3.0",
+		"symfony/webpack-encore-bundle": "^2.0"
+	},
+	"require-dev": {
+		"symfony/phpunit-bridge": "^7.3",
+		"phpunit/phpunit": "^12.4",
+		"rector/rector": "^2.2",
+		"doctrine/doctrine-fixtures-bundle": "^4.3"
 	},
 	"autoload": {
 		"psr-4": {
@@ -29,24 +42,15 @@
 			"Sowapps\\SoCore\\Tests\\": "tests/"
 		}
 	},
-	"extra": {
-		"symfony": {
-			"allow-contrib": false,
-			"require": "6.1.*"
-		}
+	"suggest": {
+		"doctrine/orm": "Requis si vous activez les fonctionnalités Doctrine de ce bundle"
 	},
 	"authors": [
 		{
 			"name": "Florent HAZARD",
 			"email": "contact@sowapps.com",
-			"homepage": "http://sowapps.com",
+			"homepage": "https://sowapps.com",
 			"role": "Developer"
 		}
-	],
-	"config": {
-		"allow-plugins": {
-			"symfony/flex": true,
-			"symfony/runtime": true
-		}
-	}
+	]
 }

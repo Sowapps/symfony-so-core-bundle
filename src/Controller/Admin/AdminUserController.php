@@ -5,8 +5,6 @@
 
 namespace Sowapps\SoCore\Controller\Admin;
 
-use App\TestEntity;
-use App\TestForm;
 use Sowapps\SoCore\Core\Controller\AbstractAdminController;
 use Sowapps\SoCore\Entity\AbstractUser;
 use Sowapps\SoCore\Form\User\UserAdminForm;
@@ -141,7 +139,7 @@ class AdminUserController extends AbstractAdminController {
 			}
 			$userService->update($user);
 			$userPictureForm->addSuccess('page.so_core_admin_user_edit.picture.success');
-			
+
 			//			return $this->redirectToRequest($request, $userPasswordForm);
 		}
 		

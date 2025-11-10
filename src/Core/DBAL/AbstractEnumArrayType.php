@@ -6,6 +6,7 @@
 namespace Sowapps\SoCore\Core\DBAL;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\Exception\SerializationFailed;
 use Doctrine\DBAL\Types\JsonType;
 use InvalidArgumentException;
 
@@ -27,7 +28,10 @@ abstract class AbstractEnumArrayType extends JsonType {
 		}
 	}
 	
-	public function convertToDatabaseValue($value, AbstractPlatform $platform) {
+	/**
+	 * @throws SerializationFailed
+	 */
+	public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string {
 		// Not an array or having unknown values
 		if( $value !== null && (!is_array($value) || array_diff($value, $this->getValues())) ) {
 			throw new InvalidArgumentException(sprintf('Invalid value of "%s" type.', $this->getName()));

@@ -10,10 +10,6 @@ use Symfony\Component\HttpFoundation\File\File as SymfonyFile;
 
 class LocalHttpFile extends SymfonyFile {
 	
-	protected string $url;
-	
-	protected ?File $file = null;
-	
 	/**
 	 * LocalHttpFile constructor
 	 *
@@ -22,10 +18,8 @@ class LocalHttpFile extends SymfonyFile {
 	 * @param File|null $file
 	 * @param bool $checkPath
 	 */
-	public function __construct(string $path, string $url, ?File $file = null, bool $checkPath = true) {
+	public function __construct(string $path, protected string $url, protected ?File $file = null, bool $checkPath = true) {
 		parent::__construct($path, $checkPath);
-		$this->url = $url;
-		$this->file = $file;
 	}
 	
 	/**

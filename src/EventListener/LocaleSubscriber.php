@@ -5,6 +5,7 @@
 
 namespace Sowapps\SoCore\EventListener;
 
+use RuntimeException;
 use Sowapps\SoCore\Contracts\ContextInterface;
 use Sowapps\SoCore\Core\Locale\Currency\EuroCurrency;
 use Sowapps\SoCore\Service\DefaultContextService;
@@ -15,17 +16,16 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class LocaleSubscriber implements EventSubscriberInterface {
 	
-	private ContextInterface $contextService;
-	
-	private LanguageService $languageService;
-	
-	public function __construct(ContextInterface $contextService, LanguageService $languageService) {
-		$this->contextService = $contextService;
-		$this->languageService = $languageService;
-	}
+	public function __construct(private readonly ContextInterface $contextService, private readonly LanguageService $languageService)
+    {
+    }
 	
 	public function onKernelRequest(RequestEvent $event): void {
-		$this->contextService->setCurrentLanguage($this->languageService->getLanguageByLocale(DefaultContextService::DEFAULT_LANGUAGE), new EuroCurrency());
+		$language = $this->languageService->getLanguageByLocale(DefaultContextService::DEFAULT_LANGUAGE);
+		if( !$language ) {
+			throw new RuntimeException(sprintf('No language found for default locale "%s"', DefaultContextService::DEFAULT_LANGUAGE));
+		}
+		$this->contextService->setCurrentLanguage($language, new EuroCurrency());
 	}
 	
 	public static function getSubscribedEvents(): array {

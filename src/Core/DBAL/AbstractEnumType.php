@@ -15,10 +15,8 @@ abstract class AbstractEnumType extends Type {
 	
 	protected array $values = [];
 	
-	public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string {
-		$values = array_map(function ($val) {
-			return "'" . $val . "'";
-		}, $this->values);
+	public function getSQLDeclaration(array $column, AbstractPlatform $platform): string {
+		$values = array_map(fn($val) => "'" . $val . "'", $this->values);
 		
 		return 'ENUM(' . implode(', ', $values) . ')';
 	}
@@ -27,11 +25,11 @@ abstract class AbstractEnumType extends Type {
 		return $this->values;
 	}
 	
-	public function convertToPHPValue($value, AbstractPlatform $platform) {
+	public function convertToPHPValue($value, AbstractPlatform $platform): mixed {
 		return $value;
 	}
 	
-	public function convertToDatabaseValue($value, AbstractPlatform $platform) {
+	public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed {
 		if( $value !== null && !in_array($value, $this->values) ) {
 			throw new InvalidArgumentException("Invalid '" . $this->name . "' value.");
 		}

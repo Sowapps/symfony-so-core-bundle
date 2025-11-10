@@ -56,9 +56,7 @@ abstract class AbstractForm extends AbstractType {
 	public function buildChoices(array $values, $labelGenerator, bool|string $domain = null): array {
 		if( is_string($labelGenerator) ) {
 			$pattern = $labelGenerator;
-			$labelGenerator = function ($value) use ($pattern, $domain) {
-				return sprintf($pattern, $value ?? 'unknown');
-			};
+			$labelGenerator = (fn($value) => sprintf($pattern, $value ?? 'unknown'));
 		}
 		
 		return array_combine(array_map($labelGenerator, $values), $values);

@@ -42,8 +42,6 @@ class FileNameSlugger implements SluggerInterface, LocaleAwareInterface {
 		'zh'      => 'Han-Latin',
 	];
 	
-	private $defaultLocale;
-	
 	private $symbolsMap = [
 		'en' => ['@' => 'at', '&' => 'and'],
 	];
@@ -58,12 +56,10 @@ class FileNameSlugger implements SluggerInterface, LocaleAwareInterface {
 	/**
 	 * @param array|Closure|null $symbolsMap
 	 */
-	public function __construct(string $defaultLocale = null, $symbolsMap = null) {
+	public function __construct(private ?string $defaultLocale = null, $symbolsMap = null) {
 		if( null !== $symbolsMap && !is_array($symbolsMap) && !$symbolsMap instanceof Closure ) {
 			throw new TypeError(sprintf('Argument 2 passed to "%s()" must be array, Closure or null, "%s" given.', __METHOD__, gettype($symbolsMap)));
 		}
-		
-		$this->defaultLocale = $defaultLocale;
 		$this->symbolsMap = $symbolsMap ?? $this->symbolsMap;
 	}
 	
@@ -85,10 +81,10 @@ class FileNameSlugger implements SluggerInterface, LocaleAwareInterface {
 	 * {@inheritdoc}
 	 */
 	public function slug(string $string, string $separator = '-', string $locale = null): AbstractUnicodeString {
-		$locale = $locale ?? $this->defaultLocale;
+		$locale ??= $this->defaultLocale;
 		
 		$transliterator = [];
-		if( $locale && ('de' === $locale || 0 === strpos($locale, 'de_')) ) {
+		if( $locale && ('de' === $locale || str_starts_with($locale, 'de_')) ) {
 			// Use the shortcut for German in UnicodeString::ascii() if possible (faster and no requirement on intl)
 			$transliterator = ['de-ASCII'];
 		} elseif( function_exists('transliterator_transliterate') && $locale ) {
@@ -97,9 +93,7 @@ class FileNameSlugger implements SluggerInterface, LocaleAwareInterface {
 		
 		if( $this->symbolsMap instanceof \Closure ) {
 			$symbolsMap = $this->symbolsMap;
-			array_unshift($transliterator, static function ($s) use ($symbolsMap, $locale) {
-				return $symbolsMap($s, $locale);
-			});
+			array_unshift($transliterator, static fn($s) => $symbolsMap($s, $locale));
 		}
 		
 		$unicodeString = (new UnicodeString($string))->ascii($transliterator);

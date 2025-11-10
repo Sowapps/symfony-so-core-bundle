@@ -18,20 +18,7 @@ use Twig\Environment as TwigService;
 
 class EmailTestCommand extends Command {
 	
-	private array $config;
-	
-	private TranslatorInterface $translator;
-	
-	private MailerInterface $mailer;
-	
-	private TwigService $twig;
-	
-	public function __construct(TranslatorInterface $translator, MailerInterface $mailer, TwigService $twig, array $configEmail) {
-		$this->config = $configEmail;
-		$this->translator = $translator;
-		$this->mailer = $mailer;
-		$this->twig = $twig;
-		
+	public function __construct(private readonly TranslatorInterface $translator, private readonly MailerInterface $mailer, private readonly TwigService $twig, private array $config) {
 		parent::__construct();
 	}
 	

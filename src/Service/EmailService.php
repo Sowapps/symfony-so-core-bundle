@@ -26,32 +26,18 @@ class EmailService extends AbstractEntityService {
 	 */
 	const TOKEN_VIEW_ONLINE = '###EMAIL_ONLINE_VIEW_LINK###';
 	
-	protected MailerInterface $mailer;
-	
-	protected TwigService $twig;
-	
-	protected UrlGeneratorInterface $router;
-	
-	protected StringHelper $stringHelper;
-	
-	protected array $config;
-	
 	/**
-	 * EmailService constructor
-	 *
-	 * @param MailerInterface $mailer
-	 * @param TwigService $twig
-	 * @param UrlGeneratorInterface $router
-	 * @param StringHelper $stringHelper
-	 * @param array $configEmail
-	 */
-	public function __construct(MailerInterface $mailer, TwigService $twig, UrlGeneratorInterface $router, StringHelper $stringHelper, array $configEmail) {
-		$this->mailer = $mailer;
-		$this->twig = $twig;
-		$this->router = $router;
-		$this->stringHelper = $stringHelper;
-		$this->config = $configEmail;
-	}
+     * EmailService constructor
+     *
+     * @param MailerInterface $mailer
+     * @param TwigService $twig
+     * @param UrlGeneratorInterface $router
+     * @param StringHelper $stringHelper
+     * @param array $config
+     */
+    public function __construct(protected MailerInterface $mailer, protected TwigService $twig, protected UrlGeneratorInterface $router, protected StringHelper $stringHelper, protected array $config)
+    {
+    }
 	
 	/**
 	 * @param $emailMessageId

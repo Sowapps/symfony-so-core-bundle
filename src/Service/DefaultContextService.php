@@ -19,27 +19,13 @@ class DefaultContextService implements ContextInterface {
 	
 	const DEFAULT_LANGUAGE = 'fr';
 	
-	protected Kernel $kernel;
-	
-	protected RequestStack $requestStack;
-	
-	protected TranslatorInterface $translator;
-	
-	protected UrlGeneratorInterface $router;
-	
 	protected ?LocaleFormatter $localeFormatter = null;
-	
-	protected ?Environment $environment = null;
 	
 	protected ?Language $currentLanguage = null;
 	
-	public function __construct(Kernel $kernel, RequestStack $requestStack, TranslatorInterface $translator, UrlGeneratorInterface $router, Environment $environment) {
-		$this->kernel = $kernel;
-		$this->requestStack = $requestStack;
-		$this->translator = $translator;
-		$this->router = $router;
-		$this->environment = $environment;
-	}
+	public function __construct(protected Kernel $kernel, protected RequestStack $requestStack, protected TranslatorInterface $translator, protected UrlGeneratorInterface $router, protected ?Environment $environment)
+    {
+    }
 	
 	public function isDebug(): bool {
 		return $this->kernel->isDebug();

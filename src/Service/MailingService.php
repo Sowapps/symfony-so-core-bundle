@@ -16,21 +16,15 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class MailingService {
 	
-	protected TranslatorInterface $translator;
-	
-	protected EmailService $emailService;
-	
 	/**
 	 * MailingService constructor
 	 *
 	 * @param TranslatorInterface $translator
 	 * @param EmailService $emailService
 	 */
-	public function __construct(TranslatorInterface $translator, EmailService $emailService) {
-		// Should never use another service, absolutely no business service !
-		$this->translator = $translator;
-		$this->emailService = $emailService;
-	}
+	public function __construct(protected TranslatorInterface $translator, protected EmailService $emailService)
+    {
+    }
 	
 	public function getBasicTrans(): array {
 		return [

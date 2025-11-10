@@ -15,7 +15,7 @@ class SoCoreBundle extends AbstractBundle {
 		$definition->rootNode()
 			->addDefaultsIfNotSet()
 			->children()
-			
+
 ->arrayNode('user')
 	->children()
 		->scalarNode('class')->defaultValue('\App\Entity\User')->end()
@@ -73,7 +73,7 @@ class SoCoreBundle extends AbstractBundle {
 		->scalarNode('public_path')->defaultValue('%kernel.project_dir%/public')->end()
 	->end()
 ->end()
-			
+
 			->end();
 		// @formatter:on
 		

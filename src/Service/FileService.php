@@ -34,39 +34,19 @@ class FileService extends AbstractEntityService {
 	const TYPE_LARGE = 'large';
 	const TYPE_SMALL = 'small';
 	
-	protected Packages $packages;
-	
-	protected TwigService $twig;
-	
-	protected ParameterBagInterface $parameters;
-	
-	protected UrlHelper $urlHelper;
-	
-	protected UrlGeneratorInterface $router;
-	
-	protected StringHelper $stringHelper;
-	
-	protected array $config;
-	
 	/**
-	 * FileService constructor
-	 *
-	 * @param Packages $packages
-	 * @param TwigService $twig
-	 * @param UrlHelper $urlHelper
-	 * @param UrlGeneratorInterface $router
-	 * @param StringHelper $stringHelper
-	 * @param array $configFile
-	 */
-	public function __construct(Packages $packages, TwigService $twig, ParameterBagInterface $parameters, UrlHelper $urlHelper, UrlGeneratorInterface $router, StringHelper $stringHelper, array $configFile) {
-		$this->packages = $packages;
-		$this->twig = $twig;
-		$this->parameters = $parameters;
-		$this->urlHelper = $urlHelper;
-		$this->router = $router;
-		$this->stringHelper = $stringHelper;
-		$this->config = $configFile;
-	}
+     * FileService constructor
+     *
+     * @param Packages $packages
+     * @param TwigService $twig
+     * @param UrlHelper $urlHelper
+     * @param UrlGeneratorInterface $router
+     * @param StringHelper $stringHelper
+     * @param array $config
+     */
+    public function __construct(protected Packages $packages, protected TwigService $twig, protected ParameterBagInterface $parameters, protected UrlHelper $urlHelper, protected UrlGeneratorInterface $router, protected StringHelper $stringHelper, protected array $config)
+    {
+    }
 	
 	public function formatFileArray(File $file, ?AbstractUser $user = null, ?ContextInterface $contextService = null): array {
 		return $file->jsonSerialize() + [
@@ -111,7 +91,7 @@ class FileService extends AbstractEntityService {
 			$name = $entity->getName();
 			// Ensure output name is having the extension of the file
 			$extension = $entity->getExtension();
-			if( substr($name, -strlen($extension)) !== $extension ) {
+			if( !str_ends_with((string) $name, (string) $extension) ) {
 				$name .= '.' . $extension;
 			}
 			$entity->setOutputName($slugger->slug($name));
@@ -141,7 +121,7 @@ class FileService extends AbstractEntityService {
 		try {
 			// Require to be stored in db, need an id
 			$uploadedFile->move($this->getStoreUri($file), $file->getLocalName());
-		} catch( FileException $e ) {
+		} catch( FileException ) {
 			$this->entityManager->remove($file);
 			$this->entityManager->flush();
 			
@@ -171,7 +151,7 @@ class FileService extends AbstractEntityService {
 		
 		try {
 			$filesystem->copy($filePath, $this->getStoreUri($file) . DIRECTORY_SEPARATOR . $file->getLocalName());
-		} catch( IOException $e ) {
+		} catch( IOException ) {
 			$this->entityManager->remove($file);
 			$this->entityManager->flush();
 			

@@ -12,13 +12,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 class EmailMessage extends AbstractEntity {
 	
 	#[ORM\Column(type: 'datetime', nullable: true)]
-	private ?DateTime $sendDate;
+	private ?DateTime $sendDate = null;
 	
 	#[ORM\Column(type: 'datetime', nullable: true)]
-	private ?DateTime $openDate;
+	private ?DateTime $openDate = null;
 	
 	#[ORM\Column(type: 'datetime', nullable: true)]
-	private ?DateTime $onlineExpireDate;
+	private ?DateTime $onlineExpireDate = null;
 	
 	#[ORM\Column(type: 'string', length: 32)]
 	private ?string $privateKey = null;

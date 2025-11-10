@@ -13,7 +13,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class LanguageForm extends AbstractForm {
 	
-	public function buildForm(FormBuilderInterface $builder, array $options) {
+	public function buildForm(FormBuilderInterface $builder, array $options): void {
 		/** @var FormBuilder $builder */
 		$builder
 			->add('key', null, [
@@ -38,7 +38,7 @@ class LanguageForm extends AbstractForm {
 			]);
 	}
 	
-	public function configureOptions(OptionsResolver $resolver) {
+	public function configureOptions(OptionsResolver $resolver): void {
 		parent::configureOptions($resolver);
 		$resolver->setDefaults([
 			'data_class'   => Language::class,

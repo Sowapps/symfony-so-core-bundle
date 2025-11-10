@@ -9,7 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UserPictureForm extends AbstractForm {
 	
-	public function buildForm(FormBuilderInterface $builder, array $options) {
+	public function buildForm(FormBuilderInterface $builder, array $options): void {
 		//		$builder->add('user', UserType::class, [
 		//			'models' => [UserType::MODEL_PICTURE => true],
 		//			'label' => false,
@@ -21,7 +21,7 @@ class UserPictureForm extends AbstractForm {
 			->end();
 	}
 	
-	public function configureOptions(OptionsResolver $resolver) {
+	public function configureOptions(OptionsResolver $resolver): void {
 		parent::configureOptions($resolver);
 		$resolver->setDefaults([
 			//			'label_attr' => ['class' => 'd-none'],

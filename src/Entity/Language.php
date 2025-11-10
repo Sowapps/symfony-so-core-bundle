@@ -32,8 +32,8 @@ class Language extends AbstractEntity {
 	/**
 	 * @return string
 	 */
-	public function __toString() {
-		return $this->key;
+	public function __toString(): string {
+		return (string) $this->key;
 	}
 	
 	public function getHttpLocale(): ?string {

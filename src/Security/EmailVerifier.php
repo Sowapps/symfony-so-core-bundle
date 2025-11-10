@@ -10,17 +10,9 @@ use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
 class EmailVerifier {
 	
-	private VerifyEmailHelperInterface $verifyEmailHelper;
-	
-	private MailingService $mailingService;
-	
-	private AbstractUserService $userService;
-	
-	public function __construct(VerifyEmailHelperInterface $helper, MailingService $mailingService, AbstractUserService $userService) {
-		$this->verifyEmailHelper = $helper;
-		$this->mailingService = $mailingService;
-		$this->userService = $userService;
-	}
+	public function __construct(private readonly VerifyEmailHelperInterface $verifyEmailHelper, private readonly MailingService $mailingService, private readonly AbstractUserService $userService)
+    {
+    }
 	
 	public function sendEmailConfirmation(AbstractUser $user): void {
 		$signatureComponents = $this->verifyEmailHelper->generateSignature('so_core_admin_verify_email', $user->getId(), $user->getEmail(), ['id' => $user->getId()]);

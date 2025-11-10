@@ -9,20 +9,15 @@ use JsonSerializable;
 
 class EntityReference implements JsonSerializable {
 	
-	protected string $class;
-	
-	protected int $id;
-	
 	/**
 	 * SerializableEntity constructor
 	 *
 	 * @param string $class
 	 * @param int $id
 	 */
-	public function __construct(string $class, int $id) {
-		$this->class = $class;
-		$this->id = $id;
-	}
+	public function __construct(protected string $class, protected int $id)
+    {
+    }
 	
 	/**
 	 * @return string
@@ -39,7 +34,7 @@ class EntityReference implements JsonSerializable {
 	}
 	
 	public static function fromEntity(Persistable $entity): self {
-		return new static(get_class($entity), $entity->getId());
+		return new static($entity::class, $entity->getId());
 	}
 	
 	public function jsonSerialize(): array {

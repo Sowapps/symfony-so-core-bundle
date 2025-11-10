@@ -128,9 +128,7 @@ class Workflow {
 	
 	public function getState(): array {
 		$state = ['activeStep' => $this->activeStep->getKey()];
-		$state['steps'] = array_map(function (WorkflowStep $step) {
-			return $step->getState();
-		}, $this->steps);
+		$state['steps'] = array_map(fn(WorkflowStep $step) => $step->getState(), $this->steps);
 		
 		return $state;
 	}

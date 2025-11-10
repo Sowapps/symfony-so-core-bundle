@@ -9,14 +9,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UserUpdateForm extends AbstractForm {
 	
-	public function buildForm(FormBuilderInterface $builder, array $options) {
+	public function buildForm(FormBuilderInterface $builder, array $options): void {
 		$creator = new FormCreator($builder, $options);
 		$creator->addForm('user', UserType::class)
 			->addModel(UserType::MODEL_EMAIL)
 			->end();
 	}
 	
-	public function configureOptions(OptionsResolver $resolver) {
+	public function configureOptions(OptionsResolver $resolver): void {
 		parent::configureOptions($resolver);
 		$resolver->setDefaults([
 			'label_attr' => ['class' => 'd-none'],

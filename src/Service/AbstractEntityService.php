@@ -13,6 +13,7 @@ use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Sowapps\SoCore\Core\Entity\EntityReference;
 use Sowapps\SoCore\Entity\AbstractEntity;
+use Symfony\Contracts\Service\Attribute\Required;
 
 abstract class AbstractEntityService {
 	
@@ -23,8 +24,8 @@ abstract class AbstractEntityService {
 	/**
 	 * @param LoggerInterface $logger
 	 * @return AbstractEntityService
-	 * @required
 	 */
+	#[Required]
 	public function setLogger(LoggerInterface $logger): AbstractEntityService {
 		$this->logger = $logger;
 		
@@ -34,8 +35,8 @@ abstract class AbstractEntityService {
 	/**
 	 * @param EntityManagerInterface $entityManager
 	 * @return AbstractEntityService
-	 * @required
 	 */
+	#[Required]
 	public function setEntityManager(EntityManagerInterface $entityManager): AbstractEntityService {
 		$this->entityManager = $entityManager;
 		
@@ -47,9 +48,7 @@ abstract class AbstractEntityService {
 	 * @return array
 	 */
 	public function flattenEntities(array $entities): array {
-		return array_map(function (AbstractEntity $entity) {
-			return $entity->getId();
-		}, $entities);
+		return array_map(fn(AbstractEntity $entity) => $entity->getId(), $entities);
 	}
 	
 	public function convertEntitiesToReferences(array $values): array {
@@ -57,7 +56,7 @@ abstract class AbstractEntityService {
 		foreach( $values as $key => $value ) {
 			if( $value instanceof AbstractEntity ) {
 				if( $value->isNew() ) {
-					throw new RuntimeException(sprintf('Unable to extract reference from non-persisted instance of "%s"', get_class($value)));
+					throw new RuntimeException(sprintf('Unable to extract reference from non-persisted instance of "%s"', $value::class));
 				}
 				$value = $value->getEntityReference();
 			}
@@ -205,7 +204,7 @@ abstract class AbstractEntityService {
 			try {
 				$this->entityManager->refresh($entity);
 				$reload = false;
-			} catch( ErrorException $exception ) {
+			} catch( ErrorException ) {
 			}
 		}
 		if( $reload ) {
@@ -223,7 +222,7 @@ abstract class AbstractEntityService {
 				$entity = null;
 			}
 		} else {
-			$refreshedEntity = $this->entityManager->getRepository(get_class($entity))->find($entity->getId());
+			$refreshedEntity = $this->entityManager->getRepository($entity::class)->find($entity->getId());
 			if( $refreshedEntity ) {
 				$entity = $refreshedEntity;
 			} else {

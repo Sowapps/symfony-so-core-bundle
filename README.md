@@ -1,6 +1,8 @@
+# SoCore Symfony Bundle
+
 SoCore is a Symfony Bundle to bring basic features to your Sowapps App
 
-# Standards
+## Standards
 
 Project is done for the following requirements:
 
@@ -16,9 +18,11 @@ Project is done for the following requirements:
 - JS file compile directly only JS file, full component plugins and include SCSS entry point
 - SCSS contains all SCSS from project, bundles and frameworks
 
-# Install
+## Install
 
-## Requirements
+### Requirements
+
+WARNING: REMOVING WEBPACK FOR SYMFONY ASSET MAPPER
 
 All front dependencies must be added to your project
 
@@ -26,25 +30,25 @@ All front dependencies must be added to your project
 yarn add bootstrap startbootstrap-sb-admin @fortawesome/fontawesome-free @popperjs/core sass sass-loader simple-datatables
 ```
 
-## Configuration
+### Configuration
 
 We don't configure packages in our bundle to let you customize it for your needs.
 You could see one of our project as example [SoIngenious](https://github.com/Sowapps/symfony-so-ingenious-demo/tree/main/config/packages).
 Below the configuration the bundle is requiring to work properly.
 
-### Configure Messenger
+#### Configure Messenger
 
 Configure or disable configuration in `config/packages/messenger.yaml`.
 
 For local classic usage, we comment the whole file.
 
-### Configure Doctrine
+#### Configure Doctrine
 
 Configure `config/packages/doctrine.yaml`.
 
 Set resolve_target_entities
 
-### Configure Security
+#### Configure Security
 
 Configure `config/packages/security.yaml`.
 
@@ -55,49 +59,65 @@ Set logout in firewall
 Set role_hierarchy
 Set access_control
 
-### Configure Translations
+#### Configure Translations
 
 Configure `config/packages/translation.yaml`.
 
-### Configure Twig
+#### Configure Twig
 
 Configure `config/packages/twig.yaml`.
 
 Set globals
 
-### Configure SoCore
+#### Configure SoCore
 
 Configure `config/packages/so_core.yaml`.
 
-### Configure Routing
+#### Configure Routing
 
 Configure `config/routes.yaml`.
 
 Include SoCoreBundle routes.
 
-# Override
+### Import Fixtures
+
+```php
+bin/console doctrine:fixtures:load
+```
+
+TODO Separate initialization fixtures and sample fixtures
+
+## Override
 
 First, have a look on this page: https://symfony.com/doc/current/bundles/override.html
 
-## Controllers
+### Controllers
 
 Extends our controller and write route to your own
 
-## Templates
+### Templates
 
 Put your template in /templates/bundles/SoCoBundle/ by respecting given hierarchy, you may extend our template to replace blocks only.
 
-## Doctrine Custom types
+### Doctrine Custom types
 
 Replace type in your doctrine configuration by your class. Extends our class and add more values for an enum.
 
-## Stimulus controllers
+### Stimulus controllers
 
 Add controllers to the `assets/controllers.json` file under `@sowapps/so-core`
 
-# Develop
+## Develop
 
-## Webpack
+### Create Fixtures
+
+Some features are required to initialize the app with basic data, this is why the package `doctrine/doctrine-fixtures-bundle` is not dev only.  
+For initialization fixtures : `config/fixtures/fixtures-init.yaml`  
+For demo sample fixtures : `config/fixtures/fixtures-sample.yaml`
+
+### Webpack
+
+WARNING: REMOVING WEBPACK FOR SYMFONY ASSET MAPPER
 
 For now, only `yarn add file:../so-core-bundle/assets;` works, but updating source requires to restart watch.
 The package is in assets folder to prevent embedding all the bundle in the node module.
@@ -119,7 +139,7 @@ In your project folder, run
 
 ``yarn link @sowapps/so-core``
 
-## Stimulus controllers
+### Stimulus controllers
 
 Create your controllers in `assets/controllers`
 

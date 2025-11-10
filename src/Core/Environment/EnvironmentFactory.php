@@ -11,13 +11,9 @@ use Symfony\Contracts\Cache\ItemInterface;
 
 class EnvironmentFactory {
 	
-	protected KernelInterface $kernel;
-	
 	protected string $projectPath;
 	
 	protected string $environmentFile = '/config/environment.json';
-	
-	private CacheInterface $cache;
 	
 	/**
 	 * EnvironmentFactory constructor
@@ -25,10 +21,9 @@ class EnvironmentFactory {
 	 * @param CacheInterface $cache
 	 * @param string $projectPath
 	 */
-	public function __construct(KernelInterface $kernel, CacheInterface $cache) {
-		$this->kernel = $kernel;
-		$this->cache = $cache;
-	}
+	public function __construct(protected KernelInterface $kernel, private readonly CacheInterface $cache)
+    {
+    }
 	
 	public function __invoke() {
 		$factory = $this;

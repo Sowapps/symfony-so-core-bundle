@@ -14,16 +14,13 @@ use JetBrains\PhpStorm\ArrayShape;
  */
 class EnvironmentProject {
 	
-	protected string $name;
-	
 	protected string $url;
 	
 	protected string $path;
 	
 	protected string $version;
 	
-	public function __construct(string $name, object $object) {
-		$this->name = $name;
+	public function __construct(protected string $name, object $object) {
 		$this->url = $object->url;
 		$this->path = $object->path;
 		$this->version = $object->version;

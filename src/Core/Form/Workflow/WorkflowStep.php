@@ -10,13 +10,11 @@ use Sowapps\SoCore\Core\Form\AppForm;
 use Sowapps\SoCore\Entity\AbstractUser;
 use Symfony\Component\HttpFoundation\Request;
 
-class WorkflowStep {
+class WorkflowStep implements \Stringable {
 	
 	protected Workflow $workflow;
 	
 	protected int $index;
-	
-	protected string $key;
 	
 	protected string $route;
 	
@@ -33,9 +31,9 @@ class WorkflowStep {
 	 *
 	 * @param string $key
 	 */
-	public function __construct(string $key) {
-		$this->key = $key;
-	}
+	public function __construct(protected string $key)
+    {
+    }
 	
 	public function getCurrentUser(): ?AbstractUser {
 		return $this->workflow->getController()->getUserService()->getCurrent();
@@ -98,7 +96,7 @@ class WorkflowStep {
 		$this->setActive($stepState['active']);
 	}
 	
-	public function __toString() {
+	public function __toString(): string {
 		return $this->getKey();
 	}
 	

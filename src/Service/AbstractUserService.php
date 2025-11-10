@@ -9,26 +9,16 @@ use DateInterval;
 use DateTime;
 use Sowapps\SoCore\Entity\AbstractUser;
 use Sowapps\SoCore\Repository\AbstractUserRepository;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
-use Symfony\Component\Security\Core\Security;
 
 /**
  * Please, override this service in your application
  */
 abstract class AbstractUserService extends AbstractEntityService {
-	
-	protected UserPasswordHasherInterface $passwordEncoder;
-	
-	protected AccessDecisionManagerInterface $accessDecisionManager;
-	
-	protected Security $security;
-	
-	protected StringHelper $stringHelper;
-	
-	protected array $config;
 	
 	/*
 	 * Muse be overridden
@@ -44,22 +34,17 @@ abstract class AbstractUserService extends AbstractEntityService {
 	protected ?AbstractUser $superUser = null;
 	
 	/**
-	 * UserService constructor
-	 *
-	 * @param UserPasswordHasherInterface $passwordEncoder
-	 * @param AccessDecisionManagerInterface $accessDecisionManager
-	 * @param Security $security
-	 * @param StringHelper $stringHelper
-	 * @param array $configUser
-	 */
-	public function __construct(UserPasswordHasherInterface $passwordEncoder, AccessDecisionManagerInterface $accessDecisionManager, Security $security,
-								StringHelper                $stringHelper, array $configUser) {
-		$this->passwordEncoder = $passwordEncoder;
-		$this->accessDecisionManager = $accessDecisionManager;
-		$this->security = $security;
-		$this->stringHelper = $stringHelper;
-		$this->config = $configUser;
-	}
+     * UserService constructor
+     *
+     * @param UserPasswordHasherInterface $passwordEncoder
+     * @param AccessDecisionManagerInterface $accessDecisionManager
+     * @param Security $security
+     * @param StringHelper $stringHelper
+     * @param array $config
+     */
+    public function __construct(protected UserPasswordHasherInterface $passwordEncoder, protected AccessDecisionManagerInterface $accessDecisionManager, protected Security $security, protected StringHelper                $stringHelper, protected array $config)
+    {
+    }
 	
 	public function getUserClass(): string {
 		return $this->config['class'];

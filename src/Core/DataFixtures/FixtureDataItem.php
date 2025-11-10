@@ -10,7 +10,6 @@ use DateTimeImmutable;
 use DateTimeZone;
 use RuntimeException;
 use Sowapps\SoCore\Entity\AbstractEntity;
-use Sowapps\SoCore\Graphic\PresentationPicture;
 
 class FixtureDataItem {
 	
@@ -23,7 +22,7 @@ class FixtureDataItem {
 	/**
 	 * FixtureDataItem constructor
 	 *
-	 * @param string $ref
+	 * @param string|null $ref
 	 * @param array $data
 	 */
 	public function __construct(?string $ref, array $data) {
@@ -82,21 +81,17 @@ class FixtureDataItem {
 			// Array
 			if( !isset($value['_class']) ) {
 				// 0-indexed & associative arrays
-				return array_map(function ($value) use ($entity, $fixture) {
-					return $this->parseValue($value, $entity, $fixture);
-				}, $value);
+				return array_map(fn($value) => $this->parseValue($value, $entity, $fixture), $value);
 			} else {
 				// Sub entity
 				$class = $value['_class'];
 				unset($value['_class']);
 				if( isset($value['items']) ) {
 					// Array of entities
-					return array_map(function ($value) use ($entity, $fixture) {
-						return $this->parseValue($value, $entity, $fixture);
-					}, $value['items']);
+					return array_map(fn($value) => $this->parseValue($value, $entity, $fixture), $value['items']);
 				} else {
 					// Single entity
-					$ref = isset($value['_ref']) ? $value['_ref'] : null;
+					$ref = $value['_ref'] ?? null;
 					unset($value['_ref']);
 					
 					return $this->buildEntity($fixture, $class, $value, $ref);
@@ -108,16 +103,16 @@ class FixtureDataItem {
 			return $value;
 		}
 		// String
-		if( $value[0] === '#' ) {
+		if( $value[0] === '$' ) {
 			// Ref
-			$ref = substr($value, 1);
-			
-			return $fixture->getReference($ref);
+			[$refName, $refClass] = explode(':', substr($value, 1), 2);
+
+			return $fixture->getReference($refName, $refClass);
 		}
 		if( preg_match('#^(\w+)\((.*)\)$#', $value, $matches) ) {
 			// function
 			$function = $matches[1];
-			$subValue = $this->parseValue(array_map('trim', explode(',', $matches[2])), $entity, $fixture);
+			$subValue = $this->parseValue(array_map(trim(...), explode(',', $matches[2])), $entity, $fixture);
 			$method = 'parseValue' . $function;
 			
 			return $this->$method($subValue, $entity, $fixture);
