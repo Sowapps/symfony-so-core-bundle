@@ -4,7 +4,7 @@
 	"license": "MIT",
 	"keywords": ["symfony-bundle"],
 	"require": {
-		"php": ">=8.1",
+		"php": ">=8.2",
 		"ext-ctype": "*",
 		"ext-iconv": "*",
 		"ext-intl": "*",
