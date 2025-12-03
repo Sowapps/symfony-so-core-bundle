@@ -86,7 +86,7 @@ abstract class AbstractUserService extends AbstractEntityService {
 	public function isRecoverable(?AbstractUser $user, $recoveryKey): bool {
 		return $user &&
 			$user->getRecoveryKey() === $recoveryKey &&
-			(new DateTime())->sub(DateInterval::createFromDateString(sprintf('%s hours', $this->config['recover']['expire_hours']))) < $user->getRecoverRequestDate();
+			(new DateTime())->sub(DateInterval::createFromDateString($this->config['recover']['expire'])) < $user->getRecoverRequestDate();
 	}
 	
 	public function requestRecover(AbstractUser $user) {
@@ -214,7 +214,7 @@ abstract class AbstractUserService extends AbstractEntityService {
 	
 	public function startNewActivation(AbstractUser $user) {
 		$user->setActivationDate(null);
-		$user->setActivationExpireDate(new DateTime(sprintf('+%d hours', $this->config['activation']['expire_hours'])));
+		$user->setActivationExpireDate((new DateTime())->add(DateInterval::createFromDateString($this->config['activation']['expire'])));
 		$user->setActivationKey($this->stringHelper->generateKey());
 	}
 	

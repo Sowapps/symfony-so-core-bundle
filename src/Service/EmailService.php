@@ -101,7 +101,7 @@ class EmailService extends AbstractEntityService {
 		}
 		$emailMessage->setPurpose($purpose);
 		$emailMessage->setSubject($subject);
-		$emailMessage->setOnlineExpireDate(new DateTime(sprintf('+%d hours', $this->config['online_view']['expire_hours'])));
+		$emailMessage->setOnlineExpireDate((new DateTime())->add(DateInterval::createFromDateString($this->config['online_view']['expire'])));
 		$emailMessage->setPrivateKey($this->stringHelper->generateKey());
 		$emailMessage->setTemplateHtml($template);
 		$emailMessage->setData($this->convertEntitiesToReferences($data));

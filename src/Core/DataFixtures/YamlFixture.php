@@ -16,6 +16,8 @@ use Symfony\Component\Yaml\Yaml;
 
 abstract class YamlFixture extends Fixture {
 	
+	public const CONFIG_PATH = 'config/fixtures';
+	
 	protected ?string $file = null;
 	
 	protected ?ObjectManager $manager = null;
@@ -40,7 +42,7 @@ abstract class YamlFixture extends Fixture {
 	}
 	
 	public function buildDataSets(): ?array {
-		$fileLocator = new FileLocator('config/fixtures');
+		$fileLocator = new FileLocator(YamlFixture::CONFIG_PATH);
 		try {
 			$file = $fileLocator->locate($this->file);
 		} catch( FileLocatorFileNotFoundException ) {
