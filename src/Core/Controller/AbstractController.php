@@ -25,7 +25,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
@@ -39,7 +41,7 @@ class AbstractController extends SymfonyAbstractController {
 	
 	const SESSION_MESSAGE = 'HOME_ERROR';
 	
-	protected Kernel $kernel;
+	protected KernelInterface $kernel;
 	
 	protected RequestStack $requestStack;
 	
@@ -56,22 +58,6 @@ class AbstractController extends SymfonyAbstractController {
 	protected StringHelper $stringHelper;
 	
 	protected ?string $domain = null;
-	
-	/**
-	 * AbstractController constructor
-	 *
-	 * @param ControllerService $controllerService
-	 */
-	public function __construct(ControllerService $controllerService) {
-		$this->kernel = $controllerService->getKernel();
-		$this->requestStack = $controllerService->getRequestStack();
-		$this->logger = $controllerService->getLogger();
-		$this->translator = $controllerService->getTranslator();
-		$this->router = $controllerService->getRouter();
-		$this->contextService = $controllerService->getContextService();
-		$this->userService = $controllerService->getUserService();
-		$this->stringHelper = $controllerService->getStringHelper();
-	}
 	
 	public function getSecurityToken(string $key, ?string &$newToken = null): ?string {
 		$session = $this->getSession();
@@ -197,7 +183,7 @@ class AbstractController extends SymfonyAbstractController {
 		}
 	}
 	
-	protected function render(string $view, array $parameters = [], Response $response = null): Response {
+	protected function render(string $view, array $parameters = [], ?Response $response = null): Response {
 		$parameters['appLanguage'] = $this->contextService->getCurrentLanguage();
 		
 		return parent::render($view, $parameters, $response);
@@ -255,7 +241,7 @@ class AbstractController extends SymfonyAbstractController {
 		return $this->consumeSavedForm(new AppForm($builder->getForm(), $this->domain));
 	}
 	
-	protected function createForbiddenOperationException(string $message = 'Forbidden Operation', Throwable $previous = null): ForbiddenOperationException {
+	protected function createForbiddenOperationException(string $message = 'Forbidden Operation', ?Throwable $previous = null): ForbiddenOperationException {
 		return new ForbiddenOperationException($message, [], null, $previous);
 	}
 	
@@ -287,4 +273,51 @@ class AbstractController extends SymfonyAbstractController {
 		}
 	}
 	
+	#[Required]
+	public function setKernel(KernelInterface $kernel): AbstractController {
+		$this->kernel = $kernel;
+		return $this;
+	}
+	
+	#[Required]
+	public function setRequestStack(RequestStack $requestStack): AbstractController {
+		$this->requestStack = $requestStack;
+		return $this;
+	}
+	
+	#[Required]
+	public function setLogger(LoggerInterface $logger): AbstractController {
+		$this->logger = $logger;
+		return $this;
+	}
+	
+	#[Required]
+	public function setTranslator(TranslatorInterface $translator): AbstractController {
+		$this->translator = $translator;
+		return $this;
+	}
+	
+	#[Required]
+	public function setRouter(RouterInterface $router): AbstractController {
+		$this->router = $router;
+		return $this;
+	}
+	
+	#[Required]
+	public function setContextService(ContextInterface $contextService): AbstractController {
+		$this->contextService = $contextService;
+		return $this;
+	}
+	
+	#[Required]
+	public function setUserService(AbstractUserService $userService): AbstractController {
+		$this->userService = $userService;
+		return $this;
+	}
+	
+	#[Required]
+	public function setStringHelper(StringHelper $stringHelper): AbstractController {
+		$this->stringHelper = $stringHelper;
+		return $this;
+	}
 }

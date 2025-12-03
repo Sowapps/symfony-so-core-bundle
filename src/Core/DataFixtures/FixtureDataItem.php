@@ -10,6 +10,8 @@ use DateTimeImmutable;
 use DateTimeZone;
 use RuntimeException;
 use Sowapps\SoCore\Entity\AbstractEntity;
+use SplFileInfo;
+use Symfony\Component\Yaml\Yaml;
 
 class FixtureDataItem {
 	
@@ -103,6 +105,7 @@ class FixtureDataItem {
 			return $value;
 		}
 		// String
+		// Deprecated usage of $, use ref() instead
 		if( $value[0] === '$' ) {
 			// Ref
 			[$refName, $refClass] = explode(':', substr($value, 1), 2);
@@ -149,11 +152,11 @@ class FixtureDataItem {
 		return $fixture->getStringHelper()->convertToSlug($args[0]);
 	}
 	
-	protected function parseValuePassword(array $args, $entity, YamlFixture $fixture) {
+	protected function parseValuePassword(array $args, $entity, YamlFixture $fixture): string {
 		return $fixture->getUserService()->encodePassword($args[0], $entity);
 	}
 	
-	protected function parseValueDate(array $args, $entity, YamlFixture $fixture) {
+	protected function parseValueDate(array $args, $entity, YamlFixture $fixture): DateTime {
 		return new DateTime($args[0], self::getUtcTimeZone());
 	}
 	

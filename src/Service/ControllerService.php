@@ -18,6 +18,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Service to include controller service easily
  *
  * @package Sowapps\SoCore\Service
+ * @deprecated Service are directly injected in abstract controller using Required attribute
  */
 class ControllerService {
 	

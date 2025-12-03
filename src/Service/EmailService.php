@@ -5,6 +5,7 @@
 
 namespace Sowapps\SoCore\Service;
 
+use DateInterval;
 use DateTime;
 use Doctrine\ORM\NonUniqueResultException;
 use Sowapps\SoCore\Entity\AbstractUser;

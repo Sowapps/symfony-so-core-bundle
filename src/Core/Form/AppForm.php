@@ -54,7 +54,7 @@ class AppForm implements FormInterface, IteratorAggregate {
 		$this->viewOptions[] = [$pathKeys, $name, $value];
 	}
 	
-	public function createView(FormView $parent = null): FormView {
+	public function createView(?FormView $parent = null): FormView {
 		$view = $this->form->createView($parent);
 		$view->vars['successes'] = $this->successes;
 		$view->vars['success_domain'] = $this->domain;
@@ -167,7 +167,7 @@ class AppForm implements FormInterface, IteratorAggregate {
 		return $this->form->count();
 	}
 	
-	public function setParent(FormInterface $parent = null): static {
+	public function setParent(?FormInterface $parent = null): static {
 		$this->form->setParent($parent);
 		
 		return $this;
@@ -177,7 +177,7 @@ class AppForm implements FormInterface, IteratorAggregate {
 		return $this->form->getParent();
 	}
 	
-	public function add($child, string $type = null, array $options = []): static {
+	public function add($child, ?string $type = null, array $options = []): static {
 		$this->form->add($child, $type, $options);
 		
 		return $this;
