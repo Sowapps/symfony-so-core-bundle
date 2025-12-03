@@ -141,14 +141,62 @@ class FixtureDataItem {
 		return 'add' . str_replace('_', '', $field);
 	}
 	
-	//	protected function parseValuePicture(array $args, $entity, YamlFixture $fixture) {
-	//		$picture = new PresentationPicture();
-	//		$picture->setPresentation($args[0], $args[1]);
-	//
-	//		return $picture;
-	//	}
+	/**
+	 * @param array $args
+	 * @param $entity
+	 * @param YamlFixture $fixture
+	 * @return array
+	 *
+	 *  TODO Move to SoIngeniousBundle
+	 */
+	protected function parseValueContent(array $args, $entity, YamlFixture $fixture): array {
+		[$path, $format] = array_pad($args, 2, null);
+		$file = new SplFileInfo(YamlFixture::CONFIG_PATH . '/' . $path);
+		if( !$file->isFile() ) {
+			throw new RuntimeException(sprintf('File "%s" not found', $path));
+		}
+		if( !$format ) {
+			// Guess the content format from extension
+			// TODO Use constants instead of hardcoded strings
+			$format = match ($file->getExtension()) {
+				'html' => 'html',
+				'md' => 'markdown',
+				'txt' => 'text',
+				default => throw new RuntimeException(sprintf("Unknown content format for file '%s'", $path)),
+			};
+		}
+		$content = file_get_contents($file);
+		
+		return [
+			'format'  => $format,
+			'text' => $content,
+		];
+	}
 	
-	protected function parseValueSlug(array $args, $entity, YamlFixture $fixture) {
+	protected function parseValueFile(array $args, $entity, YamlFixture $fixture) {
+		[$path] = $args;
+		$file = new SplFileInfo($path);
+		if( !$file->isFile() ) {
+			throw new RuntimeException(sprintf('Unable to open file "%s"', $path));
+		}
+		return match ($file->getExtension()) {
+			'yaml', 'yml' => Yaml::parseFile($file->getRealPath()),
+			'txt' => file_get_contents($file->getRealPath()),
+			default => throw new RuntimeException(sprintf("Unable to parse file '%s'", $path)),
+		};
+	}
+	
+	protected function parseValueRef(array $args, $entity, YamlFixture $fixture) {
+		[$refName, $refClass] = $args;
+		return $fixture->getReference($refName, $refClass);
+	}
+	
+	protected function parseValueEnum(array $args, $entity, YamlFixture $fixture) {
+		[$value, $enumClass] = $args;
+		return $enumClass::from($value);// Enum must implements method from(string)
+	}
+	
+	protected function parseValueSlug(array $args, $entity, YamlFixture $fixture): string {
 		return $fixture->getStringHelper()->convertToSlug($args[0]);
 	}
 	
