@@ -125,6 +125,12 @@ services:
         tags: [ 'doctrine.fixture.orm' ]
     Sowapps\SoCore\Core\DataFixtures\SampleFixture: '@so_core.fixture.sample'
 
+    so_core.fixture_parser:
+        class: Sowapps\SoCore\Core\DataFixtures\FixtureParser
+        arguments:
+            - '@so_core.file'
+    Sowapps\SoCore\Core\DataFixtures\FixtureParser: '@so_core.fixture_parser'
+
     #   Repositories
 
     Sowapps\SoCore\Repository\EmailMessageRepository:

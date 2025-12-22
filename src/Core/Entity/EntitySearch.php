@@ -7,7 +7,7 @@ namespace Sowapps\SoCore\Core\Entity;
 
 use Doctrine\ORM\Query\Expr\Orx;
 use Doctrine\ORM\QueryBuilder;
-use Sowapps\SoCore\Core\Repository\AbstractEntityRepository;
+use Sowapps\SoCore\Core\DBAL\AbstractRepository;
 
 class EntitySearch {
 	
@@ -28,10 +28,10 @@ class EntitySearch {
 	/**
 	 * EntitySearch constructor
 	 *
-	 * @param AbstractEntityRepository $repository
+	 * @param AbstractRepository $repository
 	 * @param string|null $alias
 	 */
-	public function __construct(protected AbstractEntityRepository $repository, ?string $alias = null) {
+	public function __construct(protected AbstractRepository $repository, ?string $alias = null) {
 		$this->alias = $alias ?? $this->repository->getAlias();
 		$this->query = null;
 		$this->terms = [];
@@ -104,9 +104,9 @@ class EntitySearch {
 	}
 	
 	/**
-	 * @return AbstractEntityRepository
+	 * @return AbstractRepository
 	 */
-	public function getRepository(): AbstractEntityRepository {
+	public function getRepository(): AbstractRepository {
 		return $this->repository;
 	}
 	

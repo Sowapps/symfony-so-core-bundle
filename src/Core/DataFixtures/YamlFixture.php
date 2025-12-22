@@ -8,6 +8,7 @@ namespace Sowapps\SoCore\Core\DataFixtures;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use RuntimeException;
+use Sowapps\SoCore\Entity\AbstractEntity;
 use Sowapps\SoCore\Service\AbstractUserService;
 use Sowapps\SoCore\Service\StringHelper;
 use Symfony\Component\Config\Exception\FileLocatorFileNotFoundException;
@@ -22,9 +23,22 @@ abstract class YamlFixture extends Fixture {
 	
 	protected ?ObjectManager $manager = null;
 	
-	public function __construct(protected AbstractUserService $userService, protected StringHelper $stringHelper)
+	/** @var array<array<AbstractEntity|callable>>  */
+	protected array $itemPostProcess = [];
+	
+	public function __construct(
+		protected AbstractUserService $userService,
+		protected StringHelper        $stringHelper,
+		protected FixtureParser       $fixtureParser
+	)
     {
     }
+	
+	public function addItemPostProcess(AbstractEntity $entity, callable $callback): static {
+		$this->itemPostProcess[] = [$entity, $callback];
+		
+		return $this;
+	}
 	
 	public function load(ObjectManager $manager): void {
 		if( !$this->file ) {
@@ -32,16 +46,44 @@ abstract class YamlFixture extends Fixture {
 			return;
 		}
 		$this->manager = $manager;
-		$dataSets = $this->buildDataSets();
+		$dataSets = $this->loadDataSets();
 		if( !$dataSets ) {
 			return;
 		}
 		foreach( $dataSets as $dataSet ) {
-			$dataSet->buildEntityList($this);
+			$this->buildDataSet($dataSet);
 		}
 	}
 	
-	public function buildDataSets(): ?array {
+	protected function buildDataSet(FixtureDataSet $dataSet): int {
+		$count = 0;
+		foreach( $dataSet->getItems() as $item ) {
+			$this->buildSetEntity($dataSet->getClass(), $item);
+			
+			foreach( $item->getEntities() as $entity ) {
+				$this->manager->persist($entity);
+			}
+			
+			$count++;
+		}
+		unset($item, $entity);
+		$this->manager->flush();
+		
+		foreach($this->itemPostProcess as [$entity, $callback]) {
+			call_user_func($callback, $entity);
+		}
+		
+		return $count;
+	}
+	
+	public function buildSetEntity($class, FixtureDataItem $item): AbstractEntity {
+		return $this->fixtureParser->buildItemEntity($item, $this, $class);
+	}
+	
+	/**
+	 * @return FixtureDataSet[]|null
+	 */
+	public function loadDataSets(): ?array {
 		$fileLocator = new FileLocator(YamlFixture::CONFIG_PATH);
 		try {
 			$file = $fileLocator->locate($this->file);
@@ -70,32 +112,24 @@ abstract class YamlFixture extends Fixture {
 		return $dataSets;
 	}
 	
-	/**
-	 * @return string
-	 */
 	public function getFile(): string {
 		return $this->file;
 	}
 	
-	/**
-	 * @return ObjectManager|null
-	 */
 	public function getManager(): ?ObjectManager {
 		return $this->manager;
 	}
 	
-	/**
-	 * @return AbstractUserService
-	 */
 	public function getUserService(): AbstractUserService {
 		return $this->userService;
 	}
 	
-	/**
-	 * @return StringHelper
-	 */
 	public function getStringHelper(): StringHelper {
 		return $this->stringHelper;
+	}
+	
+	public function getParser(): FixtureParser {
+		return $this->fixtureParser;
 	}
 	
 }

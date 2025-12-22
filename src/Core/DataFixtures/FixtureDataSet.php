@@ -8,13 +8,13 @@ namespace Sowapps\SoCore\Core\DataFixtures;
 class FixtureDataSet {
 	
 	/** @var string */
-	protected $name;
+	protected string $name;
 	
 	/** @var string */
-	protected $class;
+	protected string $class;
 	
 	/** @var FixtureDataItem[] */
-	protected $items;
+	protected array $items;
 	
 	/**
 	 * FixtureDataSet constructor
@@ -29,19 +29,16 @@ class FixtureDataSet {
 		$this->items = $items;
 	}
 	
-	/**
-	 * @param YamlFixture $fixture
-	 * @return int
-	 */
-	public function buildEntityList(YamlFixture $fixture) {
-		$count = 0;
-		foreach( $this->items as $item ) {
-			$item->buildEntity($fixture, $this->class);
-			$count++;
-		}
-		$fixture->getManager()->flush();
-		
-		return $count;
+	public function getName(): string {
+		return $this->name;
+	}
+	
+	public function getClass(): string {
+		return $this->class;
+	}
+	
+	public function getItems(): array {
+		return $this->items;
 	}
 	
 }

@@ -7,8 +7,8 @@ namespace Sowapps\SoCore\Core\Controller;
 
 use Doctrine\ORM\QueryBuilder;
 use Exception;
+use Sowapps\SoCore\Core\DBAL\AbstractRepository;
 use Sowapps\SoCore\Core\Entity\EntitySearch;
-use Sowapps\SoCore\Core\Repository\AbstractEntityRepository;
 use Sowapps\SoCore\Entity\AbstractEntity;
 use Sowapps\SoCore\Exception\UserException;
 use Symfony\Component\HttpFoundation\Request;
@@ -58,7 +58,7 @@ class AbstractApiController extends AbstractController {
 		return $result ? array_unique(array_merge([$term], $allTerms[0])) : [$term];
 	}
 	
-	public function searchEntityTerm(AbstractEntityRepository $repository, array $terms = [], ?string $alias = null, bool $publicOnly = true): EntitySearch {
+	public function searchEntityTerm(AbstractRepository $repository, array $terms = [], ?string $alias = null, bool $publicOnly = true): EntitySearch {
 		$search = new EntitySearch($repository, $alias);
 		$search->setPublicOnly($publicOnly);
 		if( $terms ) {

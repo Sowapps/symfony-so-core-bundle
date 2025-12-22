@@ -3,7 +3,7 @@
 namespace Sowapps\SoCore\Repository;
 
 use Doctrine\Persistence\ManagerRegistry;
-use Sowapps\SoCore\Core\Repository\AbstractEntityRepository;
+use Sowapps\SoCore\Core\DBAL\AbstractRepository;
 use Sowapps\SoCore\Entity\File;
 
 /**
@@ -12,14 +12,10 @@ use Sowapps\SoCore\Entity\File;
  * @method File[]    findAll()
  * @method File[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class FileRepository extends AbstractEntityRepository {
+class FileRepository extends AbstractRepository {
 	
 	public function __construct(ManagerRegistry $registry) {
-		parent::__construct($registry, File::class);
-	}
-	
-	public function getAlias(): string {
-		return 'file';
+		parent::__construct($registry, File::class, 'file');
 	}
 	
 }

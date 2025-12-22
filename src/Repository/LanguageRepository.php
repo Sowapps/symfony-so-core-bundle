@@ -4,8 +4,8 @@ namespace Sowapps\SoCore\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Sowapps\SoCore\Core\DBAL\AbstractRepository;
 use Sowapps\SoCore\Entity\Language;
 
 /**
@@ -13,17 +13,12 @@ use Sowapps\SoCore\Entity\Language;
  * @method Language|null findOneBy(array $criteria, array $orderBy = null)
  * @method Language[]    findAll()
  * @method Language[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\Sowapps\SoCore\Entity\Language>
+ * @extends AbstractRepository<Language>
  */
-class LanguageRepository extends ServiceEntityRepository {
+class LanguageRepository extends AbstractRepository {
 	
 	public function __construct(ManagerRegistry $registry) {
-		parent::__construct($registry, Language::class);
-	}
-	
-	public function query(): QueryBuilder {
-		return $this->createQueryBuilder('language')
-			->orderBy('language.id', 'DESC');
+		parent::__construct($registry, Language::class, 'language');
 	}
 	
 	/**

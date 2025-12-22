@@ -2,9 +2,9 @@
 
 namespace Sowapps\SoCore\Repository;
 
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Sowapps\SoCore\Core\DBAL\AbstractRepository;
 use Sowapps\SoCore\Entity\EmailSubscription;
 
 /**
@@ -12,12 +12,12 @@ use Sowapps\SoCore\Entity\EmailSubscription;
  * @method EmailSubscription|null findOneBy(array $criteria, array $orderBy = null)
  * @method EmailSubscription[]    findAll()
  * @method EmailSubscription[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\Sowapps\SoCore\Entity\EmailSubscription>
+ * @extends AbstractRepository<EmailSubscription>
  */
-class EmailSubscriptionRepository extends ServiceEntityRepository {
+class EmailSubscriptionRepository extends AbstractRepository {
 	
 	public function __construct(ManagerRegistry $registry) {
-		parent::__construct($registry, EmailSubscription::class);
+		parent::__construct($registry, EmailSubscription::class, 'emailSubscription');
 	}
 	
 	/**
@@ -31,18 +31,13 @@ class EmailSubscriptionRepository extends ServiceEntityRepository {
 			->setParameter('purpose', $purpose);
 	}
 	
-	public function query(): QueryBuilder {
-		return $this->createQueryBuilder('emailSubscription')
-			->orderBy('emailSubscription.id', 'DESC');
-	}
-	
 	/**
 	 * @param string $email
 	 * @param string $purpose
 	 * @return EmailSubscription|null
 	 * @throws \Doctrine\ORM\NonUniqueResultException
 	 */
-	public function findByEmail(string $email, string $purpose) {
+	public function findByEmail(string $email, string $purpose): ?EmailSubscription {
 		return $this->query()
 			->andWhere('emailSubscription.email = :email')
 			->andWhere('emailSubscription.purpose = :purpose')
