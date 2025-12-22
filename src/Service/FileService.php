@@ -14,10 +14,11 @@ use Sowapps\SoCore\Core\File\FileNameSlugger;
 use Sowapps\SoCore\Core\File\LocalHttpFile;
 use Sowapps\SoCore\DBAL\EnumFileSourceType;
 use Sowapps\SoCore\Entity\AbstractEntity;
-use Sowapps\SoCore\Entity\AbstractUser;
 use Sowapps\SoCore\Entity\File;
+use Sowapps\SoCore\Entity\AbstractUser;
 use Sowapps\SoCore\Repository\FileRepository;
 use Symfony\Component\Asset\Packages;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
@@ -35,18 +36,40 @@ class FileService extends AbstractEntityService {
 	const TYPE_SMALL = 'small';
 	
 	/**
-     * FileService constructor
-     *
-     * @param Packages $packages
-     * @param TwigService $twig
-     * @param UrlHelper $urlHelper
-     * @param UrlGeneratorInterface $router
-     * @param StringHelper $stringHelper
-     * @param array $config
-     */
-    public function __construct(protected Packages $packages, protected TwigService $twig, protected ParameterBagInterface $parameters, protected UrlHelper $urlHelper, protected UrlGeneratorInterface $router, protected StringHelper $stringHelper, protected array $config)
+	 * FileService constructor
+	 *
+	 * @param Packages $packages
+	 * @param TwigService $twig
+	 * @param ParameterBagInterface $parameters
+	 * @param UrlHelper $urlHelper
+	 * @param UrlGeneratorInterface $router
+	 * @param StringHelper $stringHelper
+	 * @param array $config
+	 */
+	public function __construct(
+		protected Packages              $packages,
+		protected TwigService           $twig,
+		protected ParameterBagInterface $parameters,
+		protected UrlHelper             $urlHelper,
+		protected UrlGeneratorInterface $router,
+		protected StringHelper          $stringHelper,
+		#[Autowire(param: 'so_core.file')]
+		protected array                 $config
+	)
     {
     }
+	
+	public function getAllPurposes(): array {
+		return $this->config['purposes'];
+	}
+	
+	public function getAllSources(): array {
+		return $this->config['sources'];
+	}
+	
+	public function getAllStorages(): array {
+		return $this->config['storages'];
+	}
 	
 	public function formatFileArray(File $file, ?AbstractUser $user = null, ?ContextInterface $contextService = null): array {
 		return $file->jsonSerialize() + [
@@ -68,14 +91,14 @@ class FileService extends AbstractEntityService {
 	}
 	
 	protected function formatFileSize(File $file, ?ContextInterface $contextService = null): array {
-		$localeFormatter = $contextService ? $contextService->getLocaleFormatter() : null;
+		$localeFormatter = $contextService?->getLocaleFormatter();
 		$bytes = $this->getFileSize($file);
 		$size = $this->parseSize($bytes);
 		
 		return [
 			'value' => $bytes,
 			'size'  => $size,
-			'label' => $localeFormatter ? $localeFormatter->formatFileSize($size) : null,
+			'label' => $localeFormatter?->formatFileSize($size),
 		];
 	}
 	
@@ -159,6 +182,21 @@ class FileService extends AbstractEntityService {
 		}
 		
 		return $file;
+	}
+	
+	public function fillEntity(SymfonyFile $file, File $entity): void {
+		$entity->setExtension($file->getExtension());
+		$entity->setMimeType($file->getMimeType());
+		$entity->setPrivateKey($this->stringHelper->generateKey());
+		$entity->setSourceName($file->getFilename());
+		$entity->setSourceUrl($file->getRealPath());
+	}
+	
+	public function importFile(SymfonyFile $file, File $entity): File {
+		$filesystem = new Filesystem();
+		$filesystem->copy($file->getRealPath(), $this->getStoreUri($entity) . DIRECTORY_SEPARATOR . $entity->getLocalName());
+		
+		return $entity;
 	}
 	
 	public function getStoreUri(File $file) {

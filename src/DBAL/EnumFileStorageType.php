@@ -7,10 +7,13 @@ namespace Sowapps\SoCore\DBAL;
 
 use Sowapps\SoCore\Core\DBAL\AbstractEnumType;
 
+/**
+ * @deprecated Use FilePurpose
+ * @see FilePurpose
+ */
 class EnumFileStorageType extends AbstractEnumType {
 	
 	const LOCAL = 'local';
-	const AMAZON_S3 = 'amazon_s3';// Not handled for now
 	
 	const VALUES = [self::LOCAL];
 	

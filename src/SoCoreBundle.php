@@ -71,6 +71,18 @@ class SoCoreBundle extends AbstractBundle {
 	->children()
 		->scalarNode('store_path')->defaultValue('%kernel.project_dir%/var/store/files')->end()
 		->scalarNode('public_path')->defaultValue('%kernel.project_dir%/public')->end()
+		->arrayNode('purposes')
+			->prototype('scalar')->end()
+			->defaultValue([])
+		->end()
+		->arrayNode('sources')
+			->prototype('scalar')->end()
+			->defaultValue(['http_upload', 'local'])
+		->end()
+		->arrayNode('storages')
+			->prototype('scalar')->end()
+			->defaultValue(['local'])
+		->end()
 	->end()
 ->end()
 
@@ -80,7 +92,7 @@ class SoCoreBundle extends AbstractBundle {
 	}
 	
 	public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void {
-		
+		// Automatically create all bundle parameters for any configuration
 		$parameters = $container->parameters();
 		foreach( $config as $key => $subConfig ) {
 			$parameters->set('so_core.' . $key, $subConfig);

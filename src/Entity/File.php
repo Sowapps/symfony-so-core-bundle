@@ -4,30 +4,39 @@ namespace Sowapps\SoCore\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Sowapps\SoCore\DBAL\EnumFileStorageType;
 use Sowapps\SoCore\Repository\FileRepository;
 use Symfony\Component\Validator\Constraints as Assert;
+use Sowapps\SoCore\Constraints as FileAssert;
 
+
+/**
+ * Must be inherited by a File class in app sources
+ * It can not pre-define purposes, storages and types of source
+ */
 #[ORM\Entity(repositoryClass: FileRepository::class)]
+#[ORM\MappedSuperclass]
 class File extends AbstractEntity {
 	
 	#[ORM\Column(type: "string", length: 255)]
 	private string $name;
 	
-	#[ORM\Column(type: "string", length: 5)]
 	#[Assert\Length(min: 1, max: 5)]
+	#[ORM\Column(type: "string", length: 5)]
 	private string $extension;
 	
 	#[ORM\Column(type: "string", length: 100)]
 	private string $mimeType;
 	
-	#[ORM\Column(type: "enum_file_purpose")]
+	#[Assert\NotBlank]
+	#[FileAssert\ValidFilePurpose]
+	#[ORM\Column(length: 255, nullable: false)]
 	private ?string $purpose = null;
 	
 	#[ORM\Column(type: "string", length: 32)]
 	private string $privateKey;
 	
-	#[ORM\Column(type: "enum_file_source")]
+	#[FileAssert\ValidFileSource]
+	#[ORM\Column(length: 255, nullable: false)]
 	private string $sourceType;
 	
 	#[ORM\Column(type: "string", length: 255, nullable: true)]
@@ -45,11 +54,14 @@ class File extends AbstractEntity {
 	#[ORM\Column(type: "smallint")]
 	private int $position = 0;
 	
-	#[ORM\Column(type: "enum_file_storage")]
-	private string $storage = EnumFileStorageType::LOCAL;// On which support ?
+	/** On which support ? */
+	#[FileAssert\ValidFileStorage]
+	#[ORM\Column(length: 255, nullable: false)]
+	private ?string $storage = null;
 	
+	/** Path on support */
 	#[ORM\Column(type: "string", nullable: true)]
-	private ?string $path = null;// Path on support
+	private ?string $path = null;
 	
 	#[ORM\Column(type: "string", length: 255, nullable: true)]
 	private ?string $outputName = null;

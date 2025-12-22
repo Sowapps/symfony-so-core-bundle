@@ -2,6 +2,14 @@ generic:
     invalidValue: "Cette valeur n'est pas valide."
     invalidDate: "Cette date n'est pas valide."
 
+file:
+    purpose:
+        notFound: "Cette intention de fichier n'existe pas"
+    source:
+        notFound: "Cette source de fichier n'existe pas"
+    storage:
+        notFound: "Ce stockage de fichier n'existe pas"
+
 user:
     email:
         exists: "Cette adresse email est déjà utilisée."
