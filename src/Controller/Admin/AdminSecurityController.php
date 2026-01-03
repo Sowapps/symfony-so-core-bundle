@@ -14,7 +14,6 @@ use Sowapps\SoCore\Form\User\UserRecoveryRequestForm;
 use Sowapps\SoCore\Form\User\UserRegisterForm;
 use Sowapps\SoCore\Security\EmailVerifier;
 use Sowapps\SoCore\Service\AbstractUserService;
-use Sowapps\SoCore\Service\ControllerService;
 use Sowapps\SoCore\Service\LanguageService;
 use Sowapps\SoCore\Service\MailingService;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,8 +24,7 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class AdminSecurityController extends AbstractController {
 	
-	public function __construct(ControllerService $controllerService, private readonly EmailVerifier $emailVerifier, protected AbstractUserService $userService, protected array $configAdmin) {
-		parent::__construct($controllerService);
+	public function __construct(private readonly EmailVerifier $emailVerifier, protected AbstractUserService $userService, protected array $configAdmin) {
 	}
 	
 	protected function render(string $view, array $parameters = [], Response $response = null): Response {

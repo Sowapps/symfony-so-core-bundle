@@ -9,7 +9,6 @@ use DateTime;
 use InvalidArgumentException;
 use Sowapps\SoCore\Core\Controller\AbstractController;
 use Sowapps\SoCore\Entity\File;
-use Sowapps\SoCore\Service\ControllerService;
 use Sowapps\SoCore\Service\FileService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -25,11 +24,9 @@ class FileController extends AbstractController {
 	/**
 	 * FileController constructor
 	 *
-	 * @param ControllerService $controllerService
 	 * @param FileService $fileService
 	 */
-	public function __construct(ControllerService $controllerService, private readonly FileService $fileService) {
-		parent::__construct($controllerService);
+	public function __construct(private readonly FileService $fileService) {
 	}
 	
 	public function download(File $file, string $key, string $extension, string $action): Response {

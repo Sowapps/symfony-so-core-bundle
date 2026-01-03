@@ -16,16 +16,20 @@ use Symfony\Component\HttpFoundation\Response;
  * @package Sowapps\SoCore\Core\Controller
  */
 abstract class AbstractAdminController extends AbstractController {
-	
+
 	protected array $breadcrumb = [];
 	
-	public function __construct(ControllerService $controllerService) {
-		parent::__construct($controllerService);
-		
+	public function __construct() {
 		$this->domain = 'admin';
-		$this->addRouteToBreadcrumb('so_core_admin_home');
 	}
 	
+	#[Required]
+	public function initialize(): AbstractController {
+		$this->addRouteToBreadcrumb('so_core_admin_home');
+		
+		return $this;
+	}
+
 	/**
 	 * Add given route to breadcrumb
 	 * Label is optional, else we translate the route name
@@ -50,12 +54,16 @@ abstract class AbstractAdminController extends AbstractController {
 		$this->addBreadcrumb($label ?: $this->translator->trans(sprintf('page.%s.label', $route), [], $this->domain), $link);
 	}
 	
-	public function addBreadcrumb($label, $link = null) {
+	public function addBreadcrumb($label, $link = null): static {
 		$this->breadcrumb[] = (object) ['label' => $label, 'link' => $link];
+		
+		return $this;
 	}
 	
-	public function addRequestToBreadcrumb(Request $request, $label = null, $link = false) {
+	public function addRequestToBreadcrumb(Request $request, $label = null, $link = false): static {
 		$this->addRouteToBreadcrumb($request->get('_route'), $label, $link);
+		
+		return $this;
 	}
 	
 	protected function render(string $view, array $parameters = [], Response $response = null): Response {

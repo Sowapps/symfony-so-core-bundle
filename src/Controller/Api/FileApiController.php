@@ -9,7 +9,6 @@ use Exception;
 use Sowapps\SoCore\Core\Controller\AbstractApiController;
 use Sowapps\SoCore\Entity\File;
 use Sowapps\SoCore\Exception\ForbiddenOperationException;
-use Sowapps\SoCore\Service\ControllerService;
 use Sowapps\SoCore\Service\FileService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,11 +18,9 @@ class FileApiController extends AbstractApiController {
 	/**
 	 * FileController constructor
 	 *
-	 * @param ControllerService $controllerService
 	 * @param FileService $fileService
 	 */
-	public function __construct(ControllerService $controllerService, private readonly FileService $fileService) {
-		parent::__construct($controllerService);
+	public function __construct(private readonly FileService $fileService) {
 	}
 	
 	public function delete(File $file): JsonResponse {
