@@ -164,6 +164,14 @@ class FixtureParser {
 			};
 		}
 		$content = file_get_contents($file);
+		// Parse content to appli fixture features to {{ VALUE-SYNTAX }}
+		$content = preg_replace_callback('#\{\{\s*(.+?)\s*\}\}#', function ($matches) use ($entity, $fixture) {
+			$value = $this->parseValue($matches[1], $entity, $fixture);
+			if( $value instanceof AbstractEntity ) {
+				$value = $value->getId();
+			}
+			return $value;
+		}, $content);
 		
 		return [
 			'format' => $format,
