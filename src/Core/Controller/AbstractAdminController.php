@@ -5,8 +5,6 @@
 
 namespace Sowapps\SoCore\Core\Controller;
 
-
-use Sowapps\SoCore\Service\ControllerService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

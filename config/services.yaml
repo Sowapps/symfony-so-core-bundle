@@ -64,6 +64,8 @@ services:
         arguments:
             - '@router'
             - '@translator'
+            - '@request_stack'
+            - '@Sowapps\SoCore\Repository\LanguageRepository'
     Sowapps\SoCore\Service\LanguageService: '@so_core.language'
 
     so_core.file:
@@ -87,19 +89,6 @@ services:
             - '@router'
             - '@so_core.environment'
     Sowapps\SoCore\Contracts\ContextInterface: '@so_core.context'
-
-    so_core.controller:
-        class: Sowapps\SoCore\Service\ControllerService
-        arguments:
-            - '@kernel'
-            - '@request_stack'
-            - '@logger'
-            - '@translator'
-            - '@router'
-            - '@so_core.context'
-            - '@so_core.user'
-            - '@so_core.string'
-    Sowapps\SoCore\Service\ControllerService: '@so_core.controller'
 
     so_core.email_verifier:
         class: Sowapps\SoCore\Security\EmailVerifier
@@ -186,7 +175,6 @@ services:
     Sowapps\SoCore\Controller\FileController:
         tags: [ 'controller.service_arguments' ]
         arguments:
-            - '@so_core.controller'
             - '@so_core.file'
 
     ### Api Controllers

@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 
 class FileController extends AbstractController {
 	
@@ -29,6 +30,7 @@ class FileController extends AbstractController {
 	public function __construct(private readonly FileService $fileService) {
 	}
 	
+	#[Route('/_socore/file/{key}/{action}/{id}.{extension}', name: 'so_core_file_download')]
 	public function download(File $file, string $key, string $extension, string $action): Response {
 		$download = $action === self::ACTION_DOWNLOAD;
 		
