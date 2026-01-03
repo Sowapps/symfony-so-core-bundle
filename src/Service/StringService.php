@@ -7,57 +7,38 @@ namespace Sowapps\SoCore\Service;
 
 use Symfony\Component\String\Slugger\SluggerInterface;
 
-class StringHelper {
-
-	/**
-	 * StringHelper constructor
-	 *
-	 * @param SluggerInterface $slugger
-	 */
+class StringService {
+ 
 	public function __construct(protected SluggerInterface $slugger)
     {
     }
-
+	
 	/**
 	 * Generate a random string of 32 characters
-	 *
-	 * @return string
 	 */
 	public function convertToSlug($text): string {
 		return strtolower($this->slugger->slug($text));
 	}
-
+	
 	/**
 	 * Generate a random string of 32 characters
-	 *
-	 * @return string
 	 */
 	public function generateKey(): string {
 		return $this->generateRandomString(32);
 	}
-
+	
 	/**
 	 * Generate a random string of $length characters (max 40)
-	 *
-	 * @param $length
-	 * @return string
 	 */
 	public function generateRandomString($length): string {
 		return substr(sha1(random_bytes(100)), 0, $length);
 	}
-
+	
 	/**
-	 * Parse Markdown
-	 *
-	 * @param string $text
-	 * @return string
+	 * Format string using values
 	 */
-	//	public function parseMarkdown(?string $text) {
-	//		if( $text === null ) {
-	//			return null;
-	//		}
-	//		$parser = new Markdown();
-	//		return $parser->parse($text);
-	//	}
+	public function formatString(string $string, array $values): string {
+		return str_replace(array_map(fn($key) => '{' . $key . '}', array_keys($values)), array_values($values), $string);
+	}
 	
 }

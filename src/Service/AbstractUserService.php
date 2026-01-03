@@ -39,14 +39,14 @@ abstract class AbstractUserService extends AbstractEntityService {
 	 * @param UserPasswordHasherInterface $passwordEncoder
 	 * @param AccessDecisionManagerInterface $accessDecisionManager
 	 * @param Security $security
-	 * @param StringHelper $stringHelper
+	 * @param StringService $stringHelper
 	 * @param array $config
 	 */
 	public function __construct(
 		protected readonly UserPasswordHasherInterface    $passwordEncoder,
 		protected readonly AccessDecisionManagerInterface $accessDecisionManager,
 		protected readonly Security                       $security,
-		protected readonly StringHelper                   $stringHelper,
+		protected readonly StringService                  $stringHelper,
 		protected readonly array                          $config
 	) {
 	}

@@ -10,7 +10,7 @@ use Doctrine\Persistence\ObjectManager;
 use RuntimeException;
 use Sowapps\SoCore\Entity\AbstractEntity;
 use Sowapps\SoCore\Service\AbstractUserService;
-use Sowapps\SoCore\Service\StringHelper;
+use Sowapps\SoCore\Service\StringService;
 use Symfony\Component\Config\Exception\FileLocatorFileNotFoundException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Yaml\Yaml;
@@ -28,7 +28,7 @@ abstract class YamlFixture extends Fixture {
 	
 	public function __construct(
 		protected AbstractUserService $userService,
-		protected StringHelper        $stringHelper,
+		protected StringService       $stringService,
 		protected FixtureParser       $fixtureParser
 	)
     {
@@ -124,8 +124,8 @@ abstract class YamlFixture extends Fixture {
 		return $this->userService;
 	}
 	
-	public function getStringHelper(): StringHelper {
-		return $this->stringHelper;
+	public function getStringService(): StringService {
+		return $this->stringService;
 	}
 	
 	public function getParser(): FixtureParser {

@@ -13,8 +13,7 @@ use Sowapps\SoCore\Entity\AbstractUser;
 use Sowapps\SoCore\Exception\ForbiddenOperationException;
 use Sowapps\SoCore\Exception\UserException;
 use Sowapps\SoCore\Service\AbstractUserService;
-use Sowapps\SoCore\Service\ControllerService;
-use Sowapps\SoCore\Service\StringHelper;
+use Sowapps\SoCore\Service\StringService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as SymfonyAbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
@@ -55,7 +54,7 @@ class AbstractController extends SymfonyAbstractController {
 	
 	protected AbstractUserService $userService;
 	
-	protected StringHelper $stringHelper;
+	protected StringService $stringService;
 	
 	protected ?string $domain = null;
 	
@@ -63,7 +62,7 @@ class AbstractController extends SymfonyAbstractController {
 		$session = $this->getSession();
 		$tokens = $session->get('securityTokens', []);
 		$securityToken = $tokens[$key] ?? null;
-		$newToken = $this->stringHelper->generateKey();
+		$newToken = $this->stringService->generateKey();
 		$tokens[$key] = $newToken;
 		$session->set('securityTokens', $tokens);
 		
@@ -316,8 +315,8 @@ class AbstractController extends SymfonyAbstractController {
 	}
 	
 	#[Required]
-	public function setStringHelper(StringHelper $stringHelper): AbstractController {
-		$this->stringHelper = $stringHelper;
+	public function setStringService(StringService $stringService): AbstractController {
+		$this->stringService = $stringService;
 		return $this;
 	}
 }

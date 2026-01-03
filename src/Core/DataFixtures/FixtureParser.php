@@ -212,7 +212,7 @@ class FixtureParser {
 	}
 	
 	protected function parseValueSlug(array $args, $entity, YamlFixture $fixture): string {
-		return $fixture->getStringHelper()->convertToSlug($args[0]);
+		return $fixture->getStringService()->convertToSlug($args[0]);
 	}
 	
 	protected function parseValuePassword(array $args, $entity, YamlFixture $fixture): string {

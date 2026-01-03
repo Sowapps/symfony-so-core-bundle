@@ -15,10 +15,10 @@ services:
     #   Services
 
     so_core.string:
-        class: Sowapps\SoCore\Service\StringHelper
+        class: Sowapps\SoCore\Service\StringService
         arguments:
             - '@slugger'
-    Sowapps\SoCore\Service\StringHelper: '@so_core.string'
+    Sowapps\SoCore\Service\StringService: '@so_core.string'
 
     so_core.environment_factory:
         class: 'Sowapps\SoCore\Core\Environment\EnvironmentFactory'

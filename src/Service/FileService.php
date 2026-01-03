@@ -43,7 +43,7 @@ class FileService extends AbstractEntityService {
 	 * @param ParameterBagInterface $parameters
 	 * @param UrlHelper $urlHelper
 	 * @param UrlGeneratorInterface $router
-	 * @param StringHelper $stringHelper
+ 	 * @param StringService $stringHelper
 	 * @param array $config
 	 */
 	public function __construct(
@@ -52,7 +52,7 @@ class FileService extends AbstractEntityService {
 		protected ParameterBagInterface $parameters,
 		protected UrlHelper             $urlHelper,
 		protected UrlGeneratorInterface $router,
-		protected StringHelper          $stringHelper,
+		protected StringService         $stringHelper,
 		#[Autowire(param: 'so_core.file')]
 		protected array                 $config
 	)
