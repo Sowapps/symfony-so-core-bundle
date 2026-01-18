@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 class EmailController extends AbstractController {
 	
 	public function view(Request $request, EmailService $emailService): Response {
-		$emailMessage = $emailService->getEmailMessage($request->get('messageId'), $request->get('messageKey'));
+		$emailMessage = $emailService->getEmailMessage($request->query->get('messageId'), $request->query->get('messageKey'));
 		$contents = $emailMessage->getBodyHtml() ?: $emailMessage->getBodyText();
 		// Hide "show online" link
 		$contents .= '<style>.online-hidden { display: none !important; }</style>';

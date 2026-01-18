@@ -15,6 +15,9 @@ use Sowapps\SoCore\Core\Entity\EntityReference;
 use Sowapps\SoCore\Entity\AbstractEntity;
 use Symfony\Contracts\Service\Attribute\Required;
 
+/**
+ * TODO Determine if this design is a always good, we use more EntityService
+ */
 abstract class AbstractEntityService {
 	
 	protected EntityManagerInterface $entityManager;
@@ -129,15 +132,6 @@ abstract class AbstractEntityService {
 		$this->entityManager->flush();
 	}
 	
-	public function clearCache($classes = null) {
-		if( !is_array($classes) ) {
-			$classes = [$classes];
-		}
-		foreach( $classes as $class ) {
-			$this->entityManager->clear($class);
-		}
-	}
-	
 	public function isPersisted(AbstractEntity $entity): bool {
 		return $this->entityManager->contains($entity);
 	}
@@ -148,7 +142,7 @@ abstract class AbstractEntityService {
 	}
 	
 	/**
-	 * @param \Sowapps\SoCore\Entity\AbstractEntity $entity
+	 * @param AbstractEntity $entity
 	 */
 	public function update(AbstractEntity $entity) {
 		$this->prepareUpdate($entity);
@@ -163,7 +157,7 @@ abstract class AbstractEntityService {
 	}
 	
 	/**
-	 * @param \Sowapps\SoCore\Entity\AbstractEntity $entity
+	 * @param AbstractEntity $entity
 	 * @return bool
 	 */
 	public function prepareRemove(AbstractEntity $entity): bool {

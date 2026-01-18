@@ -2,6 +2,7 @@
 
 namespace Sowapps\SoCore;
 
+use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -9,98 +10,61 @@ use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 
 class SoCoreBundle extends AbstractBundle {
 	
+	public const ASSET_PACKAGE = '@sowapps/so-core';
+
 	public function configure(DefinitionConfigurator $definition): void {
-		// TODO Add forms ? (like user registration)
-		// @formatter:off
-		$definition->rootNode()
-			->addDefaultsIfNotSet()
-			->children()
-
-->arrayNode('user')
-	->children()
-		->scalarNode('class')->defaultValue('\App\Entity\User')->end()
-		->arrayNode('activation')
-			->children()
-				->scalarNode('expire')
-			        ->defaultValue("24 hours")
-				->end()
-			->end()
-		->end()
-		->arrayNode('recover')
-			->children()
-				->scalarNode('expire')
-					->defaultValue("24 hours")
-				->end()
-			->end()
-		->end()
-	->end()
-->end()
-->arrayNode('admin')
-	->children()
-		->arrayNode('auth')
-			->children()
-				->arrayNode('background')->scalarPrototype()->end()->end()
-			->end()
-		->end()
-	->end()
-->end()
-->arrayNode('email')
-	->children()
-		->arrayNode('from')
-			->children()
-				->scalarNode('name')->end()
-				->scalarNode('email')->end()
-			->end()
-		->end()
-		->arrayNode('contact')
-			->children()
-				->scalarNode('name')->end()
-				->scalarNode('email')->end()
-			->end()
-		->end()
-		->arrayNode('online_view')
-			->children()
-				->scalarNode('expire')
-        			->defaultValue("72 hours")
-			    ->end()
-			->end()
-		->end()
-	->end()
-->end()
-->arrayNode('file')
-	->children()
-		->scalarNode('store_path')->defaultValue('%kernel.project_dir%/var/store/files')->end()
-		->scalarNode('public_path')->defaultValue('%kernel.project_dir%/public')->end()
-		->arrayNode('purposes')
-			->prototype('scalar')->end()
-			->defaultValue([])
-		->end()
-		->arrayNode('sources')
-			->prototype('scalar')->end()
-			->defaultValue(['http_upload', 'local'])
-		->end()
-		->arrayNode('storages')
-			->prototype('scalar')->end()
-			->defaultValue(['local'])
-		->end()
-	->end()
-->end()
-
-			->end();
-		// @formatter:on
-		
+		// Load bundle configuration definition
+		$definition->import('../config/definition.php');
 	}
 	
-	public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void {
-		// Automatically create all bundle parameters for any configuration
-		$parameters = $container->parameters();
-		foreach( $config as $key => $subConfig ) {
-			$parameters->set('so_core.' . $key, $subConfig);
+	public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void {
+		if( !$this->isAssetMapperAvailable($builder) ) {
+			return;
 		}
 		
-		// load an XML, PHP or Yaml file
+		// Add the path "assets/" to loaded resources of the bundle
+		// It allows the app to use assets in this folder
+		$builder->prependExtensionConfig('framework', [
+			'asset_mapper' => [
+				'paths' => [
+					__DIR__ . '/../assets' => self::ASSET_PACKAGE,
+				],
+			],
+		]);
+	}
+	
+	/**
+	 * @param array $config
+	 * @param ContainerConfigurator $container Seems to declare services/parameters for all bundles+app
+	 * @param ContainerBuilder $builder Seems to declare services/parameters for this bundle only
+	 * @return void
+	 */
+	public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void {
+		// Load bundle services
 		$container->import('../config/services.yaml');
 		
+		// We keep it hardcoded to get back the parameters' name
+		$container->parameters()
+			->set('so_core.app', $config['app'])
+			->set('so_core.user', $config['user'])
+			->set('so_core.admin', $config['admin'])
+			->set('so_core.email', $config['email'])
+			->set('so_core.file', $config['file'])
+			->set('so_core.routing', $config['routing']);
+	}
+	
+	private function isAssetMapperAvailable(ContainerBuilder $builder): bool {
+		if( !interface_exists(AssetMapperInterface::class) ) {
+			return false;
+		}
+		
+		// check that FrameworkBundle 6.3 or higher is installed
+		$bundlesMetadata = $builder->getParameter('kernel.bundles_metadata');
+		if( !isset($bundlesMetadata['FrameworkBundle']) ) {
+			return false;
+		}
+		
+		return is_file($bundlesMetadata['FrameworkBundle']['path'] . '/Resources/config/asset_mapper.php');
 	}
 	
 }

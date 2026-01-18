@@ -5,41 +5,35 @@
 
 namespace Sowapps\SoCore\EventListener;
 
-use DateTimeImmutable;
-use Doctrine\Common\EventSubscriber;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
+use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Events;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Sowapps\SoCore\Entity\AbstractEntity;
-use Sowapps\SoCore\Service\AbstractUserService;
+use Sowapps\SoCore\Service\SecurityService;
 
-#[\Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener(event: Events::prePersist)]
-class EntityLifecycleSubscriber
-{
-    /**
-     * EntityLifecycleSubscriber constructor
-     *
-     * @param AbstractUserService $userService
-     */
-    public function __construct(protected AbstractUserService $userService)
-    {
-    }
-    public function prePersist(LifecycleEventArgs $args) {
+/**
+ * EntityLifecycleSubscriber set missing metadata in So entities
+ */
+#[AsDoctrineListener(event: Events::prePersist)]
+readonly class EntityLifecycleSubscriber {
+	
+	public function __construct(private SecurityService $securityService) {
+	}
+	
+	public function prePersist(PrePersistEventArgs $args): void {
 		$entity = $args->getObject();
 		if( !($entity instanceof AbstractEntity) ) {
 			return;
 		}
-		
-		if( !$entity->getCreateDate() ) {
-			$entity->setCreateDate(new DateTimeImmutable());
-		}
 		if( !$entity->getCreateUser() ) {
-			$currentUser = $this->userService->getCurrent();
+			$currentUser = $this->securityService->getCurrentUser();
 			if( $currentUser ) {
 				$entity->setCreateUser($currentUser);
 			}
 		}
 		if( !$entity->getCreateIp() ) {
-			$entity->setCreateIp($_SERVER['REMOTE_ADDR'] ?? '127.0.0.1');
+			$entity->setCreateIp($this->securityService->getRemoteIp());
 		}
 	}
+	
 }

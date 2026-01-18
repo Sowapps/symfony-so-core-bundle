@@ -1,4 +1,4 @@
-import { AbstractController } from "@sowapps/so-core/controllers/abstract.controller.js";
+import {AbstractController} from "../abstract.controller.js";
 
 export default class extends AbstractController {
 	

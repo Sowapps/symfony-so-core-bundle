@@ -21,11 +21,11 @@ class LocaleSubscriber implements EventSubscriberInterface {
     }
 	
 	public function onKernelRequest(RequestEvent $event): void {
-		$language = $this->languageService->getLanguageByLocale(DefaultContextService::DEFAULT_LANGUAGE);
-		if( !$language ) {
-			throw new RuntimeException(sprintf('No language found for default locale "%s"', DefaultContextService::DEFAULT_LANGUAGE));
-		}
-		$this->contextService->setCurrentLanguage($language, new EuroCurrency());
+		//		$language = $this->languageService->getLanguageByLocale(DefaultContextService::DEFAULT_LANGUAGE);
+		//		if( !$language ) {
+		//			throw new RuntimeException(sprintf('No language found for default locale "%s"', DefaultContextService::DEFAULT_LANGUAGE));
+		//		}
+		//		$this->contextService->setCurrentLanguage($language, new EuroCurrency());
 	}
 	
 	public static function getSubscribedEvents(): array {

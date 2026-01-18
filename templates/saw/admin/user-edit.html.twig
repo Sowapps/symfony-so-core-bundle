@@ -1,0 +1,117 @@
+{% extends 'template-admin-page.html.twig' %}
+
+{% block controller 'admin--user-edit' %}
+{% block label 'saw.loadingTemplate' | trans %}
+{% set contentTitle = '{label}' %}
+
+{% block body %}
+	{# User template require the controller to be loaded, so we embed another template to regenerate content #}
+	<div data-admin--user-edit-target="content">
+	</div>
+	<template data-admin--user-edit-target="template">
+		{{ parent() }}
+	</template>
+{% endblock %}
+
+{% block titleContent %}
+	<div class="btn-toolbar mb-2 mb-md-0 btn-group-sm">
+		<button type="button" class="btn btn-outline-secondary" data-action="admin--user-edit#load">
+			<i class="fa-solid fa-rotate-right"></i>
+		</button>
+	</div>
+{% endblock %}
+
+{% block content %}
+
+	<div class="row">
+		<div class="col-12 col-lg-6">
+
+			<form data-admin--user-edit-target="form" data-action="admin--user-edit#submitProfile">
+				{% embed "component/panel.html.twig" with {header: "Edit user profile" } %}
+					{% block bodyContent %}
+						<div data-admin--user-edit-target="profileFormReports" hidden></div>
+
+						<div class="mb-3">
+							<label for="InputUserName" class="form-label">Name</label>
+							<input id="InputUserName" name="name" value="{name}" type="text" class="form-control">
+						</div>
+						<div class="mb-3">
+							<label for="InputUserEmail" class="form-label">Email address</label>
+							<input id="InputUserEmail" name="email" value="{email}" type="email" class="form-control">
+						</div>
+					{% endblock %}
+					{% block footer %}
+						<button class="btn btn-primary ms-1" type="submit">{{ 'action.save' | trans }}</button>
+					{% endblock %}
+				{% endembed %}
+			</form>
+
+		</div>
+		<div class="col-12 col-lg-6">
+			{% include "component/widget-entity-metadata.html.twig" %}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-12 col-lg-6">
+
+			<form data-admin--user-edit-target="form" data-action="admin--user-edit#submitSecurity">
+				{% embed "component/panel.html.twig" with {header: "Edit user security" } %}
+					{% block bodyContent %}
+						<div data-admin--user-edit-target="securityFormReports" hidden></div>
+
+						<div class="form-check form-switch mb-3">
+							<input id="InputUserEnabled" name="enabled" class="form-check-input" type="checkbox" role="switch" checked="{enabled}">
+							<label for="InputUserEnabled" class="form-check-label">Account enabled and allowed to log in</label>
+						</div>
+						<h5>Roles</h5>
+						{% for role in security.allRoles %}
+							<div class="form-check">
+								<input id="InputRole_{{ role }}" name="roles[]" value="{{ role }}" checked="{grantedRoles|contains('{{ role }}')}" class="form-check-input"
+									   type="checkbox"{% if role == "ROLE_USER" %} disabled{% endif %}>
+								<label class="form-check-label" for="InputRole_{{ role }}">
+									{{ role }}
+								</label>
+							</div>
+						{% endfor %}
+
+					{% endblock %}
+					{% block footer %}
+						<button class="btn btn-primary ms-1" type="submit">{{ 'action.save' | trans }}</button>
+					{% endblock %}
+				{% endembed %}
+			</form>
+
+		</div>
+		<div class="col-12 col-lg-6">
+
+			<form data-admin--user-edit-target="form" data-action="admin--user-edit#submitPassword" autocomplete="off">
+				{% embed "component/panel.html.twig" with {header: "Edit user password" } %}
+					{% block bodyContent %}
+						<div data-admin--user-edit-target="passwordFormReports" hidden></div>
+
+						<p class="mb-3">
+							Take care by changing user password, he won't be notified.
+						</p>
+						<div class="mb-3">
+							<label for="InputUserPassword" class="form-label">New password</label>
+							<div class="input-group" data-controller="form--password">
+								<input id="InputUserPassword" name="password" placeholder="********" type="password" class="form-control" data-form--password-target="input"
+									   autocomplete="off" required>
+								<button class="btn btn-outline-secondary" type="button" data-action="form--password#toggle">
+									<i class="fa-solid fa-eye on-enabled"></i>
+									<i class="fa-solid fa-eye-slash on-disabled"></i>
+								</button>
+							</div>
+						</div>
+					{% endblock %}
+					{% block footer %}
+						<button class="btn btn-primary ms-1" type="submit">{{ 'action.save' | trans }}</button>
+					{% endblock %}
+				{% endembed %}
+			</form>
+
+		</div>
+	</div>
+
+{% endblock %}

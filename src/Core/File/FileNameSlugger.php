@@ -63,23 +63,14 @@ class FileNameSlugger implements SluggerInterface, LocaleAwareInterface {
 		$this->symbolsMap = $symbolsMap ?? $this->symbolsMap;
 	}
 	
-	/**
-	 * {@inheritdoc}
-	 */
-	public function setLocale($locale) {
+	public function setLocale($locale): void {
 		$this->defaultLocale = $locale;
 	}
 	
-	/**
-	 * {@inheritdoc}
-	 */
 	public function getLocale(): string {
 		return $this->defaultLocale;
 	}
 	
-	/**
-	 * {@inheritdoc}
-	 */
 	public function slug(string $string, string $separator = '-', string $locale = null): AbstractUnicodeString {
 		$locale ??= $this->defaultLocale;
 		

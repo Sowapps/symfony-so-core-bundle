@@ -10,15 +10,18 @@ use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 use Sowapps\SoCore\Core\Entity\EntityReference;
 use Sowapps\SoCore\Core\Entity\Persistable;
+use Sowapps\SoCore\Core\ProcessOption\FormatOptions;
 
 /**
  * Superclass must be in Sowapps\SoCore\Entity namespace
  */
 #[ORM\MappedSuperclass]
 class AbstractEntity implements JsonSerializable, Persistable, \Stringable {
+	const FORMAT_PUBLIC = 'public';// Show for anybody on internet, not sensible or private data (Default)
+	const FORMAT_PRIVATE = 'private';// Show for the creator/owner itself (private data included)
+	const FORMAT_ADMIN = 'admin';// Show for any admin (all data included)
 	
-	const MODEL_MINIMALIST = 'min';
-	const MODEL_PUBLIC = 'public';
+	const FORMAT_RELATION = 'relation';// Show first level of relations (public info only, and O2O or M2O only)
 	
 	#[ORM\Id]
 	#[ORM\GeneratedValue]
@@ -31,44 +34,58 @@ class AbstractEntity implements JsonSerializable, Persistable, \Stringable {
 	#[ORM\Column(type: 'string', length: 60)]
 	protected ?string $createIp = null;
 	
-	#[ORM\ManyToOne(targetEntity: \Sowapps\SoCore\Entity\AbstractUser::class)]
+	#[ORM\ManyToOne(targetEntity: AbstractUser::class)]
 	protected ?AbstractUser $createUser = null;
 	
 	public function __construct() {
-		// Do nothing
+		$this->createDate = new DateTimeImmutable();
+	}
+	
+	public function isOwnedBy(?AbstractUser $user): false {
+		return false;
 	}
 	
 	public function jsonSerialize(): array {
-		return $this->toArray(self::MODEL_PUBLIC);
+		return $this->asPublicArray();
 	}
 	
-	public function toMinimalistArray(): array {
-		return $this->toArray(self::MODEL_MINIMALIST);
+	public function asPublicArray(): array {
+		return $this->asArray(new FormatOptions([self::FORMAT_PUBLIC]));
 	}
 	
-	public function toArray(string $model): array {
-		return [
-			// MODEL_MINIMALIST
-			'entity_type' => $this->getEntityType(),
-			'id'          => $this->getId(),
-			'label'       => $this->getLabel(),
+	public function asArray(FormatOptions $format): array {
+		$array = [
+			'id' => $this->getId(),
 		];
-	}
-	
-	public function __clone() {
-		$this->id = null;
-	}
-	
-	public function __toString(): string {
-		return $this->getLabel();
-	}
-	
-	public function getEntityLabel(): string {
-		return sprintf('%s (#%d)', $this->getLabel(), $this->getId());
+		if( $format->isRestricted() ) {
+			$array += [
+				'createDate'   => $this->getCreateDate()->format('c'),
+				'createIp'     => $this->getCreateIp(),
+				'createUserId' => $this->getCreateUser()?->getId(),
+			];
+			if( $format->isRelation() ) {
+				$array['createUser'] = $this->getCreateUser()?->asPublicArray();
+			}
+		}
+		
+		return $array;
 	}
 	
 	public function getLabel(): string {
 		return $this->getEntityKey();
+	}
+	
+	public function refresh() {
+	
+	}
+	
+	public function isNew(): bool {
+		// Warning : If handled by Doctrine, it could be set as not null but not saved in db
+		return !$this->id;
+	}
+	
+	public function getEntityLabel(): string {
+		return sprintf('%s (#%d)', $this->getLabel(), $this->getId());
 	}
 	
 	public function getEntityType(): string {
@@ -85,10 +102,6 @@ class AbstractEntity implements JsonSerializable, Persistable, \Stringable {
 		return new EntityReference(static::class, $this->getId());
 	}
 	
-	public function getId(): ?int {
-		return $this->id;
-	}
-	
 	/**
 	 * @param mixed $other
 	 * @return bool
@@ -97,14 +110,8 @@ class AbstractEntity implements JsonSerializable, Persistable, \Stringable {
 		return $other && is_object($other) && static::class === $other::class && !$this->isNew() && !$other->isNew() && $this->getId() === $other->getId();
 	}
 	
-	/**
-	 * Is this instance new ? Or is it saved to database ?
-	 * It tests the id to know.
-	 *
-	 * @return bool
-	 */
-	public function isNew(): bool {
-		return !isset($this->id) || !$this->id;
+	public function getId(): ?int {
+		return $this->id;
 	}
 	
 	/**
@@ -149,6 +156,14 @@ class AbstractEntity implements JsonSerializable, Persistable, \Stringable {
 		$this->createUser = $createUser;
 		
 		return $this;
+	}
+	
+	public function __clone() {
+		$this->id = null;
+	}
+	
+	public function __toString(): string {
+		return $this->getLabel();
 	}
 	
 }

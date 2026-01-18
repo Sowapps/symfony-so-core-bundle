@@ -1,0 +1,36 @@
+<template data-document-title="{{ 'page.admin.title' | trans }}" data-param--app="{{ 'app.label' | trans }}">
+	<header class="navbar navbar-expand-lg sticky-top bg-dark flex-md-nowrap p-0 shadow">
+		<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 py-2 my-1 fs-6" href="/">{{ 'app.label' | trans }}</a>
+
+		<ul class="navbar-nav ms-auto me-3 me-lg-4" data-admin--main-target="userMenu">
+
+			<li class="nav-item dropdown">
+				{% include "@SoCore/component/menu-user.html.twig" %}
+			</li>
+
+		</ul>
+	</header>
+	<div class="container-fluid height-no-header">
+		<div class="row h-100">
+			<div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
+				{#
+				https://getbootstrap.com/docs/5.3/examples/dashboard/
+				https://getbootstrap.com/docs/5.3/components/offcanvas/
+				#}
+				<div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
+					<div class="offcanvas-header">
+						<h5 class="offcanvas-title" id="sidebarMenuLabel">{{ 'app.label' | trans }}</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu"
+								aria-label="{{ 'action.close' | trans }}"></button>
+					</div>
+					<div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
+						{% include "@SoCore/component/menu-admin.html.twig" %}
+					</div>
+				</div>
+			</div>
+
+			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 pb-5 theme-background" data-bs-theme="light" data-template-wrap>
+			</main>
+		</div>
+	</div>
+</template>

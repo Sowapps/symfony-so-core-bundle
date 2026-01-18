@@ -1,255 +1,270 @@
+# yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
 # This file is the entry point to configure your own services.
 # Files in the packages/ subdirectory configure your dependencies.
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    # Ever, ever declare the data type to use an environment variable
+    # Every bundle parameter must be declared in class \Sowapps\SoCore\Config
+    security.admin.accessKey: '%env(string:ADMIN_ACCESS_KEY)%'
 
 services:
     _defaults:
         autowire: true
         autoconfigure: true
-        bind:
-            string $publicPath: '%kernel.project_dir%/public'
+        public: false
+
+    # Services
+    Sowapps\SoCore\:
+        resource: '../src'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Resources/'
+            - '../src/Tests/'
+            - '../src/Migrations/'
+
+    Sowapps\SoCore\Core\Environment\Environment:
+        factory: [ '@Sowapps\SoCore\Core\Environment\EnvironmentFactory', '__invoke' ]
+
+    # Controllers
+    Sowapps\SoCore\Controller\:
+        resource: '../src/Controller/'
+        public: true
+        tags: [ 'controller.service_arguments' ]
 
     #   Services
-
-    so_core.string:
-        class: Sowapps\SoCore\Service\StringService
-        arguments:
-            - '@slugger'
-    Sowapps\SoCore\Service\StringService: '@so_core.string'
-
-    so_core.environment_factory:
-        class: 'Sowapps\SoCore\Core\Environment\EnvironmentFactory'
-        arguments:
-            - '@kernel'
-            - '@cache.app'
-
-    so_core.environment:
-        class: Sowapps\SoCore\Core\Environment\Environment
-        factory: '@so_core.environment_factory'
-        arguments:
-            - '@kernel'
-
-    so_core.user:
-        class: Sowapps\SoCore\Service\DefaultUserService
-        arguments:
-            - '@security.user_password_hasher'
-            - '@security.access.decision_manager'
-            - '@security.helper'
-            - '@so_core.string'
-            - '%so_core.user%'
-    Sowapps\SoCore\Service\AbstractUserService: '@so_core.user'
-
-    so_core.email:
-        class: Sowapps\SoCore\Service\EmailService
-        arguments:
-            - '@mailer'
-            - '@twig'
-            - '@router'
-            - '@so_core.string'
-            - '%so_core.email%'
-    Sowapps\SoCore\Service\EmailService: '@so_core.email'
-
-    so_core.mailing:
-        class: Sowapps\SoCore\Service\MailingService
-        arguments:
-            - '@translator'
-            - '@so_core.email'
-    Sowapps\SoCore\Service\MailingService: '@so_core.mailing'
-
-    so_core.language:
-        class: Sowapps\SoCore\Service\LanguageService
-        arguments:
-            - '@router'
-            - '@translator'
-            - '@request_stack'
-            - '@Sowapps\SoCore\Repository\LanguageRepository'
-    Sowapps\SoCore\Service\LanguageService: '@so_core.language'
-
-    so_core.file:
-        class: Sowapps\SoCore\Service\FileService
-        arguments:
-            - '@assets.packages'
-            - '@twig'
-            - '@parameter_bag'
-            - '@url_helper'
-            - '@router'
-            - '@so_core.string'
-            - '%so_core.file%'
-    Sowapps\SoCore\Service\FileService: '@so_core.file'
-
-    so_core.context:
-        class: Sowapps\SoCore\Service\DefaultContextService
-        arguments:
-            - '@kernel'
-            - '@request_stack'
-            - '@translator'
-            - '@router'
-            - '@so_core.environment'
-    Sowapps\SoCore\Contracts\ContextInterface: '@so_core.context'
-
-    so_core.email_verifier:
-        class: Sowapps\SoCore\Security\EmailVerifier
-        arguments:
-            - '@symfonycasts.verify_email.helper'
-            - '@so_core.mailing'
-            - '@so_core.user'
-    Sowapps\SoCore\Security\EmailVerifier: '@so_core.email_verifier'
-
-    so_core.fixture.init:
-        class: Sowapps\SoCore\Core\DataFixtures\InitFixture
-        arguments:
-            - '@so_core.user'
-            - '@so_core.string'
-        tags: [ 'doctrine.fixture.orm' ]
-    Sowapps\SoCore\Core\DataFixtures\InitFixture: '@so_core.fixture.init'
-
-    so_core.fixture.sample:
-        class: Sowapps\SoCore\Core\DataFixtures\SampleFixture
-        arguments:
-            - '@so_core.user'
-            - '@so_core.string'
-        tags: [ 'doctrine.fixture.orm' ]
-    Sowapps\SoCore\Core\DataFixtures\SampleFixture: '@so_core.fixture.sample'
-
-    so_core.fixture_parser:
-        class: Sowapps\SoCore\Core\DataFixtures\FixtureParser
-        arguments:
-            - '@so_core.file'
-    Sowapps\SoCore\Core\DataFixtures\FixtureParser: '@so_core.fixture_parser'
-
-    #   Repositories
-
-    Sowapps\SoCore\Repository\EmailMessageRepository:
-        arguments:
-            - '@doctrine'
-        tags: [ 'doctrine.repository_service' ]
-
-    Sowapps\SoCore\Repository\EmailSubscriptionRepository:
-        arguments:
-            - '@doctrine'
-        tags: [ 'doctrine.repository_service' ]
-
-    Sowapps\SoCore\Repository\FileRepository:
-        arguments:
-            - '@doctrine'
-        tags: [ 'doctrine.repository_service' ]
-
-    Sowapps\SoCore\Repository\LanguageRepository:
-        arguments:
-            - '@doctrine'
-        tags: [ 'doctrine.repository_service' ]
-
-    #   Controllers
-
-    Sowapps\SoCore\Controller\Admin\AdminSecurityController:
-        tags: [ 'controller.service_arguments' ]
-        arguments:
-            - '@so_core.controller'
-            - '@so_core.email_verifier'
-            - '@so_core.user'
-            - '%so_core.admin%'
-
-    Sowapps\SoCore\Controller\Admin\AdminDashboardController:
-        tags: [ 'controller.service_arguments' ]
-        arguments:
-            - '@so_core.controller'
-
-    Sowapps\SoCore\Controller\Admin\AdminLanguageController:
-        tags: [ 'controller.service_arguments' ]
-        arguments:
-            - '@so_core.controller'
-
-    Sowapps\SoCore\Controller\Admin\AdminUserController:
-        tags: [ 'controller.service_arguments' ]
-        arguments:
-            - '@so_core.controller'
-
-    Sowapps\SoCore\Controller\EmailController:
-        tags: [ 'controller.service_arguments' ]
-        arguments:
-            - '@so_core.controller'
-
-    Sowapps\SoCore\Controller\FileController:
-        tags: [ 'controller.service_arguments' ]
-        arguments:
-            - '@so_core.file'
-
-    ### Api Controllers
-
-    Sowapps\SoCore\Controller\Api\FileApiController:
-        tags: [ 'controller.service_arguments' ]
-        arguments:
-            - '@so_core.controller'
-            - '@so_core.file'
-
-    #   Forms
-
-    Sowapps\SoCore\Core\Form\FormExtension:
-        tags: [ 'form.type_extension' ]
-
-    Sowapps\SoCore\Form\LanguageForm: [ ]
-
-    Sowapps\SoCore\Form\User\UserRegisterForm: [ ]
-
-    Sowapps\SoCore\Form\User\UserRecoveryRequestForm: [ ]
-
-    Sowapps\SoCore\Form\User\UserRecoveryPasswordForm: [ ]
-
-    Sowapps\SoCore\Form\User\UserAdminForm: [ ]
-
-    Sowapps\SoCore\Form\User\UserUpdateForm: [ ]
-
-    Sowapps\SoCore\Form\User\UserPictureForm: [ ]
-
-    Sowapps\SoCore\Form\User\UserAdminPasswordForm: [ ]
-
-    # Form Types
-
-    Sowapps\SoCore\Form\User\UserType:
-        - '@so_core.user'
-
-    Sowapps\SoCore\Form\EntityType:
-        - '@doctrine'
-
-    Sowapps\SoCore\Form\FileType:
-        - '@doctrine'
-
-    Sowapps\SoCore\Form\ImageType:
-        - '@doctrine'
-
-    #   Commands
-
-    Sowapps\SoCore\Command\EmailTestCommand:
-        arguments:
-            - '@translator'
-            - '@mailer'
-            - '@twig'
-            - '%so_core.email%'
-        tags:
-            - { name: 'console.command', command: 'email:send-test' }
-
-    #   Twig Extension
-
-    Sowapps\SoCore\Twig\TwigExtension:
-        tags: [ 'controller.service_arguments' ]
-
-    #   Event Subscribers
-
-    so_core.locale_subscriber:
-        class: Sowapps\SoCore\EventListener\LocaleSubscriber
-        arguments:
-            - '@so_core.context'
-        tags:
-            - { name: kernel.event_listener, event: kernel.request }
-    Sowapps\SoCore\EventListener\LocaleSubscriber: '@so_core.locale_subscriber'
-
-    so_core.entity_subscriber:
-        class: Sowapps\SoCore\EventListener\EntityLifecycleSubscriber
-        arguments:
-            - '@so_core.user'
-        tags:
-            - { name: doctrine.event_listener, event: prePersist }
-    Sowapps\SoCore\EventListener\EntityLifecycleSubscriber: '@so_core.entity_subscriber'
+#    so_core.string:
+#        class: Sowapps\SoCore\Service\StringService
+#        arguments:
+#            - '@slugger'
+#    Sowapps\SoCore\Service\StringService: '@so_core.string'
+#
+#    so_core.environment_factory:
+#        class: 'Sowapps\SoCore\Core\Environment\EnvironmentFactory'
+#        arguments:
+#            - '@kernel'
+#            - '@cache.app'
+#
+#    so_core.environment:
+#        class: Sowapps\SoCore\Core\Environment\Environment
+#        factory: '@so_core.environment_factory'
+#        arguments:
+#            - '@kernel'
+#
+#    so_core.user:
+#        class: Sowapps\SoCore\Service\DefaultUserService
+#        arguments:
+#            - '@security.user_password_hasher'
+#            - '@security.access.decision_manager'
+#            - '@security.helper'
+#            - '@so_core.string'
+#            - '%so_core.user%'
+#    Sowapps\SoCore\Service\AbstractUserService: '@so_core.user'
+#
+#    so_core.email:
+#        class: Sowapps\SoCore\Service\EmailService
+#        arguments:
+#            - '@mailer'
+#            - '@twig'
+#            - '@router'
+#            - '@so_core.string'
+#            - '%so_core.email%'
+#    Sowapps\SoCore\Service\EmailService: '@so_core.email'
+#
+#    so_core.mailing:
+#        class: Sowapps\SoCore\Service\MailingService
+#        arguments:
+#            - '@translator'
+#            - '@so_core.email'
+#    Sowapps\SoCore\Service\MailingService: '@so_core.mailing'
+#
+#    so_core.language:
+#        class: Sowapps\SoCore\Service\LanguageService
+#        arguments:
+#            - '@router'
+#            - '@translator'
+#            - '@request_stack'
+#            - '@Sowapps\SoCore\Repository\LanguageRepository'
+#    Sowapps\SoCore\Service\LanguageService: '@so_core.language'
+#
+#    so_core.file:
+#        class: Sowapps\SoCore\Service\FileService
+#        arguments:
+#            - '@assets.packages'
+#            - '@twig'
+#            - '@parameter_bag'
+#            - '@url_helper'
+#            - '@router'
+#            - '@so_core.string'
+#            - '%so_core.file%'
+#    Sowapps\SoCore\Service\FileService: '@so_core.file'
+#
+#    so_core.context:
+#        class: Sowapps\SoCore\Service\DefaultContextService
+#        arguments:
+#            - '@kernel'
+#            - '@request_stack'
+#            - '@translator'
+#            - '@router'
+#            - '@so_core.environment'
+#    Sowapps\SoCore\Contracts\ContextInterface: '@so_core.context'
+#
+#    so_core.email_verifier:
+#        class: Sowapps\SoCore\Security\EmailVerifier
+#        arguments:
+#            - '@symfonycasts.verify_email.helper'
+#            - '@so_core.mailing'
+#            - '@so_core.user'
+#    Sowapps\SoCore\Security\EmailVerifier: '@so_core.email_verifier'
+#
+#    so_core.fixture.init:
+#        class: Sowapps\SoCore\Core\DataFixtures\InitFixture
+#        arguments:
+#            - '@so_core.user'
+#            - '@so_core.string'
+#        tags: [ 'doctrine.fixture.orm' ]
+#    Sowapps\SoCore\Core\DataFixtures\InitFixture: '@so_core.fixture.init'
+#
+#    so_core.fixture.sample:
+#        class: Sowapps\SoCore\Core\DataFixtures\SampleFixture
+#        arguments:
+#            - '@so_core.user'
+#            - '@so_core.string'
+#        tags: [ 'doctrine.fixture.orm' ]
+#    Sowapps\SoCore\Core\DataFixtures\SampleFixture: '@so_core.fixture.sample'
+#
+#    so_core.fixture_parser:
+#        class: Sowapps\SoCore\Core\DataFixtures\FixtureParser
+#        arguments:
+#            - '@so_core.file'
+#    Sowapps\SoCore\Core\DataFixtures\FixtureParser: '@so_core.fixture_parser'
+#
+#    #   Repositories
+#
+#    Sowapps\SoCore\Repository\EmailMessageRepository:
+#        arguments:
+#            - '@doctrine'
+#        tags: [ 'doctrine.repository_service' ]
+#
+#    Sowapps\SoCore\Repository\EmailSubscriptionRepository:
+#        arguments:
+#            - '@doctrine'
+#        tags: [ 'doctrine.repository_service' ]
+#
+#    Sowapps\SoCore\Repository\FileRepository:
+#        arguments:
+#            - '@doctrine'
+#        tags: [ 'doctrine.repository_service' ]
+#
+#    Sowapps\SoCore\Repository\LanguageRepository:
+#        arguments:
+#            - '@doctrine'
+#        tags: [ 'doctrine.repository_service' ]
+#
+#    #   Controllers
+#
+#    Sowapps\SoCore\Controller\Admin\AdminSecurityController:
+#        tags: [ 'controller.service_arguments' ]
+#        arguments:
+#            - '@so_core.email_verifier'
+#            - '@so_core.user'
+#            - '%so_core.admin%'
+#
+#    Sowapps\SoCore\Controller\Admin\AdminDashboardController:
+#        tags: [ 'controller.service_arguments' ]
+#        arguments:
+#
+#    Sowapps\SoCore\Controller\Admin\AdminLanguageController:
+#        tags: [ 'controller.service_arguments' ]
+#        arguments:
+#
+#    Sowapps\SoCore\Controller\Admin\AdminUserController:
+#        tags: [ 'controller.service_arguments' ]
+#        arguments:
+#
+#    Sowapps\SoCore\Controller\EmailController:
+#        tags: [ 'controller.service_arguments' ]
+#        arguments:
+#
+#    Sowapps\SoCore\Controller\FileController:
+#        tags: [ 'controller.service_arguments' ]
+#        arguments:
+#            - '@so_core.file'
+#
+#    ### Api Controllers
+#
+#    Sowapps\SoCore\Controller\Api\FileApiController:
+#        tags: [ 'controller.service_arguments' ]
+#        arguments:
+#            - '@so_core.file'
+#
+#    #   Forms
+#
+#    Sowapps\SoCore\Core\Form\FormExtension:
+#        tags: [ 'form.type_extension' ]
+#
+#    Sowapps\SoCore\Form\LanguageForm: [ ]
+#
+#    Sowapps\SoCore\Form\User\UserRegisterForm: [ ]
+#
+#    Sowapps\SoCore\Form\User\UserRecoveryRequestForm: [ ]
+#
+#    Sowapps\SoCore\Form\User\UserRecoveryPasswordForm: [ ]
+#
+#    Sowapps\SoCore\Form\User\UserAdminForm: [ ]
+#
+#    Sowapps\SoCore\Form\User\UserUpdateForm: [ ]
+#
+#    Sowapps\SoCore\Form\User\UserPictureForm: [ ]
+#
+#    Sowapps\SoCore\Form\User\UserAdminPasswordForm: [ ]
+#
+#    # Form Types
+#
+#    Sowapps\SoCore\Form\User\UserType:
+#        - '@so_core.user'
+#
+#    Sowapps\SoCore\Form\EntityType:
+#        - '@doctrine'
+#
+#    Sowapps\SoCore\Form\FileType:
+#        - '@doctrine'
+#
+#    Sowapps\SoCore\Form\ImageType:
+#        - '@doctrine'
+#
+#    #   Commands
+#
+#    Sowapps\SoCore\Command\EmailTestCommand:
+#        arguments:
+#            - '@translator'
+#            - '@mailer'
+#            - '@twig'
+#            - '%so_core.email%'
+#        tags:
+#            - { name: 'console.command', command: 'email:send-test' }
+#
+#    #   Twig Extension
+#
+#    Sowapps\SoCore\Twig\TwigExtension:
+#        tags: [ 'controller.service_arguments' ]
+#
+#    #   Event Subscribers
+#
+#    so_core.locale_subscriber:
+#        class: Sowapps\SoCore\EventListener\LocaleSubscriber
+#        arguments:
+#            - '@so_core.context'
+#        tags:
+#            - { name: kernel.event_listener, event: kernel.request }
+#    Sowapps\SoCore\EventListener\LocaleSubscriber: '@so_core.locale_subscriber'
+#
+#    so_core.entity_subscriber:
+#        class: Sowapps\SoCore\EventListener\EntityLifecycleSubscriber
+#        arguments:
+#            - '@so_core.user'
+#        tags:
+#            - { name: doctrine.event_listener, event: prePersist }
+#    Sowapps\SoCore\EventListener\EntityLifecycleSubscriber: '@so_core.entity_subscriber'

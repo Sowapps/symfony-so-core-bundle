@@ -2,18 +2,15 @@
 
 namespace Sowapps\SoCore\Core\ProcessOption;
 
-use App\Entity\AbstractEntity;
-use App\Service\TextFormatter;
 use Closure;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Sowapps\SoCore\Entity\AbstractEntity;
 
 class FormatOptions {
 
     private ?Closure $formatter = null;
 
     public function __construct(
-        private readonly array $formats,
-        private readonly ?TextFormatter $textFormatter = null
+		private readonly array $formats
     ) {
     }
 
@@ -49,10 +46,6 @@ class FormatOptions {
 
     public function setFormatter(?Closure $formatter): void {
         $this->formatter = $formatter;
-    }
-
-    public function getTextFormatter(): ?TextFormatter {
-        return $this->textFormatter;
     }
 
 }

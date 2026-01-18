@@ -9,8 +9,9 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use RuntimeException;
 use Sowapps\SoCore\Entity\AbstractEntity;
-use Sowapps\SoCore\Service\AbstractUserService;
+use Sowapps\SoCore\Service\SecurityService;
 use Sowapps\SoCore\Service\StringService;
+use Sowapps\SoCore\Service\UserService;
 use Symfony\Component\Config\Exception\FileLocatorFileNotFoundException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Yaml\Yaml;
@@ -27,9 +28,10 @@ abstract class YamlFixture extends Fixture {
 	protected array $itemPostProcess = [];
 	
 	public function __construct(
-		protected AbstractUserService $userService,
-		protected StringService       $stringService,
-		protected FixtureParser       $fixtureParser
+		protected SecurityService $securityService,
+		protected UserService     $userService,
+		protected StringService   $stringService,
+		protected FixtureParser   $fixtureParser
 	)
     {
     }
@@ -120,7 +122,11 @@ abstract class YamlFixture extends Fixture {
 		return $this->manager;
 	}
 	
-	public function getUserService(): AbstractUserService {
+	public function getSecurityService(): SecurityService {
+		return $this->securityService;
+	}
+	
+	public function getUserService(): UserService {
 		return $this->userService;
 	}
 	

@@ -12,6 +12,7 @@ use Sowapps\SoCore\Exception\ForbiddenOperationException;
 use Sowapps\SoCore\Service\FileService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Attribute\Route;
 
 class FileApiController extends AbstractApiController {
 	
@@ -23,6 +24,7 @@ class FileApiController extends AbstractApiController {
 	public function __construct(private readonly FileService $fileService) {
 	}
 	
+	#[Route("/api/file/{id}", name: 'api_file_delete', methods: ['DELETE'], format: 'json')]
 	public function delete(File $file): JsonResponse {
 		try {
 			throw new ForbiddenOperationException($this->translator->trans('file.remove.forbidden', [], 'admin'));
@@ -38,6 +40,7 @@ class FileApiController extends AbstractApiController {
 		}
 	}
 	
+	#[Route("/api/me/file", name: 'sowapps_socore_api_file_list', methods: ['GET'], format: 'json')]
 	public function list(Request $request): JsonResponse {
 		$filters = $this->getRequestFilters($request);
 		$user = $this->getUser();

@@ -1,0 +1,30 @@
+{% extends '@SoCore/base-interactive-default.html.twig' %}
+
+{% block body %}
+	<div class="main-controller" data-controller="{{ mainController }}" data-action="app.error->{{ mainController }}#showError">
+		<div class="h-100" data-{{ mainController }}-target="content">
+			{% block public_content %}{% endblock %}
+		</div>
+		<div class="toast-container position-fixed bottom-0 end-0 p-2" data-{{ mainController }}-target="notificationList"></div>
+		<template data-{{ mainController }}-target="templateNotificationError">
+			<div class="toast toast-error border-danger overflow-hidden" role="alert" aria-live="assertive" aria-atomic="true">
+				<div class="toast-header text-bg-danger border-danger">
+					<strong class="me-auto">{title}</strong>
+					{#                    <small class="text-body-secondary">just now</small> #}
+					<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+				</div>
+				<div class="toast-body bg-danger-subtle text-danger-emphasis">{message}</div>
+			</div>
+		</template>
+	</div>
+	<template id="TemplateLoadingContents">
+		<div class="loading w-100 h-100 text-center my-5">
+			<div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+			</div>
+			<div class="mt-3">{{ 'loadingTemplate' | trans([], 'saw') }}</div>
+		</div>
+	</template>
+	<template id="TemplateAlert">
+		<div class="alert alert-{type}" role="alert">{message}</div>
+	</template>
+{% endblock %}

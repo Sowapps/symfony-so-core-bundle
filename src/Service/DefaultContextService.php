@@ -11,7 +11,7 @@ use Sowapps\SoCore\Core\Environment\Environment;
 use Sowapps\SoCore\Core\Locale\LocaleFormatter;
 use Sowapps\SoCore\Entity\Language;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -23,7 +23,13 @@ class DefaultContextService implements ContextInterface {
 	
 	protected ?Language $currentLanguage = null;
 	
-	public function __construct(protected Kernel $kernel, protected RequestStack $requestStack, protected TranslatorInterface $translator, protected UrlGeneratorInterface $router, protected ?Environment $environment)
+	public function __construct(
+		protected readonly KernelInterface       $kernel,
+		protected readonly RequestStack          $requestStack,
+		protected readonly TranslatorInterface   $translator,
+		protected readonly UrlGeneratorInterface $router,
+		protected readonly ?Environment          $environment
+	)
     {
     }
 	

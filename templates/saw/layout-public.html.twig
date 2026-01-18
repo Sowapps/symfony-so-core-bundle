@@ -1,0 +1,28 @@
+<template data-document-title="{{ 'page.public.title' | trans }}" data-param--app="{{ 'app.label' | trans }}">
+	<div class="container">
+		<nav class="navbar navbar-expand">
+			<a class="navbar-brand ps-3" href="/">{{ 'app.label' | trans }}</a>
+
+			<ul class="navbar-nav me-3 me-lg-auto">
+
+				<li class="nav-item">
+					<a class="nav-link" href="/">
+						{{ 'page.home.label' | trans }}
+					</a>
+				</li>
+				{#                <li class="nav-item"> #}
+				{#                    <a class="nav-link" href="/poll"> #}
+				{#                        {{ 'page.poll.label' | trans }} #}
+				{#                    </a> #}
+				{#                </li> #}
+
+			</ul>
+
+			<div class="dropdown text-end" data-{{ mainController }}-target="userMenu">
+				{% include "@SoCore/component/menu-user.html.twig" %}
+			</div>
+		</nav>
+	</div>
+	<div class="height-no-header" data-template-wrap>
+	</div>
+</template>

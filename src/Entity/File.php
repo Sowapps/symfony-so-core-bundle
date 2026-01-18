@@ -4,9 +4,10 @@ namespace Sowapps\SoCore\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Sowapps\SoCore\Constraints as FileAssert;
+use Sowapps\SoCore\Core\ProcessOption\FormatOptions;
 use Sowapps\SoCore\Repository\FileRepository;
 use Symfony\Component\Validator\Constraints as Assert;
-use Sowapps\SoCore\Constraints as FileAssert;
 
 
 /**
@@ -66,8 +67,8 @@ class File extends AbstractEntity {
 	#[ORM\Column(type: "string", length: 255, nullable: true)]
 	private ?string $outputName = null;
 	
-	public function toArray(string $model): array {
-		return parent::toArray($model) + [
+	public function asArray(FormatOptions $format): array {
+		return parent::asArray($format) + [
 				'position'  => $this->getPosition(),
 				'purpose'   => $this->getPurpose(),
 				'mimeType'  => $this->getMimeType(),

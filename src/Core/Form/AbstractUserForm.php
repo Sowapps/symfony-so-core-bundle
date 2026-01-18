@@ -5,12 +5,16 @@
 
 namespace Sowapps\SoCore\Core\Form;
 
-use Sowapps\SoCore\Service\AbstractUserService;
+use Sowapps\SoCore\Service\SecurityService;
+use Sowapps\SoCore\Service\UserService;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AbstractUserForm extends AbstractForm {
 	
-	public function __construct(protected AbstractUserService $userService)
+	public function __construct(
+		protected readonly UserService     $userService,
+		protected readonly SecurityService $securityService,
+	)
     {
     }
 	

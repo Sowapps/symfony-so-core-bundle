@@ -17,11 +17,13 @@ use Sowapps\SoCore\Exception\UserException;
 use Sowapps\SoCore\Service\FileService;
 use Sowapps\SoCore\Service\LanguageService;
 use Symfony\Bridge\Twig\Mime\WrappedTemplatedEmail;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Form\FormView;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\WebpackEncoreBundle\Asset\EntrypointLookupInterface;
+use Twig\Attribute\AsTwigFilter;
+use Twig\Attribute\AsTwigFunction;
 use Twig\Environment as TwigService;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -45,13 +47,15 @@ class TwigExtension {
 	 * @param string $publicPath
 	 */
 	public function __construct(
-		protected TranslatorInterface   $translator,
-		protected ParameterBagInterface $parameters,
-		protected TwigService           $twig,
-		protected FileService           $fileService,
-		protected ContextInterface      $contextService,
-		protected LanguageService       $languageService,
-		protected string                $publicPath)
+		protected readonly TranslatorInterface   $translator,
+		protected readonly ParameterBagInterface $parameters,
+		protected readonly TwigService           $twig,
+		protected readonly FileService           $fileService,
+		protected readonly ContextInterface      $contextService,
+		protected readonly LanguageService       $languageService,
+		#[Autowire('%kernel.project_dir%')]
+		protected readonly string                $projectPath
+	)
     {
     }
 	
@@ -78,17 +82,17 @@ class TwigExtension {
 		];
 	}
 	
-	#[\Twig\Attribute\AsTwigFilter('fileArray')]
+	#[AsTwigFilter('fileArray')]
 	public function formatFileAsArray(?File $file): ?array {
 		return $file ? $this->fileService->formatFileArray($file, null, $this->contextService) : null;
 	}
 	
-	#[\Twig\Attribute\AsTwigFunction('setFlag')]
+	#[AsTwigFunction('setFlag')]
 	public function setFlag(string $flag): void {
 		$this->flags[$flag] = true;
 	}
 	
-	#[\Twig\Attribute\AsTwigFunction('hasFlag')]
+	#[AsTwigFunction('hasFlag')]
 	public function hasFlag(string $flag): bool {
 		return !empty($this->flags[$flag]);
 	}
@@ -97,12 +101,12 @@ class TwigExtension {
 		return htmlspecialchars(json_encode($data), ENT_QUOTES, 'UTF-8');
 	}
 	
-	#[\Twig\Attribute\AsTwigFunction('datatableTranslations')]
+	#[AsTwigFunction('datatableTranslations')]
 	public function getDataTableTranslations(string $path, ?string $domain = null): array {
 		return $this->getTranslations($path, ['placeholder', 'perPage', 'noRows', 'noResults', 'info'], $domain);
 	}
 	
-	#[\Twig\Attribute\AsTwigFunction('translations')]
+	#[AsTwigFunction('translations')]
 	public function getTranslations(string|array $path, ?array $keys = null, ?string $domain = null): array {
 		$translations = [];
 		if( !$keys && is_array($path) ) {
@@ -116,7 +120,7 @@ class TwigExtension {
 		return $translations;
 	}
 	
-	#[\Twig\Attribute\AsTwigFunction('bodyClass')]
+	#[AsTwigFunction('bodyClass')]
 	public function getBodyClass(): string {
 		$classes = [];
 		if( $this->contextService->isDebug() ) {
@@ -126,16 +130,16 @@ class TwigExtension {
 		return implode(' ', $classes);
 	}
 	
-	#[\Twig\Attribute\AsTwigFilter('base64')]
-	public function formatToBase64($url): string {
-		if( $url[0] === '/' ) {
-			$url = $this->publicPath . $url;
+	#[AsTwigFilter('base64')]
+	public function formatToBase64(string $path): string {
+		if( $path[0] === '/' ) {
+			$path = $this->projectPath . '/public' . $path;
 		}
 		
-		return base64_encode(file_get_contents($url));
+		return base64_encode(file_get_contents($path));
 	}
 	
-	#[\Twig\Attribute\AsTwigFunction('date')]
+	#[AsTwigFunction('date')]
 	public function formatDate($format, $date = null): string {
 		// Allow parameter reversibility
 		if( is_string($date) ) {
@@ -150,7 +154,7 @@ class TwigExtension {
 		return $this->languageService->formatDate($date, $format);
 	}
 	
-	#[\Twig\Attribute\AsTwigFilter('smallImage')]
+	#[AsTwigFilter('smallImage')]
 	public function formatSmallImage($image, $ignoreMissing = null, $email = null): string {
 		if( $ignoreMissing instanceof WrappedTemplatedEmail ) {
 			$email = $ignoreMissing;
@@ -171,7 +175,7 @@ class TwigExtension {
 		return $this->formatContextImageUrl($image, $email);
 	}
 	
-	#[\Twig\Attribute\AsTwigFilter('largeImage')]
+	#[AsTwigFilter('largeImage')]
 	public function formatLargeImage($image, ?WrappedTemplatedEmail $email = null): string {
 		$image = $this->getFile($image);
 		$image = $this->fileService->getAlternativeFile($image, FileService::TYPE_LARGE);
@@ -187,7 +191,7 @@ class TwigExtension {
 	 * @param array $array
 	 * @return array
 	 */
-	#[\Twig\Attribute\AsTwigFilter('pushTo')]
+	#[AsTwigFilter('pushTo')]
 	public function pushTo($element, array $array): array {
 		$array[] = $element;
 		
@@ -423,7 +427,7 @@ class TwigExtension {
 	//		return !$input->valid ? 'is-invalid' : '';
 	//	}
 	//
-	#[\Twig\Attribute\AsTwigFunction('uniqueId')]
+	#[AsTwigFunction('uniqueId')]
 	public function getUniqueId($subject): string {
 		if( !isset($this->uniqueId[$subject]) ) {
 			$this->uniqueId[$subject] = 0;

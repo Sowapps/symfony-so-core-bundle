@@ -12,9 +12,9 @@ use Sowapps\SoCore\Core\Form\AppForm;
 use Sowapps\SoCore\Entity\AbstractUser;
 use Sowapps\SoCore\Exception\ForbiddenOperationException;
 use Sowapps\SoCore\Exception\UserException;
-use Sowapps\SoCore\Service\AbstractUserService;
 use Sowapps\SoCore\Service\StringService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as SymfonyAbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -23,7 +23,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -40,21 +39,14 @@ class AbstractController extends SymfonyAbstractController {
 	
 	const SESSION_MESSAGE = 'HOME_ERROR';
 	
-	protected KernelInterface $kernel;
-	
-	protected RequestStack $requestStack;
-	
-	protected LoggerInterface $logger;
-	
-	protected TranslatorInterface $translator;
-	
-	protected RouterInterface $router;
-	
-	protected ContextInterface $contextService;
-	
-	protected AbstractUserService $userService;
-	
-	protected StringService $stringService;
+	protected readonly KernelInterface $kernel;
+	protected readonly RequestStack $requestStack;
+	protected readonly LoggerInterface $logger;
+	protected readonly TranslatorInterface $translator;
+	protected readonly RouterInterface $router;
+	protected readonly ContextInterface $contextService;
+	protected readonly StringService $stringService;
+	protected readonly array $configRouting;
 	
 	protected ?string $domain = null;
 	
@@ -96,24 +88,14 @@ class AbstractController extends SymfonyAbstractController {
 		return $this->contextService;
 	}
 	
-	/**
-	 * @return AbstractUserService
-	 */
-	public function getUserService(): AbstractUserService {
-		return $this->userService;
-	}
-	
-	/**
-	 * @return bool
-	 */
 	public function isAuthenticated(): bool {
 		return !!$this->getUser();
 	}
 	
 	/**
-	 * @param $title
-	 * @param $message
-	 * @param null $type
+	 * @param string $title
+	 * @param string $message
+	 * @param string|null $type
 	 * @param array $parameters
 	 * @return RedirectResponse
 	 */
@@ -256,6 +238,7 @@ class AbstractController extends SymfonyAbstractController {
 	 * Save form messages in session
 	 *
 	 * @param AppForm $form The form or the list of success messages to save
+	 * TODO Deprecated ? We now use DTO
 	 */
 	public function saveForm(AppForm $form) {
 		$errors = $form->getErrors();
@@ -273,50 +256,26 @@ class AbstractController extends SymfonyAbstractController {
 	}
 	
 	#[Required]
-	public function setKernel(KernelInterface $kernel): AbstractController {
+	public function initializeAbstractController(
+		KernelInterface     $kernel,
+		RequestStack        $requestStack,
+		LoggerInterface     $logger,
+		TranslatorInterface $translator,
+		RouterInterface     $router,
+		ContextInterface    $contextService,
+		StringService       $stringService,
+		#[Autowire('%so_core.routing%')]
+		array               $configRouting,
+	): static {
 		$this->kernel = $kernel;
-		return $this;
-	}
-	
-	#[Required]
-	public function setRequestStack(RequestStack $requestStack): AbstractController {
 		$this->requestStack = $requestStack;
-		return $this;
-	}
-	
-	#[Required]
-	public function setLogger(LoggerInterface $logger): AbstractController {
 		$this->logger = $logger;
-		return $this;
-	}
-	
-	#[Required]
-	public function setTranslator(TranslatorInterface $translator): AbstractController {
 		$this->translator = $translator;
-		return $this;
-	}
-	
-	#[Required]
-	public function setRouter(RouterInterface $router): AbstractController {
 		$this->router = $router;
-		return $this;
-	}
-	
-	#[Required]
-	public function setContextService(ContextInterface $contextService): AbstractController {
 		$this->contextService = $contextService;
-		return $this;
-	}
-	
-	#[Required]
-	public function setUserService(AbstractUserService $userService): AbstractController {
-		$this->userService = $userService;
-		return $this;
-	}
-	
-	#[Required]
-	public function setStringService(StringService $stringService): AbstractController {
 		$this->stringService = $stringService;
+		$this->configRouting = $configRouting;
+		
 		return $this;
 	}
 }

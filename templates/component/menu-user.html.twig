@@ -1,0 +1,18 @@
+<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+	<i class="fa-solid fa-user fa-fw"></i>
+</a>
+<ul class="dropdown-menu dropdown-menu-end">
+	<li>
+		<button class="dropdown-item disabled" type="button" data-{{ mainController }}-target="userLabel"></button>
+	</li>
+	<li>
+		<hr class="dropdown-divider">
+	</li>
+	<li><a class="dropdown-item" href="#!">Settings</a></li>
+	<li>
+		<hr class="dropdown-divider">
+	</li>
+	<li>
+		<button class="dropdown-item" type="button" data-action="{{ mainController }}#logout">Logout</button>
+	</li>
+</ul>

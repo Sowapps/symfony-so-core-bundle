@@ -1,0 +1,41 @@
+{% extends 'template-admin-page.html.twig' %}
+
+{% block controller 'admin--user-list' %}
+{% block label 'page.admin-user-list.label' | trans %}
+
+{% block content %}
+	<div class="row">
+		<div class="col-12 col-xxl-10">
+
+			<div class="table-responsive">
+				<table class="table table-bordered table-hover table-striped">
+					<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">Name</th>
+						<th scope="col">Email</th>
+						<th scope="col">Roles</th>
+						<th scope="col">Actions</th>
+					</tr>
+					</thead>
+					<tbody data-admin--user-list-target="list">
+					</tbody>
+					<template data-admin--user-list-target="templateItem">
+						<tr>
+							<td>{id}</td>
+							<td>{name}</td>
+							<td>{email}</td>
+							<td>{grantedRoles|join(", ", 256)}</td>
+							<td>
+								<div class="btn-group" role="group" aria-label="Actions">
+									<a class="btn btn-outline-secondary" href="/admin/user/{id}"><i class="fa-solid fa-pen-to-square"></i></a>
+								</div>
+							</td>
+						</tr>
+					</template>
+				</table>
+			</div>
+
+		</div>
+	</div>
+{% endblock %}

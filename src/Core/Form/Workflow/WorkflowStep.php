@@ -35,10 +35,6 @@ class WorkflowStep implements \Stringable {
     {
     }
 	
-	public function getCurrentUser(): ?AbstractUser {
-		return $this->workflow->getController()->getUserService()->getCurrent();
-	}
-	
 	public function getTemplateData(): array {
 		return [];
 	}

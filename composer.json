@@ -2,14 +2,17 @@
 	"name": "sowapps/so-core",
 	"type": "symfony-bundle",
 	"license": "MIT",
-	"keywords": ["symfony-bundle"],
+	"keywords": [
+		"symfony-bundle",
+		"symfony-ux"
+	],
 	"require": {
-		"php": ">=8.2",
+		"php": "8.2.*",
 		"ext-ctype": "*",
 		"ext-iconv": "*",
 		"ext-intl": "*",
-		"doctrine/doctrine-bundle": "^2.12",
-		"doctrine/orm": "^3.0",
+		"doctrine/doctrine-bundle": "^2.18.2",
+		"doctrine/orm": "^3.6.1",
 		"doctrine/collections": "^2.4",
 		"symfony/asset": "^7.4",
 		"symfony/form": "^7.4",
@@ -17,6 +20,7 @@
 		"symfony/mailer": "^7.4",
 		"symfony/mime": "^7.4",
 		"symfony/security-bundle": "^7.4",
+		"symfony/stimulus-bundle": "^2.9",
 		"symfony/twig-bundle": "^7.4",
 		"symfony/validator": "^7.4",
 		"symfony/yaml": "^7.4",
@@ -24,7 +28,8 @@
 		"twig/cssinliner-extra": "3.*",
 		"twig/extra-bundle": "^2.12|^3.0",
 		"twig/twig": "^3.0",
-		"symfony/webpack-encore-bundle": "^2.0"
+		"symfony/webpack-encore-bundle": "^2.0",
+		"jolicode/automapper": "^9.5"
 	},
 	"require-dev": {
 		"symfony/phpunit-bridge": "^7.4",

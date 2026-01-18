@@ -9,6 +9,7 @@ use DateInterval;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Sowapps\SoCore\Core\ProcessOption\FormatOptions;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -21,28 +22,23 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\MappedSuperclass]
 #[UniqueEntity(fields: ['email'], message: 'user.email.exists')]
 class AbstractUser extends AbstractEntity implements UserInterface, PasswordAuthenticatedUserInterface, EquatableInterface {
-	
-	const ROLE_USER = 'ROLE_USER';
-	const ROLE_ADMIN = 'ROLE_ADMIN';
-	const ROLE_DEVELOPER = 'ROLE_DEVELOPER';
-	
 	#[ORM\Column(type: 'integer')]
 	#[ORM\Version]
 	private int $version = 1;
-	
+
 	#[ORM\Column(type: 'string', length: 180, unique: true)]
 	private ?string $email = null;
-	
+
 	#[ORM\Column(type: 'json')]
 	private array $roles = [];
-	
+
 	#[ORM\Column(type: 'string')]
 	private ?string $password = null;
-	
+
 	#[ORM\Column(type: 'string', length: 50)]
 	#[Assert\Length(min: 3, max: 50)]
 	private ?string $name = null;
-	
+
 	#[ORM\Column(type: 'datetime', nullable: true)]
 	private ?DateTimeInterface $activationDate = null;
 	
@@ -59,8 +55,8 @@ class AbstractUser extends AbstractEntity implements UserInterface, PasswordAuth
 	private ?string $recoveryKey = null;
 	
 	#[ORM\Column(type: 'boolean')]
-	private bool $disabled = false;
-	
+	private bool $enabled = true;
+
 	#[ORM\Column(type: 'string', length: 20)]
 	private ?string $timezone = null;
 	
@@ -71,6 +67,22 @@ class AbstractUser extends AbstractEntity implements UserInterface, PasswordAuth
 	#[ORM\OneToOne(targetEntity: File::class, cascade: ["persist", "remove"])]
 	private ?File $avatar = null;
 	
+	public function asArray(FormatOptions $format): array {
+		$array = parent::asArray($format) + [
+				'label' => $this->getLabel(),
+				'name'  => $this->getName(),
+			];
+		if( $format->isRestricted() ) {
+			$array += [
+				'email'   => $this->getEmail(),
+				'roles'   => $this->getRoles(),
+				'enabled' => $this->isEnabled(),
+			];
+		}
+		
+		return $array;
+	}
+
 	/**
 	 * A visual identifier that represents this user.
 	 *
@@ -94,7 +106,7 @@ class AbstractUser extends AbstractEntity implements UserInterface, PasswordAuth
 	 */
 	public function isEqualTo(UserInterface $user): bool {
 		/** @var AbstractUser $user */
-		return $user->isDisabled() === $this->isDisabled() && $user->getRoles() === $this->getRoles();
+		return parent::equals($user) && $user->isEnabled() === $this->isEnabled() && $user->getRoles() === $this->getRoles();
 	}
 	
 	public function getGenderKey(): string {
@@ -208,13 +220,13 @@ class AbstractUser extends AbstractEntity implements UserInterface, PasswordAuth
 		return $this;
 	}
 	
-	public function isDisabled(): ?bool {
-		return $this->disabled;
+	public function isEnabled(): ?bool {
+		return $this->enabled;
 	}
 	
-	public function setDisabled(bool $disabled): self {
-		$this->disabled = $disabled;
-		
+	public function setEnabled(bool $enabled): self {
+		$this->enabled = $enabled;
+
 		return $this;
 	}
 	

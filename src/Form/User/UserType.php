@@ -5,6 +5,7 @@ namespace Sowapps\SoCore\Form\User;
 use Sowapps\SoCore\Core\Form\AbstractUserForm;
 use Sowapps\SoCore\Entity\AbstractUser;
 use Sowapps\SoCore\Form\ImageType;
+use Sowapps\SoCore\Service\SecurityService;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -85,17 +86,19 @@ class UserType extends AbstractUserForm {
 					'expanded'    => true,
 					'multiple'    => true,
 					'choices'     => [
-						'user.roleState.user'      => AbstractUser::ROLE_USER,
-						'user.roleState.admin'     => AbstractUser::ROLE_ADMIN,
-						'user.roleState.developer' => AbstractUser::ROLE_DEVELOPER,
+						'user.roleState.user'       => SecurityService::ROLE_USER,
+						'user.roleState.admin'      => SecurityService::ROLE_ADMIN,
+						'user.roleState.superAdmin' => SecurityService::ROLE_SUPER_ADMIN,
+						'user.roleState.developer'  => SecurityService::ROLE_SUPER_ADMIN,
 					],
 					//					'label_translation_parameters' => ['gender' => $user->getGenderKey()],
 					'choice_attr' => function ($element) {
-						$requiredRole = $this->userService->getRoleRestriction($element);
+						$requiredRole = $this->securityService->getRoleRestriction($element);
 						if( !$requiredRole ) {
 							$disable = true;
 						} else {
-							$disable = !$this->userService->isCurrentHavingRole($requiredRole);
+							$currentUser = $this->securityService->getCurrentUser();
+							$disable = !$this->securityService->isGranted($currentUser, $requiredRole);
 						}
 						
 						return $disable ? ['disabled' => 'disabled'] : [];

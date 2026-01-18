@@ -15,22 +15,14 @@ class EnvironmentFactory {
 	
 	protected string $environmentFile = '/config/environment.json';
 	
-	/**
-	 * EnvironmentFactory constructor
-	 *
-	 * @param CacheInterface $cache
-	 * @param string $projectPath
-	 */
 	public function __construct(protected KernelInterface $kernel, private readonly CacheInterface $cache)
     {
     }
 	
 	public function __invoke() {
-		$factory = $this;
-		
-		return $this->cache->get('so_core.environment', function (ItemInterface $item) use ($factory) {
+		return $this->cache->get('so_core.environment', function (ItemInterface $item) {
 			$item->expiresAfter(86400);// Once a day
-			$filePath = $factory->getEnvironmentFile();
+			$filePath = $this->getEnvironmentFile();
 			if( file_exists($filePath) ) {
 				$data = json_decode(file_get_contents($filePath));
 			} else {

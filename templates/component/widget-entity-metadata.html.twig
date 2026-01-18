@@ -1,0 +1,31 @@
+{#
+TODO Fix Input ID
+#}
+{% embed "component/panel.html.twig" with {header: "Metadata" } %}
+	{% block bodyContent %}
+		<div class="row mb-2">
+			<label for="InputUserId" class="col-sm-2 col-form-label">ID</label>
+			<div class="col-sm-10">
+				<input type="text" readonly class="form-control-plaintext" id="InputUserId" value="{id}">
+			</div>
+		</div>
+		<div class="row mb-2">
+			<label for="InputUserCreateDate" class="col-sm-2 col-form-label">Create date</label>
+			<div class="col-sm-10">
+				<input type="text" readonly class="form-control-plaintext" id="InputUserCreateDate" value="{createDate|date}">
+			</div>
+		</div>
+		<div class="row mb-2">
+			<label for="InputUserCreateIp" class="col-sm-2 col-form-label">Create IP address</label>
+			<div class="col-sm-10">
+				<input type="text" readonly class="form-control-plaintext" id="InputUserCreateIp" value="{createIp|default('None')}">
+			</div>
+		</div>
+		<div class="row mb-2">
+			<label for="InputUserCreateUser" class="col-sm-2 col-form-label">Create user</label>
+			<div class="col-sm-10">
+				<input type="text" readonly class="form-control-plaintext" id="InputUserCreateUser" value="{createUser.label|default('None')}">
+			</div>
+		</div>
+	{% endblock %}
+{% endembed %}

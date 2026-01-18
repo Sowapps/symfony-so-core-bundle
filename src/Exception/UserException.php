@@ -19,6 +19,7 @@ class UserException extends RuntimeException {
 	 * @param array $parameters
 	 * @param string|null $domain
 	 * @param Throwable|null $previous
+	 * @param int|null $code
 	 */
 	public function __construct(string $message, private readonly array $parameters = [], private readonly ?string $domain = null, ?Throwable $previous = null, ?int $code = null) {
 		parent::__construct($message, $code ?? static::$DEFAULT_CODE, $previous);

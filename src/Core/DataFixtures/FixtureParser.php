@@ -224,7 +224,7 @@ class FixtureParser {
 	}
 	
 	protected function parseValuePassword(array $args, $entity, YamlFixture $fixture): string {
-		return $fixture->getUserService()->encodePassword($args[0], $entity);
+		return $fixture->getSecurityService()->encodePassword($args[0], $entity);
 	}
 	
 	protected function parseValueDate(array $args, $entity, YamlFixture $fixture): DateTime {

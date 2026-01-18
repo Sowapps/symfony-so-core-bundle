@@ -1,3 +1,15 @@
+action:
+    save: "Enregistrer"
+    close: "Fermer"
+    filter: 'Filtrer'
+
+error:
+    404:
+        label: "Page non trouvée"
+    generic:
+        code: "Oups"
+        label: "Une erreur est survenue..."
+
 format:
     unit: "{value} {unit}"
     fileSize:
@@ -54,6 +66,15 @@ page:
         success:
             title: "Mot de passe modifié"
             legend: "Votre nouveau mot de passe a été enregistré, Vous pouvez maintenant vous connecter en l'utilisant."
+    admin:
+        title: "{page} - Administration {app}"
+        label: "Administration"
+    admin-login:
+        label: "Connexion"
+    admin-dashboard:
+        label: "Tableau de bord"
+    admin-user-list:
+        label: "Utilisateurs"
 
 so:
     error:
@@ -63,6 +84,8 @@ so:
             confirm:
                 title: "Supprimer un fichier ?"
                 message: "Voulez-vous vraiment supprimer le fichier « {label} » ?"
+    auth:
+        invalidCredentials: "Identifiants incorrects"
 
 widget:
     file:
@@ -91,5 +114,4 @@ widget:
             label: "Bibliothèque"
 
 # Package translations
-"Invalid credentials.": "Ces identifiants ne correspondent pas à un compte connu."
 "Invalid CSRF token.": "Formulaire invalide, ré-essaye stp."

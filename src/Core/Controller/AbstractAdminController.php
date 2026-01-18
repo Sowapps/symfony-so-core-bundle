@@ -7,6 +7,7 @@ namespace Sowapps\SoCore\Core\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\Service\Attribute\Required;
 
 /**
  * Class AbstractAdminController
@@ -40,7 +41,7 @@ abstract class AbstractAdminController extends AbstractController {
 	 * @param string|null $label
 	 * @param string|bool|array $link
 	 */
-	public function addRouteToBreadcrumb(string $route, string $label = null, $link = true) {
+	public function addRouteToBreadcrumb(string $route, string $label = null, $link = true): void {
 		if( !$link ) {
 			$link = null;
 			
@@ -59,7 +60,7 @@ abstract class AbstractAdminController extends AbstractController {
 	}
 	
 	public function addRequestToBreadcrumb(Request $request, $label = null, $link = false): static {
-		$this->addRouteToBreadcrumb($request->get('_route'), $label, $link);
+		$this->addRouteToBreadcrumb($request->attributes->get('_route'), $label, $link);
 		
 		return $this;
 	}
