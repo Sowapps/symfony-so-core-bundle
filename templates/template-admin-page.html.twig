@@ -1,0 +1,17 @@
+{# TODO Document template #}
+<template data-template-wrapper="layout-admin.html" data-param--page="{{ block('label') }}">{# This template include contents generated on navigation #}
+	{% block controllerContainer %}
+		<div{% if block("controller") is defined %} data-controller="{{ block("controller") }}" class="page-{{ block("controller") | raw }}"{% endif %}>
+			{% block body %}
+				{% block header %}
+					<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+						<h1 class="h2">{{ contentTitle | default(block('label')) }}</h1>
+						{% block titleContent %}{% endblock %}
+					</div>
+				{% endblock %}
+
+				{% block content %}{% endblock %}
+			{% endblock %}
+		</div>
+	{% endblock %}
+</template>

@@ -17,7 +17,7 @@ class AdminController extends AbstractController {
 	
 	#[Route("/admin", name: "so_core_admin_index")]
 	public function index(): Response {
-		return $this->render("@SoCore/interactive.html.twig", ['mainController' => 'admin--main']);
+		return $this->render("@SoCore/interactive.html.twig", ['mainController' => 'sowapps--so-core--admin-main']);
 	}
 	
 	#[Route("/admin/{path}", name: "so_core_admin_any", requirements: ['path' => '.+'])]

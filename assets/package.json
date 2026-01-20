@@ -14,6 +14,21 @@
 				"main": "controllers/admin-auth/login_controller.js",
 				"fetch": "eager",
 				"enabled": true
+			},
+			"admin-main": {
+				"main": "controllers/admin/main_controller.js",
+				"fetch": "eager",
+				"enabled": true
+			},
+			"admin-user-edit": {
+				"main": "controllers/admin/user-edit_controller.js",
+				"fetch": "eager",
+				"enabled": true
+			},
+			"admin-user-list": {
+				"main": "controllers/admin/user-list_controller.js",
+				"fetch": "eager",
+				"enabled": true
 			}
 		},
 		"importmap": {

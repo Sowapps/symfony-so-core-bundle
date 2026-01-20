@@ -1,5 +1,5 @@
-import { AbstractController } from "../abstract.controller.js";
-import { stringService } from "../../vendor/orpheus/js/service/string.service.js";
+import {AbstractController} from "../abstract.controller.js";
+import {stringService} from "../../services/string.service.js";
 
 export default class extends AbstractController {
 	

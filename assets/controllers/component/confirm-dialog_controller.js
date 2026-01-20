@@ -1,5 +1,8 @@
-import { AbstractController } from "../abstract.controller.js";
+import {AbstractController} from "../abstract.controller.js";
 
+/**
+ * TODO Update
+ */
 export default class extends AbstractController {
 	
 	static targets = ['cancel', 'confirm'];

@@ -10,6 +10,10 @@ error:
         code: "Oups"
         label: "Une erreur est survenue..."
 
+saw:
+    loadingTemplate: "Chargement du contenu, veuillez patienter..."
+    loadingErrorTemplate: "Problèmes de réseau, veuillez réessayer en ligne !"
+
 format:
     unit: "{value} {unit}"
     fileSize:

@@ -1,6 +1,7 @@
-{% extends 'template-admin-page.html.twig' %}
+{# TODO Document template #}
+{% extends '@SoCore/template-admin-page.html.twig' %}
 
-{% block controller 'admin--user-list' %}
+{% block controller 'sowapps--so-core--admin-user-list' %}
 {% block label 'page.admin-user-list.label' | trans %}
 
 {% block content %}
@@ -18,9 +19,9 @@
 						<th scope="col">Actions</th>
 					</tr>
 					</thead>
-					<tbody data-admin--user-list-target="list">
+					<tbody data-sowapps--so-core--admin-user-list-target="list">
 					</tbody>
-					<template data-admin--user-list-target="templateItem">
+					<template data-sowapps--so-core--admin-user-list-target="templateItem">
 						<tr>
 							<td>{id}</td>
 							<td>{name}</td>

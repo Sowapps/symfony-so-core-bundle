@@ -1,5 +1,5 @@
-import { AbstractController } from "../abstract.controller.js";
-import { domService } from "../../vendor/orpheus/js/service/dom.service.js";
+import {AbstractController} from "../abstract.controller.js";
+import {domService} from "../../services/dom.service.js";
 
 export default class Form extends AbstractController {
 	

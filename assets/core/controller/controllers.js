@@ -14,6 +14,7 @@ export class AbstractMainController extends Controller {
 	promises = [];
 	
 	async connect() {
+		console.log("AbsMain controller connected");
 		// document.documentElement.dataset.bsTheme = "dark";
 		sawService.setDefaultVar("mainController", this.identifier);
 		

@@ -1,21 +1,22 @@
-{% extends 'template-admin-page.html.twig' %}
+{# TODO Document template #}
+{% extends '@SoCore/template-admin-page.html.twig' %}
 
-{% block controller 'admin--user-edit' %}
+{% block controller 'sowapps--so-core--admin-user-edit' %}
 {% block label 'saw.loadingTemplate' | trans %}
 {% set contentTitle = '{label}' %}
 
 {% block body %}
 	{# User template require the controller to be loaded, so we embed another template to regenerate content #}
-	<div data-admin--user-edit-target="content">
+	<div data-sowapps--so-core--admin-user-edit-target="content">
 	</div>
-	<template data-admin--user-edit-target="template">
+	<template data-sowapps--so-core--admin-user-edit-target="template">
 		{{ parent() }}
 	</template>
 {% endblock %}
 
 {% block titleContent %}
 	<div class="btn-toolbar mb-2 mb-md-0 btn-group-sm">
-		<button type="button" class="btn btn-outline-secondary" data-action="admin--user-edit#load">
+		<button type="button" class="btn btn-outline-secondary" data-action="sowapps--so-core--admin-user-edit#load">
 			<i class="fa-solid fa-rotate-right"></i>
 		</button>
 	</div>
@@ -26,10 +27,11 @@
 	<div class="row">
 		<div class="col-12 col-lg-6">
 
-			<form data-admin--user-edit-target="form" data-action="admin--user-edit#submitProfile">
-				{% embed "component/panel.html.twig" with {header: "Edit user profile" } %}
+			<form data-sowapps--so-core--admin-user-edit-target="form" data-action="sowapps--so-core--admin-user-edit#submitProfile">
+				{# TODO Fix embed panel, content is missing #}
+				{% embed "@SoCore/component/panel.html.twig" with {header: "Profile" } %}
 					{% block bodyContent %}
-						<div data-admin--user-edit-target="profileFormReports" hidden></div>
+						<div data-sowapps--so-core--admin-user-edit-target="profileFormReports" hidden></div>
 
 						<div class="mb-3">
 							<label for="InputUserName" class="form-label">Name</label>
@@ -48,17 +50,17 @@
 
 		</div>
 		<div class="col-12 col-lg-6">
-			{% include "component/widget-entity-metadata.html.twig" %}
+			{% include "@SoCore/component/widget-entity-metadata.html.twig" %}
 		</div>
 	</div>
 
 	<div class="row">
 		<div class="col-12 col-lg-6">
 
-			<form data-admin--user-edit-target="form" data-action="admin--user-edit#submitSecurity">
-				{% embed "component/panel.html.twig" with {header: "Edit user security" } %}
+			<form data-sowapps--so-core--admin-user-edit-target="form" data-action="sowapps--so-core--admin-user-edit#submitSecurity">
+				{% embed "@SoCore/component/panel.html.twig" with {header: "Security" } %}
 					{% block bodyContent %}
-						<div data-admin--user-edit-target="securityFormReports" hidden></div>
+						<div data-sowapps--so-core--admin-user-edit-target="securityFormReports" hidden></div>
 
 						<div class="form-check form-switch mb-3">
 							<input id="InputUserEnabled" name="enabled" class="form-check-input" type="checkbox" role="switch" checked="{enabled}">
@@ -85,13 +87,13 @@
 		</div>
 		<div class="col-12 col-lg-6">
 
-			<form data-admin--user-edit-target="form" data-action="admin--user-edit#submitPassword" autocomplete="off">
-				{% embed "component/panel.html.twig" with {header: "Edit user password" } %}
+			<form data-sowapps--so-core--admin-user-edit-target="form" data-action="sowapps--so-core--admin-user-edit#submitPassword" autocomplete="off">
+				{% embed "@SoCore/component/panel.html.twig" with {header: "Password" } %}
 					{% block bodyContent %}
-						<div data-admin--user-edit-target="passwordFormReports" hidden></div>
+						<div data-sowapps--so-core--admin-user-edit-target="passwordFormReports" hidden></div>
 
 						<p class="mb-3">
-							Take care by changing user password, he won't be notified.
+							Take care by changing the user password, he won't be notified.
 						</p>
 						<div class="mb-3">
 							<label for="InputUserPassword" class="form-label">New password</label>
