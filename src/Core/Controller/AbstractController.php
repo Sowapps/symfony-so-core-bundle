@@ -99,15 +99,15 @@ class AbstractController extends SymfonyAbstractController {
 	 * @param array $parameters
 	 * @return RedirectResponse
 	 */
-	public function showMessageOnHome(string $title, string $message, ?string $type = null, array $parameters = []): RedirectResponse {
-		$this->getSession()->set(self::SESSION_MESSAGE, [
-			'title'   => $this->translator->trans($title, $parameters),
-			'message' => $this->translator->trans($message, $parameters),
-			'type'    => $type,
-		]);
-		
-		return $this->redirectToRoute('home');
-	}
+	//	public function showMessageOnHome(string $title, string $message, ?string $type = null, array $parameters = []): RedirectResponse {
+	//		$this->getSession()->set(self::SESSION_MESSAGE, [
+	//			'title'   => $this->translator->trans($title, $parameters),
+	//			'message' => $this->translator->trans($message, $parameters),
+	//			'type'    => $type,
+	//		]);
+	//
+	//		return $this->redirectToRoute('home');
+	//	}
 	
 	/**
 	 * @return Session

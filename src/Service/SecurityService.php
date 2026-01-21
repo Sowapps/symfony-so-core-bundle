@@ -14,6 +14,7 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 class SecurityService {
 	const ROLE_USER = 'ROLE_USER';
 	const ROLE_ADMIN = 'ROLE_ADMIN';
+	const ROLE_CONTRIBUTOR = 'ROLE_CONTRIBUTOR';
 	const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
 	const ROLE_IMPERSONATE = 'ROLE_IMPERSONATE';
 	
@@ -30,6 +31,7 @@ class SecurityService {
 			// Role restriction: Required role to assign this one
 			self::ROLE_USER        => ['user.roleState.user', false],
 			self::ROLE_ADMIN       => ['user.roleState.admin', self::ROLE_ADMIN],
+			self::ROLE_CONTRIBUTOR => ['user.roleState.contributor', self::ROLE_ADMIN],
 			self::ROLE_SUPER_ADMIN => ['user.roleState.superAdmin', self::ROLE_SUPER_ADMIN],
 			self::ROLE_IMPERSONATE => ['user.roleState.impersonate', self::ROLE_SUPER_ADMIN],
 		];

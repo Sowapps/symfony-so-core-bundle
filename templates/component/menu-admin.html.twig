@@ -1,4 +1,11 @@
 <ul class="nav nav-menu flex-column" data-sowapps--so-core--admin-main-target="adminMenu">
+	{% if is_granted('ROLE_CONTRIBUTOR') %}
+		<li class="nav-item">
+			<a class="nav-link d-flex align-items-center gap-2" href="{{ path(routing.route.public_default, {editor: true}) }}">
+				{{ 'page.adov.label' | trans }}
+			</a>
+		</li>
+	{% endif %}
 	<li class="nav-item">
 		<a class="nav-link d-flex align-items-center gap-2" href="/admin/dashboard">
 			{{ 'page.admin-dashboard.label' | trans }}

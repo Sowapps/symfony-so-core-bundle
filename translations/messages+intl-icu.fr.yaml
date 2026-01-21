@@ -79,6 +79,8 @@ page:
         label: "Tableau de bord"
     admin-user-list:
         label: "Utilisateurs"
+    adov:
+        label: "Website Editor"
 
 so:
     error:
