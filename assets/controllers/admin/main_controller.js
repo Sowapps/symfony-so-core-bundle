@@ -14,6 +14,7 @@ export default class extends AbstractMainController {
 	routes = [
 		new CallbackRoute("/admin", () => this.navigateToIndex()),
 		new TemplateRoute("/admin/dashboard", "admin/dashboard.html"),
+		new TemplateRoute("/admin/log", "admin/log-view.html"),
 		new TemplateRoute("/admin/user", "admin/user-list.html"),
 		new TemplateRoute("/admin/user/{id}", "admin/user-edit.html").setMenuPath("/admin/user"),
 	];

@@ -1,0 +1,34 @@
+{#
+View the main log file entries
+#}
+{% extends '@SoCore/template-admin-page.html.twig' %}
+
+{% block controller 'sowapps--so-core--admin-log-view' %}
+{% block label 'page.admin-log-view.label' | trans %}
+
+{% block content %}
+	{# TODO Log details panel #}
+	<div data-sowapps--so-core--admin-log-view-target="detailsContent">
+	</div>
+	<template data-sowapps--so-core--admin-log-view-target="detailsTemplate">
+		{% embed "@SoCore/component/panel.html.twig" with {header: "Log details" } %}
+			{% block bodyContent %}
+				{#            <div data-sowapps--so-core--admin-log-view-target="detailsReports" hidden></div> #}
+				<p>
+					{{ 'page.admin-log-view.summary' | trans | nl2br }}
+				</p>
+				{# TODO other non-error count ? #}
+			{% endblock %}
+			{% block footer %}
+				{# TODO Remove all non-error button #}
+				{# TODO Remove all button #}
+			{% endblock %}
+		{% endembed %}
+	</template>
+
+
+	{# TODO Log occurrences view panel #}
+	{# TODO Log live view panel #}
+
+
+{% endblock %}

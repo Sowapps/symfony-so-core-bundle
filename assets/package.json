@@ -20,6 +20,11 @@
 				"fetch": "eager",
 				"enabled": true
 			},
+			"admin-log-view": {
+				"main": "controllers/admin/log-view_controller.js",
+				"fetch": "eager",
+				"enabled": true
+			},
 			"admin-user-edit": {
 				"main": "controllers/admin/user-edit_controller.js",
 				"fetch": "eager",
