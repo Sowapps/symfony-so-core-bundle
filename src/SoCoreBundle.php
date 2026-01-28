@@ -31,6 +31,18 @@ class SoCoreBundle extends AbstractBundle {
 				],
 			],
 		]);
+		
+		// Expose Twig globals required by Bundle
+		$builder->prependExtensionConfig('twig', [
+			'globals' => [
+				// variable Twig => valeur (parameter)
+				'so' => [
+					'versionWarning' => [
+						'delay' => '%so.version-warning.delay%',
+					],
+				],
+			],
+		]);
 	}
 	
 	/**

@@ -115,37 +115,14 @@ Some features are required to initialize the app with basic data, this is why th
 For initialization fixtures : `config/fixtures/fixtures-init.yaml`  
 For demo sample fixtures : `config/fixtures/fixtures-sample.yaml`
 
-### Webpack
-
-WARNING: REMOVING WEBPACK FOR SYMFONY ASSET MAPPER
-
-For now, only `yarn add file:../so-core-bundle/assets;` works, but updating source requires to restart watch.
-The package is in assets folder to prevent embedding all the bundle in the node module.
-
-H:\Workspaces\git\so-core-bundle
-
-/!\ It does not work, packages sources does not find any module
-
-Link your package using yarn
-See https://benjaminwfox.com/blog/tech/why-isnt-npm-link-working
-
-In the package assets/ folder, run
-
-`yarn link`
-
-Now, your package is available in any project but as a symlink instead of a remote repository.
-
-In your project folder, run
-
-``yarn link @sowapps/so-core``
-
 ### Stimulus controllers
 
 Create your controllers in `assets/controllers`
 
 Declare them in `assets/package.json`
 
-Use it as `@sowapps--so-core--name` with name the given name in package.json
+Use it as `@sowapps--so-core-name` with name the given name in package.json.  
+To test it locally, you have to add your controller in `assets/controllers.json` too.
 
 ### SAW Feature
 

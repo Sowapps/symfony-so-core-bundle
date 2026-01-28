@@ -1,22 +1,39 @@
 {% extends '@SoCore/base-interactive-default.html.twig' %}
 
 {% block body %}
-	<div class="main-controller" data-controller="{{ mainController }}" data-action="app.error->{{ mainController }}#showError">
+	<div class="main-controller" data-controller="{{ mainController }}"
+		 data-action="so.report.error->{{ mainController }}#showError so.report.success->{{ mainController }}#showSuccess"
+		 data-{{ mainController }}-version-warning-delay-value="{{ so.versionWarning.delay }}"
+	>
 		<div class="h-100" data-{{ mainController }}-target="content">
 			{% block public_content %}{% endblock %}
 		</div>
 		<div class="toast-container position-fixed bottom-0 end-0 p-2" data-{{ mainController }}-target="notificationList"></div>
+
 		<template data-{{ mainController }}-target="templateNotificationError">
 			<div class="toast toast-error border-danger overflow-hidden" role="alert" aria-live="assertive" aria-atomic="true">
 				<div class="toast-header text-bg-danger border-danger">
 					<strong class="me-auto">{title}</strong>
-					{#                    <small class="text-body-secondary">just now</small> #}
+					<small class="text-body-secondary">just now</small>
 					<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
 				</div>
-				<div class="toast-body bg-danger-subtle text-danger-emphasis">{message}</div>
+				<div class="toast-body bg-danger-subtle text-danger-emphasis">{message|text}</div>
 			</div>
 		</template>
+
+		<template data-{{ mainController }}-target="templateNotificationSuccess">
+			<div class="toast toast-success border-success overflow-hidden" role="alert" aria-live="assertive" aria-atomic="true">
+				<div class="toast-header text-bg-success border-success">
+					<strong class="me-auto">{title}</strong>
+					<small class="text-body-secondary">just now</small>
+					<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+				</div>
+				<div class="toast-body bg-success-subtle text-success-emphasis">{message|text}</div>
+			</div>
+		</template>
+
 	</div>
+
 	<template id="TemplateLoadingContents">
 		<div class="loading w-100 h-100 text-center my-5">
 			<div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
@@ -24,7 +41,62 @@
 			<div class="mt-3">{{ 'loadingTemplate' | trans([], 'saw') }}</div>
 		</div>
 	</template>
+
+	<template id="TemplateLoadingError">
+		<div class="w-100 h-100 text-center my-5">
+			<div role="status">
+                <span class="fa-stack fa-2x">
+                    <i class="fa-solid fa-stack-2x fa-wifi"></i>
+                    <i class="fa-solid fa-circle fa-stack-1x fa-pos-top-right"></i>
+                    <i class="fa-solid fa-circle-exclamation text-danger fa-stack-1x fa-pos-top-right"></i>
+                </span>
+			</div>
+			<div class="mt-3">{{ 'loadingErrorTemplate' | trans([], 'saw') }}</div>
+		</div>
+	</template>
+
 	<template id="TemplateAlert">
 		<div class="alert alert-{type}" role="alert">{message}</div>
 	</template>
+
+	{# TODO use component #}
+	{# Mismatch between server version and current version  #}
+	<div class="modal fade" tabindex="-1" aria-labelledby="ModalVersionMismatchTitle" aria-hidden="true" data-{{ mainController }}-target="versionMismatchModal">
+		<div class="modal-dialog modal-dialog-centered modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="ModalVersionMismatchTitle">{{ 'system.versionMismatchModal.title'|trans }}</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans }}"></button>
+				</div>
+				<div class="modal-body p-4">
+					{{ 'system.versionMismatchModal.message'|trans|nl2br }}
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-action="{{ mainController }}#reloadPage">
+						{{ 'action.ok' | trans }}
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{% embed '@SoCore/component/dialog.html.twig' with {
+		dialogId: 'DialogGenericConfirm',
+		dialogClass: 'dialog-confirm',
+		sizeClass: 'modal-xl modal-fullscreen-lg-down',
+		controllers: 'sowapps--so-core--dialog sowapps--so-core--confirm-dialog',
+		controllerActions: 'so.confirm.request@window->sowapps--so-core--confirm-dialog#request'
+	} %}
+		{%- block body -%}
+			<p class="dialog-legend"></p>
+		{%- endblock -%}
+		{%- block footer -%}
+			<button type="button" class="btn btn-outline-secondary" data-action="click->sowapps--so-core--dialog#close">
+				{{- 'action.cancel' | trans -}}
+			</button>
+			<button type="submit" name="submitConfirm" class="btn btn-primary" data-action="click->sowapps--so-core--confirm-dialog#confirm">
+				{{- 'action.confirm' | trans -}}
+			</button>
+		{%- endblock -%}
+	{% endembed %}
 {% endblock %}

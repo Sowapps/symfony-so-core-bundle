@@ -5,10 +5,25 @@ import * as bootstrap from "bootstrap";
 import {sawService} from "../../services/saw.service.js";
 import {NavigationEvent, navigationService} from "../../services/navigation.service.js";
 import {SecurityEvent, securityService} from "../../services/security.service.js";
-import {appWebService} from "../../services/app-web.service.js";
+import {ApiVersionError, appWebService} from "../../services/app-web.service.js";
 
+/**
+ * @property {Element} contentTarget
+ * @property {Element} userLabelTarget
+ * @property {Boolean} hasUserLabelTarget
+ * @property {Element} userMenuTarget
+ * @property {Element} notificationListTarget
+ * @property {Element} templateNotificationErrorTarget
+ * @property {Element} templateNotificationSuccessTarget
+ * @property {Element} versionMismatchModalTarget
+ * @property {Boolean} hasVersionMismatchModalTarget
+ * @property {Number} versionWarningDelayValue
+ */
 export class AbstractMainController extends Controller {
-	static targets = ["content", "userLabel", "userMenu", "notificationList", "templateNotificationError"];
+	static targets = ["content", "userLabel", "userMenu", "notificationList", "templateNotificationError", "templateNotificationSuccess", "versionMismatchModal"];
+	static values = {
+		versionWarningDelay: {type: Number, default: 120000},
+	};
 	
 	routes = [];
 	promises = [];
@@ -202,14 +217,62 @@ export class AbstractMainController extends Controller {
 		this.refreshLayoutMenus();
 	}
 	
-	showError(event) {
-		this.pushNotificationError(event.detail.error);
+	showSuccess(event) {
+		this.pushNotificationSuccess(event.detail.message, event.detail.options);
 	}
 	
-	pushNotificationError(error) {
+	showError(event) {
+		const error = event.detail.error;
+		if( error instanceof ApiVersionError && !this.outdatedApp ) {
+			console.error("Fatal error, " + error.getMessage());
+			this.outdatedApp = true;
+			playerHeritageService.stop(true);
+			this.versionMismatchModal.show();// Never close, force to reload page
+			setTimeout(() => this.reloadPage(), this.versionWarningDelayValue);// Env
+		}
+		this.pushNotificationError(error, event.detail.options);
+	}
+	
+	pushNotificationError(error, options = {}) {
 		const output = {title: "System", message: error instanceof Exception ? error.getMessage() : error};
 		const notificationElement = domService.renderTemplate(this.templateNotificationErrorTarget, output)[0];
-		this.pushNotification(notificationElement, {autohide: false});
+		this.#prePushNotification(notificationElement, options);
+		this.pushNotification(notificationElement, this.#formatToastOptions(options));
+	}
+	
+	pushNotificationSuccess(message, options = {}) {
+		const output = {title: "System", message: message};
+		const notificationElement = domService.renderTemplate(this.templateNotificationSuccessTarget, output)[0];
+		this.#prePushNotification(notificationElement, options);
+		this.pushNotification(notificationElement, this.#formatToastOptions(options));
+	}
+	
+	#prePushNotification(notificationElement, options) {
+		if( options.channel ) {
+			// With channel, we can only show one of this channel at a time
+			const channelClass = "notification-channel-" + options.channel;
+			notificationElement.classList.add(channelClass);
+			const existing = this.notificationListTarget.querySelector("." + channelClass);
+			if( existing ) {
+				existing.remove();
+			}
+		}
+	}
+	
+	#formatToastOptions(options) {
+		options = options || {};
+		// @see https://getbootstrap.com/docs/5.3/components/toasts/#options
+		const toastOptions = {autohide: false};
+		if( options.autoHide ) {
+			toastOptions.autohide = true;
+			// use default delay
+		}
+		if( options.hideDelay ) {
+			toastOptions.autohide = true;
+			toastOptions.delay = parseInt(options.hideDelay);// Milliseconds
+		}
+		
+		return toastOptions;
 	}
 	
 	/**
@@ -275,8 +338,12 @@ export class AbstractPageController extends Controller {
 		domService.dispatchEvent(this.element, event, detail, options);
 	}
 	
-	reportException(exception) {
-		this.dispatchEvent("app.error", {error: exception});
+	reportException(exception, options) {
+		this.dispatchEvent("so.report.error", {error: exception, options});
+	}
+	
+	reportSuccess(message, options) {
+		this.dispatchEvent("so.report.success", {message, options});
 	}
 	
 }

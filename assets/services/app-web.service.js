@@ -126,6 +126,23 @@ class AppWebService {
 	}
 	
 	/**
+	 * Post ressource to API
+	 *
+	 * @param {String} path
+	 * @param {Object} input
+	 * @returns {Promise<Object>}
+	 */
+	requestDelete(path, input = null) {
+		return this.request(path, {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: input ? JSON.stringify(input) : null,
+		});
+	}
+	
+	/**
 	 * Get ressources from API
 	 *
 	 * @param {String} path
@@ -264,7 +281,6 @@ class AppWebService {
 export class ApiException extends Exception {
 	
 	getMessage() {
-		console.log('this.previous', this.previous);
 		const previousMessage = this.previous instanceof ApiValidationError ? this.previous.getMessage() : this.previous.message;
 		return `${this.message} due to ${previousMessage}`;
 	}
@@ -316,13 +332,55 @@ export class ApiUserServerError extends ApiServerError {
 		let message = null;
 		try {
 			const body = await response.json();
-			message = body.message || body.detail;
+			// Standard of application/problem+json by SymfonyCasts
+			// @see https://symfonycasts.com/screencast/rest/application-problem
+			if( body.type && Is.array(body.errors) ) {
+				if( response.status === 409 && body.type === "error.fatal.versionMismatch" ) {
+					return await new ApiVersionError(response, body.title, body.errors);
+				}
+				message = body.errors[0];
+			} else if( body.error ) {
+				// Symfony standard in case of server error
+				message = body.error;
+			} else if( body.message ) {
+				// Is this a former standard? Pls confirm?
+				message = body.message;
+			} else {
+				// Symfony standard in case of constraint violation error (422)
+				message = body.detail;
+			}
 		} catch (exception) {
 			console.warn("Unable to parse error from response", exception);
 		}
 		return new ApiUserServerError(response, message);
 	}
 	
+}
+
+export class ApiVersionError extends ApiUserServerError {
+	
+	/**
+	 * @param {Response} response
+	 * @param {string} title
+	 * @param {array} errors
+	 */
+	constructor(response, title, errors) {
+		super(response);
+		this.title = title;
+		this.errors = errors;
+	}
+	
+	getMessage() {
+		if( !this.errors.length ) {
+			return super.getMessage();
+		}
+		if( this.errors.length === 1 ) {
+			return `${this.title} : ${this.errors[0]}`;
+		}
+		const message = this.errors.join("\n");
+		
+		return `${this.title} :\n${message}`;
+	}
 }
 
 export class ApiValidationError extends ApiUserServerError {
@@ -362,7 +420,7 @@ export class ApiValidationError extends ApiUserServerError {
 		if( this.errors.length === 1 ) {
 			return `Validation error : ${this.errors[0].message}`;
 		}
-		const message = this.errors.map(error => error.message).join("\n");
+		const message = this.getJoinedErrors();
 		
 		return `Validation errors :\n${message}`;
 	}

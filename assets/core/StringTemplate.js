@@ -30,6 +30,7 @@ export class StringTemplate {
 			try {
 				return this.parseValue(variable, data);
 			} catch (exception) {
+				console.warn(exception);
 				return all;
 			}
 		});
@@ -38,6 +39,7 @@ export class StringTemplate {
 			try {
 				return this.parseValue(variable, data);
 			} catch (exception) {
+				console.warn(exception);
 				return all;
 			}
 		});
@@ -46,6 +48,7 @@ export class StringTemplate {
 			try {
 				return this.parseValue(variable, data);
 			} catch (exception) {
+				console.warn(exception);
 				return all;
 			}
 		});
@@ -55,7 +58,7 @@ export class StringTemplate {
 	
 	parseValue(value, data) {
 		const result = value.match(/\s?([^\|]+[^\s])(?=\s*\||\s*$)/g)
-			// Chain filter using the result of the previous one (first property is a filter and the data is the first value)
+			// Chain filter using the result of the previous one; the first token can be a filter
 			.reduce((chainedValue, filter) => this.resolveFilter(chainedValue, filter, data), data);
 		if( result === undefined ) {
 			throw new ParseValueException(`Unable to resolve value ${value}`);
@@ -71,6 +74,7 @@ export class StringTemplate {
 	resolveFilter(value, filter, data) {
 		const [, name, argumentList] = filter.match(/^([^\(]+)(?:\(([^\)]*)\))?$/);
 		const processAsFunction = argumentList !== undefined || this.filters[name];
+		// TODO Separate filter and property, first can be a filter or a property (property is favorite), then filter is favorite
 		if( processAsFunction ) {
 			// As function
 			const filterCallback = this.filters[name];

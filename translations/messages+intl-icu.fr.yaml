@@ -159,5 +159,12 @@ widget:
         library:
             label: "Bibliothèque"
 
+system:
+    versionMismatchModal:
+        title: "L'application est obsolète"
+        message: |
+            La version de votre application ne correspond plus à celle du serveur.
+            La page va bientôt se rafraîchir, vous pouvez confirmer pour rafraîchir maintenant.
+
 # Package translations
 "Invalid CSRF token.": "Formulaire invalide, ré-essaye stp."

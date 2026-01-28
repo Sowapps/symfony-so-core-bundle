@@ -34,6 +34,21 @@
 				"main": "controllers/admin/user-list_controller.js",
 				"fetch": "eager",
 				"enabled": true
+			},
+			"confirm": {
+				"main": "controllers/component/confirm_controller.js",
+				"fetch": "eager",
+				"enabled": true
+			},
+			"confirm-dialog": {
+				"main": "controllers/component/confirm-dialog_controller.js",
+				"fetch": "eager",
+				"enabled": true
+			},
+			"dialog": {
+				"main": "controllers/component/dialog_controller.js",
+				"fetch": "eager",
+				"enabled": true
 			}
 		},
 		"importmap": {

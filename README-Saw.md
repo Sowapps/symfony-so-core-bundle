@@ -69,7 +69,11 @@ Return first parameter if the value is false. This is the opposite filter of `th
 
 #### Filter truncate
 
-Truncate the string value to the length given by first argument.
+Truncate the string value to the length given by the first argument.  
+Arguments:
+
+- length: The length as integer.
+- ellipsis: The ending suffix as string when the string is truncated.
 
 ```
 {description|truncate(20)}
@@ -105,6 +109,22 @@ Format value to uppercase.
 
 ```
 {label|upper}
+```
+
+#### Filter attr
+
+Escape value for an HTML attribute.
+
+```
+{label|attr}
+```
+
+#### Filter length
+
+Return the length of an array.
+
+```
+{label|length}
 ```
 
 #### Filter join

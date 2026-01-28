@@ -1,8 +1,9 @@
 {# @var string cardClass #}
 <div class="card mb-3 {{ cardClass | default() }}">
-	{% if header is defined %}
-		<div class="card-header">
-			{{ header }}
+	{% if title is defined %}
+		<div class="card-header lh-lg d-flex justify-content-between">
+			{{ title }}
+			{% block headerContent %}{% endblock %}
 		</div>
 	{% endif %}
 	<div class="card-body">

@@ -12,14 +12,14 @@
 	{# https://getbootstrap.com/docs/5.0/components/modal/#options #}
 	{% set attr = attr ~ ' ' ~ (options | attributes('data-bs-')) %}
 {% endif %}
-{% set controller = controller | default(controllers | default('component--dialog') | split(' ') | first) %}
+{% set controller = controller | default(controllers | default('sowapps--so-core--dialog') | split(' ') | first) %}
 {% set controllers = controllers | default(controller) %}
 {% set open = open ?? null %}
 
 {# Removed attribute tabindex="-1" to fix issue with select2 search field #}
-<div id="{{ dialogId }}" class="modal fade {{ dialogClass }}" aria-hidden="true"
+<div id="{{ dialogId }}" class="modal fade {{ dialogClass }}"
 	 data-controller="{{ controllers }}"
-	 data-action="app.dialog.open->{{ controller }}#open app.dialog.close->{{ controller }}#close {{ controllerActions | default }}" {%- if attr %} {{ attr | raw }}{% endif -%}>
+	 data-action="so.dialog.open->{{ controller }}#open so.dialog.close->{{ controller }}#close {{ controllerActions | default | raw }}" {%- if attr %} {{ attr | raw }}{% endif -%}>
 	<div class="modal-dialog {{ sizeClass }}">
 		<div class="modal-content{{ autoFocus ?? true ? ' modal-focus' : '' }}{{ autoReset ?? true ? ' modal-form-reset' : '' }}{{ smartEnter ?? true ? ' smart-enter-on-inputs' : '' }}">
 			{%- block content -%}
@@ -36,7 +36,7 @@
 				</div>
 				<div class="modal-body">
 					<div class="container-fluid">
-						{% block body %}
+						{%- block body %}
 							{% if legend is defined %}
 								<p class="dialog-legend">{{ legend | raw }}</p>
 							{% endif %}
@@ -46,7 +46,7 @@
 									{{ form_widget(form) }}
 								{% endblock %}
 							{% endif %}
-						{% endblock %}
+						{% endblock -%}
 					</div>
 				</div>
 				{% if block('footer') is defined %}
@@ -96,6 +96,6 @@
 
 {% if (open is null and form is defined and form is iterable and not form.vars.valid) or open %}
 	<script>
-	onDomReady(() => document.getElementById("{{ dialogId }}").dispatchEvent(new Event('app.dialog.open')));
+		onDomReady(() => document.getElementById("{{ dialogId }}").dispatchEvent(new Event('so.dialog.open')));
 	</script>
 {% endif %}

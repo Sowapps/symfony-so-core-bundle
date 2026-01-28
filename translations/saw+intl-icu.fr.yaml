@@ -1,1 +1,2 @@
 loadingTemplate: "Chargement, veuillez patienter..."
+loadingErrorTemplate: "Problèmes de réseau, veuillez réessayer en ligne !"

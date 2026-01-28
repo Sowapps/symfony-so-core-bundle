@@ -1,5 +1,5 @@
-import { AbstractController } from "../abstract.controller.js";
-import { Modal } from 'bootstrap';
+import {AbstractController} from "../abstract.controller.js";
+import {Modal} from 'bootstrap';
 
 export default class extends AbstractController {
 	
@@ -13,6 +13,11 @@ export default class extends AbstractController {
 	}
 	
 	close() {
+		// Remove focus from the button to fix the following error from Chrome
+		// Blocked aria-hidden on an element because its descendant retained focus. The focus must not be hidden from assistive technology users. Avoid using aria-hidden on a focused element or its ancestor. Consider using the inert attribute instead, which will also prevent focus. For more details, see the aria-hidden section of the WAI-ARIA specification at https://w3c.github.io/aria/#aria-hidden.
+		const buttonElement = document.activeElement;
+		buttonElement.blur();
+		
 		this.modal.hide();
 	}
 	

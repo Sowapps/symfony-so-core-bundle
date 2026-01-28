@@ -8,6 +8,7 @@ parameters:
     # Ever, ever declare the data type to use an environment variable
     # Every bundle parameter must be declared in class \Sowapps\SoCore\Config
     security.admin.accessKey: '%env(string:ADMIN_ACCESS_KEY)%'
+    so.version-warning.delay: '%env(int:SO_VERSION_WARNING_DELAY)%'
 
 services:
     _defaults:

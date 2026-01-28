@@ -2,6 +2,7 @@ import {Is} from "../helpers/is.helper.js";
 import {Process} from "../helpers/process.helper.js";
 import {StringTemplate} from "../core/StringTemplate.js";
 import {Deferred} from "../core/event/Deferred.js";
+import {stringService} from "./string.service.js";
 
 class DomService {
 	
@@ -13,10 +14,15 @@ class DomService {
 		"default": (value, defaultValue) => {
 			return value || defaultValue;
 		},
-		"truncate": (value, length) => {
-			return value.substring(0, length);
+		"truncate": (value, length, ellipsis = "") => {
+			const isCut = value.length > length;
+			return value.substring(0, length) + (isCut ? ellipsis : "");
 		},
 		"date": value => {
+			if( Is.object(value) ) {
+				// The first token can be a filter applied on the whole object; it happens here if the property has the same name as the filter
+				return value.date;
+			}
 			return new Date(value).toLocaleString();
 		},
 		"contains": (list, item) => {
@@ -28,11 +34,23 @@ class DomService {
 		"upper": value => {
 			return value.toUpperCase();
 		},
+		"attr": value => {
+			return stringService.escapeAttribute(value);
+		},
+		"length": values => {
+			return values.length;
+		},
 		"join": (values, separator) => {
 			if( !Is.array(values) ) {
 				throw new Error("Value must be an array");
 			}
 			return values.join(separator);
+		},
+		"text": (value) => {
+			if( !value ) {
+				return "";
+			}
+			return stringService.escapeHtml(value);
 		},
 		"url_host": (value) => {
 			if( !value ) {

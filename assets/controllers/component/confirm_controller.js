@@ -1,6 +1,9 @@
 import {AbstractController} from "../abstract.controller.js";
 import {stringService} from "../../services/string.service.js";
 
+/**
+ * Only send a confirm request to the confirm dialog
+ */
 export default class extends AbstractController {
 	
 	static values = {title: String, message: String, submitName: String, submitValue: String};
@@ -12,6 +15,7 @@ export default class extends AbstractController {
 	
 	formatData() {
 		return {
+			element: this.element,
 			title: this.titleValue,
 			message: this.hasMessageValue ? this.formatMessage(this.messageValue) : null,
 			submitName: this.hasSubmitNameValue ? this.submitNameValue : 'submitConfirm',

@@ -28,7 +28,7 @@
 		<div class="col-12 col-lg-6">
 
 			<form data-sowapps--so-core--admin-user-edit-target="form" data-action="sowapps--so-core--admin-user-edit#submitProfile">
-				{% embed "@SoCore/component/panel.html.twig" with {header: "Profile" } %}
+				{% embed "@SoCore/component/panel.html.twig" with {title: "Profile" } %}
 					{% block bodyContent %}
 						<div data-sowapps--so-core--admin-user-edit-target="profileFormReports" hidden></div>
 
@@ -57,7 +57,7 @@
 		<div class="col-12 col-lg-6">
 
 			<form data-sowapps--so-core--admin-user-edit-target="form" data-action="sowapps--so-core--admin-user-edit#submitSecurity">
-				{% embed "@SoCore/component/panel.html.twig" with {header: "Security" } %}
+				{% embed "@SoCore/component/panel.html.twig" with {title: "Security" } %}
 					{% block bodyContent %}
 						<div data-sowapps--so-core--admin-user-edit-target="securityFormReports" hidden></div>
 
@@ -87,7 +87,7 @@
 		<div class="col-12 col-lg-6">
 
 			<form data-sowapps--so-core--admin-user-edit-target="form" data-action="sowapps--so-core--admin-user-edit#submitPassword" autocomplete="off">
-				{% embed "@SoCore/component/panel.html.twig" with {header: "Password" } %}
+				{% embed "@SoCore/component/panel.html.twig" with {title: "Password" } %}
 					{% block bodyContent %}
 						<div data-sowapps--so-core--admin-user-edit-target="passwordFormReports" hidden></div>
 

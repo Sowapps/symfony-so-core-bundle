@@ -42,6 +42,22 @@ class StringService {
 		return (text + "").replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, "$1<br>$2");
 	}
 	
+	escapeAttribute(text) {
+		return (text + "")
+			.replace(/'/g, "&#39;")
+			.replace(/"/g, "&#34;")
+			;
+	}
+	
+	escapeHtml(str) {
+		return str
+			.replace(/&/g, "&amp;") // Replace ampersand
+			.replace(/</g, "&lt;")  // Replace less than
+			.replace(/>/g, "&gt;")  // Replace greater than
+			.replace(/"/g, "&quot;") // Replace double quote
+			.replace(/'/g, "&apos;"); // Replace single quote
+	}
+	
 }
 
 export const stringService = new StringService();
