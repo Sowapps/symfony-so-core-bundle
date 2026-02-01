@@ -47,7 +47,7 @@ class AppWebService {
 		try {
 			return await this.requestPost(`/security/disconnect`, null);
 		} catch (error) {
-			debugger;
+			debugger;// TODO conclude & remove test
 			throw new ApiException("Unable to disconnect user", error);
 		}
 	}

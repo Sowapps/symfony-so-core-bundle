@@ -218,31 +218,36 @@ export class AbstractMainController extends Controller {
 	}
 	
 	showSuccess(event) {
-		this.pushNotificationSuccess(event.detail.message, event.detail.options);
+		this.pushNotificationSuccess(event.detail.message, event.detail.title, event.detail.options);
 	}
 	
 	showError(event) {
 		const error = event.detail.error;
 		if( error instanceof ApiVersionError && !this.outdatedApp ) {
+			// TODO Outdated error shows a modal and reload the page
 			console.error("Fatal error, " + error.getMessage());
 			this.outdatedApp = true;
-			playerHeritageService.stop(true);
 			this.versionMismatchModal.show();// Never close, force to reload page
 			setTimeout(() => this.reloadPage(), this.versionWarningDelayValue);// Env
 		}
-		this.pushNotificationError(error, event.detail.options);
+		this.pushNotificationError(error, event.detail.title, event.detail.options);
 	}
 	
-	pushNotificationError(error, options = {}) {
-		const output = {title: "System", message: error instanceof Exception ? error.getMessage() : error};
-		const notificationElement = domService.renderTemplate(this.templateNotificationErrorTarget, output)[0];
+	pushNotificationError(error, title, options = {}) {
+		if( error instanceof Error && !(error instanceof Exception) ) {
+			error = error.message;
+		}
+		// TODO translate default title
+		const data = {title: title || "System", message: error instanceof Exception ? error.getMessage() : error};
+		const notificationElement = domService.renderTemplate(this.templateNotificationErrorTarget, data)[0];
 		this.#prePushNotification(notificationElement, options);
 		this.pushNotification(notificationElement, this.#formatToastOptions(options));
 	}
 	
-	pushNotificationSuccess(message, options = {}) {
-		const output = {title: "System", message: message};
-		const notificationElement = domService.renderTemplate(this.templateNotificationSuccessTarget, output)[0];
+	pushNotificationSuccess(message, title, options = {}) {
+		// TODO translate default titles
+		const data = {title: title || "System", message: message};
+		const notificationElement = domService.renderTemplate(this.templateNotificationSuccessTarget, data)[0];
 		this.#prePushNotification(notificationElement, options);
 		this.pushNotification(notificationElement, this.#formatToastOptions(options));
 	}
@@ -338,12 +343,12 @@ export class AbstractPageController extends Controller {
 		domService.dispatchEvent(this.element, event, detail, options);
 	}
 	
-	reportException(exception, options) {
-		this.dispatchEvent("so.report.error", {error: exception, options});
+	reportException(exception, title = null, options = {}) {
+		this.dispatchEvent("so.report.error", {title, error: exception, options});
 	}
 	
-	reportSuccess(message, options) {
-		this.dispatchEvent("so.report.success", {message, options});
+	reportSuccess(message, title = null, options = {}) {
+		this.dispatchEvent("so.report.success", {title, message, options});
 	}
 	
 }

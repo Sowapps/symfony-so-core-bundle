@@ -1,2 +1,3 @@
-loadingTemplate: "Chargement, veuillez patienter..."
-loadingErrorTemplate: "Problèmes de réseau, veuillez réessayer en ligne !"
+loading.message: "Chargement, veuillez patienter..."
+loading.networkError: "L'application rencontre des soucis de connexion, vérifiez votre connexion internet !"
+loading.serverError: "Une erreur est survenue, veuillez réessayer plus tard !"
