@@ -6,29 +6,187 @@ View the main log file entries
 {% block controller 'sowapps--so-core--admin-log-view' %}
 {% block label 'page.admin-log-view.label' | trans %}
 
+{% block containerAttributes -%}
+	data-sowapps--so-core--admin-log-view-load-details-title-value="{{ 'page.admin-log-view.logDetails.load' | trans }}"
+	data-sowapps--so-core--admin-log-view-load-entries-title-value="{{ 'page.admin-log-view.logEntries.load' | trans }}"
+	data-sowapps--so-core--admin-log-view-load-view-title-value="{{ 'page.admin-log-view.logView.load' | trans }}"
+	data-sowapps--so-core--admin-log-view-remove-non-error-reports-success-value="{{ 'page.admin-log-view.removeNonErrorReports.success' | trans }}"
+	data-sowapps--so-core--admin-log-view-remove-all-reports-success-value="{{ 'page.admin-log-view.removeAll.success' | trans }}"
+	data-sowapps--so-core--admin-log-view-remove-report-success-value="{{ 'page.admin-log-view.remove.success' | trans }}"
+{%- endblock %}
 {% block content %}
-	{# TODO Log details panel #}
+	{# Log details Panel #}
 	<div data-sowapps--so-core--admin-log-view-target="detailsContent">
 	</div>
 	<template data-sowapps--so-core--admin-log-view-target="detailsTemplate">
-		{% embed "@SoCore/component/panel.html.twig" with {header: "Log details" } %}
+		{% embed "@SoCore/component/panel.html.twig" with {title: 'page.admin-log-view.logDetails.title' | trans } %}
 			{% block bodyContent %}
 				{#            <div data-sowapps--so-core--admin-log-view-target="detailsReports" hidden></div> #}
 				<p>
 					{{ 'page.admin-log-view.summary' | trans | nl2br }}
 				</p>
-				{# TODO other non-error count ? #}
 			{% endblock %}
 			{% block footer %}
-				{# TODO Remove all non-error button #}
-				{# TODO Remove all button #}
+				<div class="d-flex justify-content-end gap-2">
+					<button class="btn btn-outline-info" type="button" data-controller="sowapps--so-core--confirm" data-sowapps--so-core--admin-log-view-target="button"
+							title="{{ 'page.admin-log-view.removeNonErrorReports.title' | trans }}"
+							data-sowapps--so-core--confirm-title-value="{{ 'page.admin-log-view.removeNonErrorReports.confirmTitle' | trans }}"
+							data-sowapps--so-core--confirm-message-value="{{ 'page.admin-log-view.removeNonErrorReports.confirmMessage' | trans }}"
+							data-action="so.dialog.confirm->sowapps--so-core--admin-log-view#removeNonError"
+					>
+						{{ 'page.admin-log-view.removeNonErrorReports.label' | trans }}
+					</button>
+					<button class="btn btn-outline-info" type="button" data-controller="sowapps--so-core--confirm" data-sowapps--so-core--admin-log-view-target="button"
+							title="{{ 'page.admin-log-view.removeAll.title' | trans }}"
+							data-sowapps--so-core--confirm-title-value="{{ 'page.admin-log-view.removeAll.confirmTitle' | trans }}"
+							data-sowapps--so-core--confirm-message-value="{{ 'page.admin-log-view.removeAll.confirmMessage' | trans }}"
+							data-action="so.dialog.confirm->sowapps--so-core--admin-log-view#removeAll"
+					>
+						{{ 'page.admin-log-view.removeAll.label' | trans }}
+					</button>
+				</div>
 			{% endblock %}
 		{% endembed %}
 	</template>
 
+	{# Log entries Panel #}
+	{% embed "@SoCore/component/panel.html.twig" with {title: 'page.admin-log-view.logEntries.title' | trans } %}
+		{% block headerContent %}
+			<div class="btn-toolbar mb-2 mb-md-0 btn-group-sm">
 
-	{# TODO Log occurrences view panel #}
-	{# TODO Log live view panel #}
+				<button type="button" class="btn btn-outline-secondary" data-action="sowapps--so-core--admin-log-view#loadEntries">
+					<i class="fa-solid fa-rotate-right"></i>
+				</button>
+			</div>
+		{% endblock %}
+		{% block bodyContent %}
+			<div data-sowapps--so-core--admin-log-view-target="entryListBody">
+			</div>
+			<div data-sowapps--so-core--admin-log-view-target="entryListContent" id="ListLogEntry">
+			</div>
+		{% endblock %}
+	{% endembed %}
+	<template data-sowapps--so-core--admin-log-view-target="entryBodyTemplate">
+		<p>
+			{{ 'page.admin-log-view.entryList.legend' | trans | nl2br }}
+		</p>
+	</template>
+	<template data-sowapps--so-core--admin-log-view-target="entryItemTemplate">
+		<div class="card border-default log mb-3">
+			<div class="card-header" id="{panelId}_heading">
+				<button class="btn" data-bs-toggle="collapse" data-bs-target="#{panelId}" aria-expanded="false" aria-controls="{panelId}">
+					<span class="h5">
+						<span class="{statusClass} me-1">{levelName}</span>
+						<b>[{occurrences|length}]</b>
+						- {message|truncate(160, '...')}
+					</span>
+				</button>
+			</div>
+			<div id="{panelId}" class="collapse entry-body" aria-labelledby="{panelId}_heading" data-bs-parent="#ListLogEntry">
+				<div class="card-body">
+					<div class="form-horizontal">
+						<div class="row">
+							<div class="col-lg-8">
+								<h5>{{ 'page.admin-log-view.entry.details' | trans() }}</h5>
 
+								<div class="form-group row">
+									<label for="InputEntryDomain{panelId}"
+										   class="col-sm-2 col-form-label font-weight-bold">{{ 'page.admin-log-view.entry.domain' | trans }}</label>
+									<div class="col-sm-10">
+										<input type="text" readonly class="form-control-plaintext" id="InputEntryDomain{panelId}"
+											   value="{domain}">
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="InputEntryMessage{panelId}"
+										   class="col-sm-2 col-form-label font-weight-bold">{{ 'page.admin-log-view.entry.message' | trans }}</label>
+									<div class="col-sm-10">
+										<textarea readonly class="form-control-plaintext item-message" id="InputEntryMessage{panelId}"
+												  rows="3">{message}</textarea>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label for="InputEntryStatus{panelId}"
+										   class="col-sm-2 col-form-label font-weight-bold">{{ 'page.admin-log-view.entry.status' | trans }}</label>
+									<div class="col-sm-10">
+										<input type="text" readonly class="form-control-plaintext {statusClass}"
+											   id="InputEntryStatus{panelId}"
+											   value="{statusText}">
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-4">
+								<h5>{{ 'page.admin-log-view.entry.occurrences' | trans() }}</h5>
+								<ul class="log-occurrence-list"></ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card-footer text-end">
+					<button class="btn btn-primary" type="button" data-controller="sowapps--so-core--confirm" data-sowapps--so-core--admin-log-view-target="button"
+							title="{{ 'page.admin-log-view.remove.title' | trans }}"
+							data-sowapps--so-core--confirm-title-value="{{ 'page.admin-log-view.remove.confirmTitle' | trans }}"
+							data-sowapps--so-core--confirm-message-value="{{ 'page.admin-log-view.remove.confirmMessage' | trans }}"
+							data-action="so.dialog.confirm->sowapps--so-core--admin-log-view#removeEntry"
+							data-sowapps--so-core--admin-log-view-group-param="{groupKey}"
+					>
+						{{ 'page.admin-log-view.remove.label' | trans }}
+					</button>
+				</div>
+			</div>
+		</div>
+	</template>
+	<template data-sowapps--so-core--admin-log-view-target="occurrenceTemplate">
+		<li>{date|date} ({line})</li>
+	</template>
+	<template data-sowapps--so-core--admin-log-view-target="entryEmptyListTemplate">
+		<div>{{ 'page.admin-log-view.empty' | trans }}</div>
+	</template>
+
+	{# Log live view Panel #}
+	{% embed "@SoCore/component/panel.html.twig" with {title: 'page.admin-log-view.logView.title' | trans } %}
+		{% block headerContent %}
+			<div class="btn-toolbar mb-2 mb-md-0 btn-group-sm">
+				<div class="btn-group me-2" role="group">
+					<label class="visually-hidden" for="SelectViewQuantity">Quantity</label>
+					<select class="form-select" id="SelectViewQuantity"
+							data-action="sowapps--so-core--admin-log-view#updateValue sowapps--so-core--admin-log-view#loadView"
+							data-sowapps--so-core--admin-log-view-target="input"
+							data-sowapps--so-core--admin-log-view-value-param="viewQuantity"
+					>
+						<option value="50">50</option>
+						<option value="100">100</option>
+						<option value="200">200</option>
+						<option value="500">500</option>
+						<option value="1000">1000</option>
+						<option value="2000">2000</option>
+						<option value="5000">5000</option>
+					</select>
+				</div>
+				<div class="btn-group" role="group">
+					<button type="button" class="btn btn-outline-secondary" data-action="sowapps--so-core--admin-log-view#downloadLogFile" data-sowapps--so-core--admin-log-view-target="button">
+						<i class="fa-solid fa-download"></i>
+					</button>
+					<button type="button" class="btn btn-outline-secondary" data-action="sowapps--so-core--admin-log-view#loadView" data-sowapps--so-core--admin-log-view-target="button">
+						<i class="fa-solid fa-rotate-right"></i>
+					</button>
+				</div>
+			</div>
+		{% endblock %}
+		{% block bodyContent %}
+			<div data-sowapps--so-core--admin-log-view-target="viewListContent" id="ListLogView">
+			</div>
+		{% endblock %}
+	{% endembed %}
+	<template data-sowapps--so-core--admin-log-view-target="viewItemTemplate">
+		<div>
+			<b>{line}</b>: {log}
+		</div>
+	</template>
+	<template data-sowapps--so-core--admin-log-view-target="viewEmptyListTemplate">
+		<div>{{ 'page.admin-log-view.empty' | trans }}</div>
+	</template>
 
 {% endblock %}

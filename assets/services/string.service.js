@@ -1,6 +1,7 @@
 /**
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
+import {Is} from "../helpers/is.helper.js";
 
 class StringService {
 	
@@ -50,6 +51,9 @@ class StringService {
 	}
 	
 	escapeHtml(str) {
+		if( !Is.string(str) ) {
+			throw new Error("Invalid string");
+		}
 		return str
 			.replace(/&/g, "&amp;") // Replace ampersand
 			.replace(/</g, "&lt;")  // Replace less than

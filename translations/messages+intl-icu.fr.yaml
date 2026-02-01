@@ -47,7 +47,10 @@ user:
     roleState:
         user: "Utilisateur"
         admin: "Administrateur"
-        developer: "Développeur"
+        contributor: "Contributeur"
+        system: "Admin système"
+        superAdmin: "Super Admin"
+        impersonate: "Impersonate"
 
 page:
     verifyUserEmail:
@@ -88,36 +91,51 @@ page:
             Le journal de bord de l'application pour l'environnement actuel est "{logFile}".
             Il recense les événements et rapports d'erreur qui surviennent au sein de l'application.
             Il stocke tous les rapports égaux ou supérieurs au niveau {logLevelName} ({logLevelValue}), le niveau minimum pour les erreurs est {errorLevelName} ({errorLevelValue}).
-        otherReports: "Le journal de bord contient également {number} autres rapports qui ne sont pas des erreurs."
         errors:
             title: "Rapports d'erreur"
         empty: "Aucun rapport d'erreur"
+        entryList:
+            legend: "Le journal de bord contient {errorCount} erreurs et {otherCount} autres rapports."
         entry:
             details: "Détails"
-            occurences: "Rapports"
+            occurrences: "Rapports"
             domain: "Domaine"
             message: "Message"
             status: "Statut"
         status:
             rare: "Survient rarement"
             occasionally: "Survient occasionnellement"
-            urgent: "URGENT !"
+            frequently: "Survient très fréquemment !"
             solved: "Semble résolu"
+        logDetails:
+            title: "Informations sur le journal"
+            load: "Chargement des informations du journal"
+        logEntries:
+            title: "Entrées du journal"
+            load: "Chargement des entrées du journal"
+        logView:
+            title: "Journal de bord"
+            load: "Chargement du journal de bord"
         remove:
             label: "Supprimer cette entrée"
-            confirmTitle: "Supprimer les rapports ?"
-            confirmMessage: "Voulez-vous vraiment supprimer tous les rapports de cette entrée du journal de bord ?"
+            title: "Supprimer complètement cette entrée du journal de bord"
+            confirmTitle: "Supprimer les rapports"
+            # '{' to prevent interpretation as MessageFormat
+            confirmMessage: |
+                Voulez-vous vraiment supprimer tous les rapports de cette entrée du journal de bord ?
+                <pre>'{'message|attr'}'</pre>
             success: "L'entrée du journal de bord a bien été supprimée."
         removeNonErrorReports:
-            label: "Supprimer tous ces autres rapports"
-            title: "Supprimer ces autres rapports n'a pour seul but d'alléger le fichier"
-            confirmTitle: "Supprimer ces autres rapports ?"
+            label: "Supprimer tous les autres rapports"
+            title: "Supprimer ces autres rapports n'a pour seul but que d'alléger le fichier"
+            confirmTitle: "Supprimer les autres rapports ?"
             confirmMessage: |
                 Voulez-vous vraiment supprimer tous les rapports du journal de bord qui ne sont pas des erreurs ?
                 Ils peuvent contenir des informations importantes pour des correctifs en cours.
-            success: "Toutes les entrées du journal de bord qui n'étaient pas des rapports d'erreur ont été supprimés."
+            success: "Toutes les entrées du journal de bord qui n'étaient pas des rapports d'erreur ont été supprimées."
         removeAll:
             label: "Vider le journal de bord"
+            title: "Supprimer tous les rapports du journal de bord"
             confirmTitle: "Vider le journal ?"
             confirmMessage: "Voulez-vous vraiment vider entièrement le journal de bord ?"
             success: "Le journal de bord a été vidé."

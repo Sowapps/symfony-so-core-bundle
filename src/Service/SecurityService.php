@@ -11,12 +11,18 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 
+/**
+ * Security service provides methods to manage user roles and permissions
+ */
 class SecurityService {
-	const ROLE_USER = 'ROLE_USER';
-	const ROLE_ADMIN = 'ROLE_ADMIN';
-	const ROLE_CONTRIBUTOR = 'ROLE_CONTRIBUTOR';
-	const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
-	const ROLE_IMPERSONATE = 'ROLE_IMPERSONATE';
+	// Role: can access to some features and use permissions
+	// Permission: can access to some features, but cannot work without a role, it makes no sense, do not assign it to a user
+	const ROLE_USER = 'ROLE_USER'; // Role: Access to app login
+	const ROLE_ADMIN = 'ROLE_ADMIN'; // Role: Access to the admin panel
+	const ROLE_CONTRIBUTOR = 'ROLE_CONTRIBUTOR'; // Role: Access to editor features
+	const ROLE_SYSTEM = 'ROLE_SYSTEM'; // Permission: Access to system features
+	const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN'; // Role: Access to everything
+	const ROLE_IMPERSONATE = 'ROLE_IMPERSONATE'; // Permission: Access to impersonate features
 	
 	protected readonly array $roles;
 	private ?AbstractUser $currentUser = null;
@@ -28,10 +34,11 @@ class SecurityService {
 	) {
 		$this->roles = [
 			// Role => [Translation key, Role restriction]
-			// Role restriction: Required role to assign this one
+			// Role restriction: Required role to assign this one, false to not assign
 			self::ROLE_USER        => ['user.roleState.user', false],
 			self::ROLE_ADMIN       => ['user.roleState.admin', self::ROLE_ADMIN],
 			self::ROLE_CONTRIBUTOR => ['user.roleState.contributor', self::ROLE_ADMIN],
+			self::ROLE_SYSTEM      => ['user.roleState.system', false],
 			self::ROLE_SUPER_ADMIN => ['user.roleState.superAdmin', self::ROLE_SUPER_ADMIN],
 			self::ROLE_IMPERSONATE => ['user.roleState.impersonate', self::ROLE_SUPER_ADMIN],
 		];
