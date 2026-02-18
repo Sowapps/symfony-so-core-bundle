@@ -16,7 +16,7 @@ export default class extends AbstractMainController {
 		new TemplateRoute("/admin/dashboard", "admin/dashboard.html"),
 		new TemplateRoute("/admin/log", "admin/log-view.html"),
 		new TemplateRoute("/admin/user", "admin/user-list.html"),
-		new TemplateRoute("/admin/language", "admin/language-list.html"),
+		new TemplateRoute("/admin/language", "admin/language.html"),
 		new TemplateRoute("/admin/user/{id}", "admin/user-edit.html").setMenuPath("/admin/user"),
 	];
 	
