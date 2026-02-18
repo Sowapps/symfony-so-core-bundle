@@ -6,16 +6,19 @@
 namespace Sowapps\SoCore\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Sowapps\SoCore\Core\ProcessOption\FormatOptions;
 use Sowapps\SoCore\Repository\LanguageRepository;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: LanguageRepository::class)]
+#[UniqueEntity(fields: ['name'], message: 'language.name.exists')]
 #[UniqueEntity(fields: ['locale'], message: 'language.locale.exists')]
-#[UniqueEntity(fields: ['key'], message: 'language.key.exists')]
+#[ORM\UniqueConstraint(name: 'uniq_name', columns: ['name'])]
+#[ORM\UniqueConstraint(name: 'uniq_locale', columns: ['locale'])]
 class Language extends AbstractEntity {
 	
-	#[ORM\Column(name: '_key', type: 'string', length: 255)]
-	private ?string $key = null;
+	#[ORM\Column(type: 'string', length: 255)]
+	private ?string $name = null;
 	
 	#[ORM\Column(type: 'string', length: 7)]
 	private ?string $locale = null;
@@ -29,11 +32,22 @@ class Language extends AbstractEntity {
 	#[ORM\Column(type: 'boolean')]
 	private ?bool $enabled = false;
 	
+	public function asArray(FormatOptions $format): array {
+		return parent::asArray($format) + [
+				'name'        => $this->getName(),
+				'locale'      => $this->getLocale(),
+				'primaryCode' => $this->getPrimaryCode(),
+				'regionCode'  => $this->getRegionCode(),
+				'enabled'     => $this->isEnabled(),
+				'httpLocale'  => $this->getHttpLocale(),
+			];
+	}
+	
 	/**
 	 * @return string
 	 */
 	public function __toString(): string {
-		return (string) $this->key;
+		return (string)$this->name;
 	}
 	
 	public function getHttpLocale(): ?string {
@@ -70,12 +84,12 @@ class Language extends AbstractEntity {
 		return $this;
 	}
 	
-	public function getKey(): ?string {
-		return $this->key;
+	public function getName(): ?string {
+		return $this->name;
 	}
 	
-	public function setKey(string $key): self {
-		$this->key = $key;
+	public function setName(string $name): self {
+		$this->name = $name;
 		
 		return $this;
 	}
@@ -88,16 +102,6 @@ class Language extends AbstractEntity {
 		$this->enabled = $enabled;
 		
 		return $this;
-	}
-	
-	public function jsonSerialize(): array {
-		return [
-			'id'          => $this->getId(),
-			'key'         => $this->getKey(),
-			'primaryCode' => $this->getPrimaryCode(),
-			'regionCode'  => $this->getRegionCode(),
-			'locale'      => $this->getLocale(),
-		];
 	}
 	
 }

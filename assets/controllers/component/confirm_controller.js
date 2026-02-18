@@ -1,5 +1,6 @@
-import {AbstractController} from "../abstract.controller.js";
+import {AbstractController} from "../../core/controller/abstract.controller.js";
 import {stringService} from "../../services/string.service.js";
+import {domService} from "../../services/dom.service.js";
 
 /**
  * Only send a confirm request to the confirm dialog
@@ -30,7 +31,7 @@ export default class extends AbstractController {
 	request() {
 		const data = this.formatData();
 		// console.log('SoCore Confirm - request()', this.element, data);
-		this.dispatchEvent(window, 'so.confirm.request', data);
+		domService.dispatchEvent(window, 'so.confirm.request', data);
 	}
 	
 }

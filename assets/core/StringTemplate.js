@@ -26,34 +26,24 @@ export class StringTemplate {
 		data = data || {};
 		// Resolve values in attributes
 		// Deprecated for TWIG compatibility, double brackets
-		template = template.replace(/\{\{ ?([^\}]+) ?\}\}/ig, (all, variable) => {
-			try {
-				return this.parseValue(variable, data);
-			} catch (exception) {
-				console.warn(exception);
-				return all;
-			}
-		});
+		template = template.replace(/\{\{ ?([^\}]+) ?\}\}/ig, (all, variable) => this.parseTemplateTokenValue(template, data, all, variable));
 		// Yes we want this one, simple brackets
-		template = template.replace(/\{ ?([^\}]+) ?\}/ig, (all, variable) => {
-			try {
-				return this.parseValue(variable, data);
-			} catch (exception) {
-				console.warn(exception);
-				return all;
-			}
-		});
+		template = template.replace(/\{ ?([^\}]+) ?\}/ig, (all, variable) => this.parseTemplateTokenValue(template, data, all, variable));
 		// For url compatibility, url encoded brackets
-		template = template.replace(/\%7B\%20([^\%]+)\%20\%7D/ig, (all, variable) => {
-			try {
-				return this.parseValue(variable, data);
-			} catch (exception) {
-				console.warn(exception);
-				return all;
-			}
-		});
+		template = template.replace(/\%7B\%20([^\%]+)\%20\%7D/ig, (all, variable) => this.parseTemplateTokenValue(template, data, all, variable));
 		
 		return template;
+	}
+	
+	parseTemplateTokenValue(template, data, token, variable) {
+		try {
+			return this.parseValue(variable, data);
+		} catch (exception) {
+			// TODO Fix template in template, we can not process a
+			//  variable several times
+			// console.warn(exception, template);
+			return token;
+		}
 	}
 	
 	parseValue(value, data) {
@@ -61,6 +51,7 @@ export class StringTemplate {
 			// Chain filter using the result of the previous one; the first token can be a filter
 			.reduce((chainedValue, filter) => this.resolveFilter(chainedValue, filter, data), data);
 		if( result === undefined ) {
+			console.debug(`Unable to resolve value "${value}" from`, data);
 			throw new ParseValueException(`Unable to resolve value ${value}`);
 		}
 		return result;

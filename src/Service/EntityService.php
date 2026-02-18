@@ -18,6 +18,7 @@ use Sowapps\SoCore\Core\Entity\PaginatedResult;
 use Sowapps\SoCore\Core\ProcessOption\PaginationOptions;
 use Sowapps\SoCore\Entity\AbstractEntity;
 use Sowapps\SoCore\Exception\ValidationException;
+use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Traversable;
 
@@ -30,8 +31,10 @@ readonly class EntityService {
 	) {
 	}
 	
-	public function mapDto(object $dto, AbstractEntity $entity): void {
+	public function mapDto(object $dto, AbstractEntity $entity): static {
 		$this->autoMapper->map($dto, $entity);
+		
+		return $this;
 	}
 	
 	public function countChanges(AbstractEntity $entity): int {
@@ -44,11 +47,13 @@ readonly class EntityService {
 	/**
 	 * @throws ValidationException
 	 */
-	public function validate(AbstractEntity $entity, array $groups = null): void {
-		$errors = $this->validator->validate($entity, null, $groups);
-		if( $errors->count() ) {
-			throw new ValidationException($errors);
+	public function validate(object $entity, array $groups = null): static {
+		$violationList = $this->validator->validate($entity, null, $groups);
+		if( $violationList->count() ) {
+			throw new ValidationFailedException($entity, $violationList);
 		}
+		
+		return $this;
 	}
 	
 	public function paginateQuery(QueryBuilder $query, PaginationOptions $pagination): PaginatedResult {

@@ -37,6 +37,7 @@ export default class extends Controller {
 			console.error("exception", exception);
 			let message = null;
 			if( exception instanceof ApiValidationError ) {
+				// TODO Update
 				message = "Unable to authenticate: " + exception.getJoinedErrors(", ");
 			} else {
 				message = exception.getMessage();

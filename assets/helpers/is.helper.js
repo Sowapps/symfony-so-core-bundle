@@ -62,6 +62,10 @@ export class Is {
 		return this.object(obj) && obj instanceof HTMLElement;
 	}
 	
+	static domWindow(obj) {
+		return this.object(obj) && obj instanceof Window;
+	}
+	
 	static jquery(v) {
 		return this.object(v) && typeof (v.jquery) !== "undefined";
 	}

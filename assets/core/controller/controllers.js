@@ -6,6 +6,7 @@ import {sawService} from "../../services/saw.service.js";
 import {NavigationEvent, navigationService} from "../../services/navigation.service.js";
 import {SecurityEvent, securityService} from "../../services/security.service.js";
 import {ApiVersionError, appWebService} from "../../services/app-web.service.js";
+import {AbstractController} from "./abstract.controller.js";
 
 /**
  * @property {Element} contentTarget
@@ -295,7 +296,7 @@ export class AbstractMainController extends Controller {
 /**
  * @member {Element[]} formTargets
  */
-export class AbstractPageController extends Controller {
+export class AbstractPageController extends AbstractController {
 	submittingForm = null;
 	
 	/**
@@ -337,18 +338,6 @@ export class AbstractPageController extends Controller {
 		if( !container.hasChildNodes() ) {
 			container.hidden = true;
 		}
-	}
-	
-	dispatchEvent(event, detail = null, options = {}) {
-		domService.dispatchEvent(this.element, event, detail, options);
-	}
-	
-	reportException(exception, title = null, options = {}) {
-		this.dispatchEvent("so.report.error", {title, error: exception, options});
-	}
-	
-	reportSuccess(message, title = null, options = {}) {
-		this.dispatchEvent("so.report.success", {title, message, options});
 	}
 	
 }

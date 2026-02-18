@@ -4,6 +4,9 @@ import {Is} from "../../helpers/is.helper.js";
 import {sawService} from "../../services/saw.service.js";
 import {AbstractPageController} from "./controllers.js";
 
+/**
+ * @deprecated Use a composite way to manage items in a page with a lot of features
+ */
 export class AbstractAdminItemEditableListController extends AbstractPageController {
 	static defaults = {
 		pageLimit: 10,

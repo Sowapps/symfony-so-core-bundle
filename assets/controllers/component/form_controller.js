@@ -1,114 +1,104 @@
-import {AbstractController} from "../abstract.controller.js";
+import {AbstractController} from "../../core/controller/abstract.controller.js";
 import {domService} from "../../services/dom.service.js";
 
-export default class Form extends AbstractController {
+/**
+ * Form to manipulate object (not mad to work with the Symfony framework but with API)
+ */
+export default class FormController extends AbstractController {
+	/** @type {HTMLFormElement} */
+	// element;
 	
-	static targets = ['submitButton'];
-	static values = {delegate: Boolean, liveCheck: Boolean, name: String};
+	// static targets = ['submitButton'];
+	// static values = {delegate: Boolean, liveCheck: Boolean, name: String};
 	
-	initialize() {
-		const $form = this.element;
-		this.idInput = $form.querySelector('.object-id');
-		// Ensure we can find this element even this is not a <form>
-		$form.classList.add('controller-form');
-		this.delegateValue = this.hasDelegateValue && this.delegateValue;
-		this.liveCheckValue = this.hasLiveCheckValue && this.liveCheckValue;
-		// Bootstrap 5 validation code
-		// https://getbootstrap.com/docs/5.0/forms/validation/
-		$form.addEventListener('submit', () => {
-			// Unable to make it work
-			// this.dispatchEvent(this.element, 'appformvalidating', {form: this.element});
-			const valid = this.checkValidity();
-			if( valid && this.delegateValue ) {
-				$form.trigger('form.valid');
-				return false;
-			}
-			
-			$form.classList.add('was-validated');
-			if( valid ) {
-				// Now submitting
-				setTimeout(() => {
-					// Wait form is submitting
-					$form.classList.add('state-submitting');
-					this.dispatchEvent($form, 'disable');
-				}, 100);
-			}
-			$form.querySelector(':invalid').each((index, element) => {
-				if( element.dataset.invalidate ) {
-					const $other = document.querySelector(element.dataset.invalidate);
-					if( $other ) {
-						$other.setCustomValidity('invalid');
-					}
-				}
-			});
-			
-			return valid;
-		});
-		$form.addEventListener('app.form.reset', () => this.reset());
-		$form.addEventListener('app.form.disable-submit', () => this.disableSubmit());
-		$form.addEventListener('app.form.enable-submit', () => this.enableSubmit());
-		if( this.liveCheckValue ) {
-			domService.getInputs($form).forEach($input => {
-				$input.addEventListener('change', () => {
-					const valid = this.checkValidity();
-					if( valid ) {
-						this.enableSubmit();
-					} else {
-						this.disableSubmit();
-					}
-				});
-			});
+	connect() {
+		if( this.element.nodeName !== 'FORM' ) {
+			throw new Error("Form controller can only be used on <form> elements");
 		}
+		// console.log("Connect form", typeof this.element, this.element.constructor.name, this.element);
 	}
 	
-	fill(data) {
-		if( !data ) {
+	/**
+	 * Resets the validation state of the associated form elements by removing invalid classes
+	 * and clearing server-provided feedback messages.
+	 */
+	resetValidation() {
+		this.element.querySelectorAll(".is-invalid").forEach(el => el.classList.remove("is-invalid"));
+		this.element.querySelectorAll(".invalid-feedback.server-feedback").forEach(el => el.remove());
+	}
+	
+	/**
+	 * Get input by name
+	 * @param {string} name
+	 * @returns {HTMLElement}
+	 */
+	getInputByName(name) {
+		return this.element.querySelector(`[name="${name}"]`);
+	}
+	
+	/**
+	 * Report violation to the field using property name
+	 * @param {ApiValidationError} error
+	 * TODO handle more complex property paths
+	 */
+	processValidationError(error) {
+		/**
+		 * parameters: {{{ value }}: "null"}
+		 * propertyPath: "name"
+		 * template: "This value should not be blank."
+		 * title: "Cette valeur ne doit pas être vide."
+		 * type: "urn:uuid:c1051bb4-d103-4f74-8988-acbcafc7fdc3"
+		 */
+		error.violations.forEach(violation => {
+			const $field = this.getInputByName(violation.property);
+			if( $field ) {
+				// $field.setCustomValidity(violation.message);
+				const $feedback = document.createElement("div");
+				$feedback.className = "invalid-feedback server-feedback";
+				// $feedback.dataset.serverError = "1";
+				$feedback.textContent = violation.message;
+				$field.insertAdjacentElement("afterend", $feedback);
+				$field.classList.add("is-invalid");
+			}
+		});
+	}
+	
+	submit(event) {
+		if( event ) {
+			event.preventDefault();
+			event.stopPropagation();
+		}
+		// Validate form
+		if( !this.checkValidity() ) {
+			// Invalid form
 			return;
 		}
-		if( typeof data === 'string' ) {
-			data = JSON.parse(data);
-		}
-		// console.log('Form fill', data);
-		if( data.id && this.idInput ) {
-			// ID Input is create by bootstrap_5 theme and our FormExtension
-			this.idInput.value = data.id;
-		}
-		const formPrefix = this.getName();
-		Object.entries(data).forEach(([key, value]) => {
-			const name = `${formPrefix}[${key}]`;
-			this.element.querySelectorAll('[name="' + name + '"]').forEach($element => {
-				domService.assignValue($element, value);
-			});
-		});
+		
+		// Format form data to object
+		const data = domService.getFormObject(this.element);
+		console.log("Submitting valid form with data", data);
+		
+		// Trigger so.form.submit with valid form values
+		console.log("Dispatch event 'so.form.submit' on ", this.element);
+		this.dispatchEvent('so.form.submit', data);
+		
+		// After all, so the event binder can close the modal before it resets
+		// this.reset();
+	}
+	
+	reset() {
+		domService.resetForm(this.element);
 		
 		return this;
 	}
 	
-	getName() {
-		return this.nameValue;
-	}
-	
-	enableSubmit() {
-		this.submitButtonTargets.forEach(button => {
-			button.disabled = false;
-		});
-	}
-	
-	disableSubmit() {
-		this.submitButtonTargets.forEach(button => {
-			button.disabled = true;
-		});
-	}
-	
-	reset() {
-		if( this.element.nodeName === 'FORM' ) {
-			this.element.reset();
-		}
-		return this;
-	}
-	
 	checkValidity() {
-		this.dispatchEvent(this.element.querySelectorAll('.require-validation'), 'app.form.validate');
+		domService.dispatchEvent(this.element.querySelectorAll('.require-validation'), 'so.form.validate');
 		return this.element.checkValidity();
+	}
+	
+	/** @returns {HTMLFormElement} */
+	get element() {
+		return super.element;
 	}
 }

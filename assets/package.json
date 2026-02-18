@@ -20,6 +20,11 @@
 				"fetch": "eager",
 				"enabled": true
 			},
+			"admin-language": {
+				"main": "controllers/admin/language_controller.js",
+				"fetch": "eager",
+				"enabled": true
+			},
 			"admin-log-view": {
 				"main": "controllers/admin/log-view_controller.js",
 				"fetch": "eager",
@@ -47,6 +52,11 @@
 			},
 			"dialog": {
 				"main": "controllers/component/dialog_controller.js",
+				"fetch": "eager",
+				"enabled": true
+			},
+			"form": {
+				"main": "controllers/component/form_controller.js",
 				"fetch": "eager",
 				"enabled": true
 			}

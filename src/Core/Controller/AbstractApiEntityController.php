@@ -24,6 +24,22 @@ abstract class AbstractApiEntityController extends AbstractApiController {
 	/**
 	 * Process request to patch given entity from DTO and render entity as output
 	 */
+	protected function processRequestEntityBasicCreate(AbstractEntity $entity, object $dto, Request $request): Response {
+		$format = $this->getRequestFormat($request, true);
+		
+		$this->entityService
+//			->validate($dto) // Form-level validation (ex: The length of strings) - DTO is already validated by Symfony
+			->mapDto($dto, $entity)
+			->validate($entity) // Entity-level validation (ex: Entity is unique)
+			->create($entity)
+			->flush();
+		
+		return $this->respondEntity($entity, $format);
+	}
+	
+	/**
+	 * Process request to patch given entity from DTO and render entity as output
+	 */
 	protected function processRequestEntityBasicPatch(AbstractEntity $entity, object $dto, Request $request): Response {
 		$this->entityService->mapDto($dto, $entity);
 		$format = $this->getRequestFormat($request, true);
@@ -44,8 +60,12 @@ abstract class AbstractApiEntityController extends AbstractApiController {
 	
 	/**
 	 * Process request to get one entity
+	 * @param AbstractEntity $entity
+	 * @param Request $request
+	 * @param bool|array|string|null $defaultFormat True to use admin as default, else public or given one
+	 * @return Response
 	 */
-	protected function processRequestEntityGet(AbstractEntity $entity, Request $request, $defaultFormat = null): Response {
+	protected function processRequestEntityGet(AbstractEntity $entity, Request $request, bool|array|string|null $defaultFormat = null): Response {
 		$format = $this->getRequestFormat($request, $defaultFormat);
 		
 		return $this->respondEntity($entity, $format);

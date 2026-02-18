@@ -99,6 +99,7 @@ class AppWebService {
 	 * @returns {Promise<Object>}
 	 */
 	requestPost(path, input) {
+		console.debug("api.requestPost", path, input);
 		return this.request(path, {
 			method: "POST",
 			headers: {
@@ -326,8 +327,9 @@ export class ApiUserServerError extends ApiServerError {
 	 * @returns {ApiUserServerError|ApiValidationError}
 	 */
 	static async create(response) {
-		if( [400, 401].includes(response.status) ) {
-			return await ApiValidationError.create(response);
+		if( [400, 422].includes(response.status) ) {
+			// Symfony currently returns 422 for validation errors
+			return ApiValidationError.create(response);
 		}
 		let message = null;
 		try {
@@ -357,6 +359,9 @@ export class ApiUserServerError extends ApiServerError {
 	
 }
 
+/**
+ * Client app is using an incompatible version
+ */
 export class ApiVersionError extends ApiUserServerError {
 	
 	/**
@@ -383,46 +388,53 @@ export class ApiVersionError extends ApiUserServerError {
 	}
 }
 
-export class ApiValidationError extends ApiUserServerError {
+class PropertyViolation {
 	
-	constructor(response, errors) {
-		super(response);
-		this.errors = errors;
+	constructor(property, message) {
+		this.property = property;
+		this.message = message;
+	}
+	
+}
+
+/**
+ * Validation error
+ */
+export class ApiValidationError extends ApiUserServerError {
+	/**
+	 * @var {PropertyViolation[]}
+	 */
+	#violations;
+	
+	constructor(response, message, violations) {
+		super(response, message);
+		this.#violations = violations;
+	}
+	
+	get violations() {
+		return this.#violations;
 	}
 	
 	/**
 	 * @param {Response} response
-	 * @returns {Promise<ApiValidationError>}
+	 * @returns {ApiValidationError}
 	 */
 	static async create(response) {
-		let errors = [];
-		try {
-			const body = await response.json();
-			if( body.hasOwnProperty("errors") ) {
-				errors = body.errors;
-			} else if( body.hasOwnProperty("error") ) {
-				errors = [{message: body.error}];
-			}
-		} catch (error) {
-			console.error("Unable to parse error contents", error);
+		const body = await response.json();
+		/**
+		 * Using a custom validation exception format, not compatible with Symfony validation error format
+		 * @see \App\Event\ExceptionSubscriber::onValidationException
+		 */
+		if(!Is.array(body.violations) || !body.message) {
+			throw new Error("Invalid validation error format from server, requires violations array and message string");
 		}
-		return new ApiValidationError(response, errors);
+		
+		const violations = body.violations.map(violation => new PropertyViolation(violation.path, violation.message));
+		return new ApiValidationError(response, body.message, violations);
 	}
 	
 	getJoinedErrors(separator = "\n") {
-		return this.errors.map(error => error.message).join(separator);
-	}
-	
-	getMessage() {
-		if( !this.errors.length ) {
-			return super.getMessage();
-		}
-		if( this.errors.length === 1 ) {
-			return `Validation error : ${this.errors[0].message}`;
-		}
-		const message = this.getJoinedErrors();
-		
-		return `Validation errors :\n${message}`;
+		return this.violations.map(error => error.message).join(separator);
 	}
 	
 }

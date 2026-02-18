@@ -1,0 +1,166 @@
+{#
+View the main log file entries
+#}
+{% extends '@SoCore/template-admin-page.html.twig' %}
+
+{% trans_default_domain 'admin' %}
+{% block controller 'sowapps--so-core--admin-language' %}
+{% block label 'page.admin-language.label' | trans %}
+
+{# TODO Update language #}
+{# TODO Disable/Enable language #}
+{# TODO Export language list #}
+
+{% block containerAttributes -%}
+	data-sowapps--so-core--admin-language-load-list-title-value="{{ 'page.admin-language.list.load' | trans }}"
+	data-sowapps--so-core--admin-language-create-success-value="{{ 'page.admin-language.create.success' | trans }}"
+	data-sowapps--so-core--admin-language-create-title-value="{{ 'page.admin-language.create.label' | trans }}"
+	data-sowapps--so-core--admin-language-update-success-value="{{ 'page.admin-language.update.success' | trans }}"
+	data-sowapps--so-core--admin-language-update-title-value="{{ 'page.admin-language.update.label' | trans }}"
+{%- endblock %}
+{% block content %}
+	<div class="row">
+		<div class="col-lg-6">
+			{# Language list Panel #}
+			{% embed "@SoCore/component/panel.html.twig" with {title: 'page.admin-language.list.title' | trans } %}
+				{% trans_default_domain 'admin' %}
+				{% block headerContent %}
+					<div class="btn-toolbar mb-2 mb-md-0 btn-group-sm">
+						<button type="button" class="btn btn-outline-secondary" data-action="sowapps--so-core--admin-language#load">
+							<i class="fa-solid fa-rotate-right"></i>
+						</button>
+					</div>
+				{% endblock %}
+				{% block bodyContent %}
+					<div data-sowapps--so-core--admin-language-target="languageListBody">
+					</div>
+				{% endblock %}
+				{% block footer %}
+					<div class="d-flex justify-content-end gap-2">
+						<button class="btn btn-outline-info" type="button" data-action="click->sowapps--so-core--admin-language#requestCreateLanguage">
+							{{ 'page.admin-language.create.label' | trans }}
+						</button>
+					</div>
+				{% endblock %}
+			{% endembed %}
+		</div>
+	</div>
+	<template data-sowapps--so-core--admin-language-target="languageListTemplate">
+		{# TODO Admin table controller (LAL) #}
+		<div> {# ~Wrap cause data-if does not work well with root elements #}
+			<table class="table table-striped table-bordered" data-controller="admin--table" data-admin--table-order-value="{{ [[1, "asc"]] | json_encode }}" data-if="hasLanguages">
+				<thead>
+				<tr>
+					<th scope="col" style="width:1%;">#</th>
+					<th scope="col" class="text-nowrap">{{ 'language.field.name' | trans([], 'messages') }}</th>
+					<th scope="col" class="text-nowrap">{{ 'language.field.locale' | trans([], 'messages') }}</th>
+					<th scope="col" class="text-nowrap">{{ 'language.field.primaryCode' | trans([], 'messages') }}</th>
+					<th scope="col" class="text-nowrap">{{ 'language.field.regionCode' | trans([], 'messages') }}</th>
+					<th scope="col" class="text-nowrap">{{ 'language.field.enabled' | trans([], 'messages') }}</th>
+					<th scope="col" class="text-nowrap" data-orderable="false">{{ 'actions' | trans([], 'messages') }}</th>
+				</tr>
+				</thead>
+				<tbody class="table-valign-middle" data-sowapps--so-core--admin-language-target="languageListTable">
+				</tbody>
+			</table>
+
+			<div data-if="not hasLanguages">{{ 'page.admin-language.list.empty' | trans }}</div>
+		</div>
+	</template>
+	<template data-sowapps--so-core--admin-language-target="languageItemTemplate">
+		<tr class="item-language">
+			<th scope="row" style="width:1%;">{id}</th>
+			<td>{name}</td>
+			<td>{locale}</td>
+			<td>{primaryCode}</td>
+			<td>{regionCode}</td>
+			<td>
+				<i class="fa-regular fa-circle-check fa-fw" data-if="enabled"></i>
+				<i class="fa-regular fa-circle fa-fw" data-if="not enabled"></i>
+			</td>
+			<td class="text-end">
+				<div class="btn-group btn-group-sm" role="group">
+					<button class="btn btn-outline-primary" type="button" data-action="click->sowapps--so-core--admin-language#requestUpdateLanguage" data-sowapps--so-core--admin-language-id-param="{id}">
+						<i class="fa-regular fa-pen-to-square fa-fw"></i>
+					</button>
+					<button class="btn btn-outline-warning" type="button" data-controller="sowapps--so-core--confirm" data-sowapps--so-core--admin-language-target="button"
+							title="{{ 'action.disable' | trans([], 'messages') }}" data-sowapps--so-core--admin-language-id-param="{id}" data-if="enabled"
+							data-sowapps--so-core--confirm-title-value="{{ 'page.admin-language.disable.confirmTitle' | trans }}"
+							data-sowapps--so-core--confirm-message-value="{{ 'page.admin-language.disable.confirmMessage' | trans }}"
+							data-action="so.dialog.confirm->sowapps--so-core--admin-language#disableLanguage"
+					>
+						<i class="fa-regular fa-circle-xmark fa-fw"></i>
+					</button>
+					<button class="btn btn-outline-info" type="button" data-controller="sowapps--so-core--confirm" data-sowapps--so-core--admin-language-target="button"
+							title="{{ 'action.enable' | trans([], 'messages') }}" data-sowapps--so-core--admin-language-id-param="{id}" data-if="not enabled"
+							data-sowapps--so-core--confirm-title-value="{{ 'page.admin-language.enable.confirmTitle' | trans }}"
+							data-sowapps--so-core--confirm-message-value="{{ 'page.admin-language.enable.confirmMessage' | trans }}"
+							data-action="so.dialog.confirm->sowapps--so-core--admin-language#enableLanguage"
+					>
+						<i class="fa-regular fa-circle-check fa-fw"></i>
+					</button>
+				</div>
+			</td>
+		</tr>
+	</template>
+	{% embed "@SoCore/component/dialog.html.twig" with {
+		title: 'page.admin-language.create.title' | trans,
+		attr: 'data-sowapps--so-core--admin-language-target="dialogCreate"',
+		legend: 'page.admin-language.create.legend' | trans,
+		form: true,
+		templated: true,
+		formActions: 'so.form.submit->sowapps--so-core--admin-language#createLanguage',
+		buttonController: 'sowapps--so-core--admin-language'
+	} %}
+		{# @see \Sowapps\SoCore\Model\LanguageCreateDto #}
+		{% block body %}
+			<div class="mb-3">
+				<label for="InputLanguageName" class="form-label">{{ 'language.field.name' | trans }}</label>
+				<input id="InputLanguageName" name="name" type="text" class="form-control" required minlength="4" maxlength="255" autocomplete="off">
+			</div>
+			<div class="mb-3">
+				<label for="InputLanguageLocale" class="form-label">{{ 'language.field.locale' | trans }}</label>
+				<input id="InputLanguageLocale" name="locale" type="text" class="form-control" required minlength="2" maxlength="7" autocomplete="off">
+			</div>
+			<div class="mb-3">
+				<label for="InputLanguagePrimaryCode" class="form-label">{{ 'language.field.primaryCode' | trans }}</label>
+				<input id="InputLanguagePrimaryCode" name="primaryCode" type="text" class="form-control" required minlength="2" maxlength="7" autocomplete="off">
+			</div>
+			<div class="mb-3">
+				<label for="InputLanguageRegionCode" class="form-label">{{ 'language.field.regionCode' | trans }}</label>
+				<input id="InputLanguageRegionCode" name="regionCode" type="text" class="form-control" required minlength="2" maxlength="7" autocomplete="off">
+			</div>
+		{% endblock %}
+	{% endembed %}
+	{% embed "@SoCore/component/dialog.html.twig" with {
+		title: 'page.admin-language.update.title' | trans,
+		attr: 'data-sowapps--so-core--admin-language-target="dialogUpdate"',
+		legend: 'page.admin-language.update.legend' | trans,
+		form: true,
+		templated: true,
+		formActions: 'so.form.submit->sowapps--so-core--admin-language#updateLanguage',
+		buttonController: 'sowapps--so-core--admin-language'
+	} %}
+		{# @see \Sowapps\SoCore\Model\LanguageCreateDto #}
+		{% block body %}
+			<input name="id" value="{id}" type="hidden" required>
+			<div class="mb-3">
+				<label for="InputLanguageName" class="form-label">{{ 'language.field.name' | trans }}</label>
+				<input id="InputLanguageName" name="name" value="{name}" type="text" class="form-control" required minlength="4" maxlength="255" autocomplete="off">
+			</div>
+			<div class="mb-3">
+				<label for="InputLanguageLocale" class="form-label">{{ 'language.field.locale' | trans }}</label>
+				<input id="InputLanguageLocale" name="locale" value="{locale}" type="text" class="form-control" required minlength="2" maxlength="7" autocomplete="off">
+			</div>
+			<div class="mb-3">
+				<label for="InputLanguagePrimaryCode" class="form-label">{{ 'language.field.primaryCode' | trans }}</label>
+				<input id="InputLanguagePrimaryCode" name="primaryCode" value="{primaryCode}" type="text" class="form-control" required minlength="2" maxlength="7" autocomplete="off">
+			</div>
+			<div class="mb-3">
+				<label for="InputLanguageRegionCode" class="form-label">{{ 'language.field.regionCode' | trans }}</label>
+				<input id="InputLanguageRegionCode" name="regionCode" value="{regionCode}" type="text" class="form-control" required minlength="2" maxlength="7" autocomplete="off">
+			</div>
+		{% endblock %}
+	{% endembed %}
+
+{% endblock %}

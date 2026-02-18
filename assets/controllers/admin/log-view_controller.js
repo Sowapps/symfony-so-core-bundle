@@ -89,10 +89,9 @@ export default class extends AbstractPageController {
 	/**
 	 * Load or reload everything that relies on log contents
 	 */
-	loadLogContents() {
+	async loadLogContents() {
 		this.startOperating();// Could be already started
-		this.loadEntries();
-		this.loadView();
+		await Promise.all([this.loadEntries(), this.loadView()]);
 		this.endOperating();
 	}
 	
@@ -156,42 +155,12 @@ export default class extends AbstractPageController {
 		}
 	}
 	
-	/**
-	 * Start any server operation, so any button or form is disabled
-	 * TODO Move as generic
-	 */
-	startOperating() {
-		this.operating = true;
-		this.#renderOperating();
-	}
-	
-	/**
-	 * End any server operation, so any button or form can be enabled again
-	 * TODO Move as generic
-	 */
-	endOperating() {
-		this.operating = false;
-		this.#renderOperating();
-	}
-	
-	// TODO Move as generic
-	#renderOperating() {
-		this.buttonTargets.forEach(button => {
-			this.#renderElementAccordingToOperatingMode(button);
-		});
-	}
-	
-	// TODO Move as generic
-	#renderElementAccordingToOperatingMode(button) {
-		button.disabled = this.operating;
-	}
-	
 	buttonTargetConnected(button) {
-		this.#renderElementAccordingToOperatingMode(button);
+		this.renderElementAccordingToOperatingMode(button);
 	}
 	
 	itemTargetDisconnected(button) {
-		this.#renderElementAccordingToOperatingMode(button);
+		this.renderElementAccordingToOperatingMode(button);
 	}
 	
 	downloadLogFile() {

@@ -1,4 +1,5 @@
-import {AbstractController} from "../abstract.controller.js";
+import {AbstractController} from "../../core/controller/abstract.controller.js";
+import {domService} from "../../services/dom.service.js";
 
 /**
  * TODO Update
@@ -14,13 +15,13 @@ export default class extends AbstractController {
 		// console.log('Confirm SoCore Dialog', this.element);
 	}
 	
-	confirm(event) {
+	confirm() {
 		// Close dialog
-		this.dispatchEvent(this.element, 'so.dialog.close');
+		this.dispatchEvent('so.dialog.close');
 		
 		if( this.originElement ) {
 			// Confirm to the original element
-			this.dispatchEvent(this.originElement, 'so.dialog.confirm', this.data);
+			domService.dispatchEvent(this.originElement, 'so.dialog.confirm', this.data);
 		}
 	}
 	
@@ -36,7 +37,7 @@ export default class extends AbstractController {
 		// 	element.setAttribute('value', data.submitValue);
 		// });
 		// Open dialog
-		this.dispatchEvent(this.element, 'so.dialog.open');
+		this.dispatchEvent('so.dialog.open');
 	}
 	
 }

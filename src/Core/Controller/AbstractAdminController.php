@@ -50,7 +50,7 @@ abstract class AbstractAdminController extends AbstractController {
 			// Could be an array => generate using args
 			$link = $this->router->generate($route, $link === true ? [] : $link);
 		}
-		$this->addBreadcrumb($label ?: $this->translator->trans(sprintf('page.%s.label', $route), [], $this->domain), $link);
+		$this->addBreadcrumb($label ?: $this->translator->trans(sprintf('page.%s.label', $route), domain:$this->domain), $link);
 	}
 	
 	public function addBreadcrumb($label, $link = null): static {

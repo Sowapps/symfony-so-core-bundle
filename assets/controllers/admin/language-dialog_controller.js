@@ -1,4 +1,4 @@
-import {AbstractController} from "../abstract.controller.js";
+import {AbstractController} from "../../core/controller/abstract.controller.js"
 
 export default class extends AbstractController {
 	
@@ -9,7 +9,7 @@ export default class extends AbstractController {
 	
 	cancel() {
 		// Close dialog
-		this.dispatchEvent(this.element, 'app.dialog.close');
+		this.dispatchEvent('app.dialog.close');
 		console.log('TEST');
 	}
 	
@@ -19,7 +19,7 @@ export default class extends AbstractController {
 		// Fill dialog
 		this.formController.reset().fill(data);
 		// Open dialog
-		this.dispatchEvent(this.element, 'app.dialog.open');
+		this.dispatchEvent('app.dialog.open');
 	}
 	
 }

@@ -27,11 +27,11 @@ format:
 
 language:
     field:
+        name: "Nom"
         locale: "Locale"
         primaryCode: "Code Primaire"
         regionCode: "Code Région"
         enabled: "Actif ?"
-        key: "Clé"
 
 user:
     field:
@@ -84,7 +84,7 @@ page:
         label: "Utilisateurs"
     adov:
         label: "Website Editor"
-    admin-log-view:
+    admin-log-view: # TODO Move to admin yaml
         label: "Journal de bord"
         legend: "Est-ce que tout se passe bien sur l'application ?"
         summary: |
@@ -143,6 +143,7 @@ page:
 so:
     error:
         title: "Une erreur est survenue"
+        validationFailed: "Erreur de validation"
     file:
         remove:
             confirm:

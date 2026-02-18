@@ -62,6 +62,21 @@ class DomService {
 	};
 	
 	/**
+	 * Query self element and descendants
+	 * @param $element
+	 * @param selector
+	 * @return {HTMLElement[]}
+	 */
+	queryAll($element, selector) {
+		const list = [];
+		if( $element.matches(selector) ) {
+			list.push($element);
+		}
+		list.push(...$element.querySelectorAll(selector));
+		return list;
+	};
+	
+	/**
 	 * Add possibility to select element itself
 	 *
 	 * @param {Element} element
@@ -257,7 +272,7 @@ class DomService {
 	
 	detach($element) {
 		if( !$element.parentElement ) {
-			return false;
+			return null;
 		}
 		return $element.parentElement.removeChild($element);
 	}
@@ -340,14 +355,15 @@ class DomService {
 		let conditionParts = this.parseArguments(this.#formatTemplateString(condition, data));
 		const invert = conditionParts[0] === "not";
 		if( invert ) {
-			conditionParts = conditionParts.shift();
+			// Modify the array to remove the first element
+			conditionParts.shift();
 		}
 		let rawCondition;
 		if( conditionParts.length > 2 ) {
 			// Comparison operator with 3 tokens
 			let [value1, operator, value2] = conditionParts;
 			if( !["=", "==", "==="].includes(operator) ) {
-				throw new Error(`Unknown operator "${operator}"`);
+				throw new Error(`Unknown operator "${operator}" in "${condition}"`);
 			}
 			rawCondition = value1 === value2;
 		} else {
@@ -375,6 +391,12 @@ class DomService {
 		return this.renderString(template, data);
 	}
 	
+	/**
+	 * Use dom filters and other features to render a template string
+	 * @param {String|null} template
+	 * @param {object} data
+	 * @return {*|string}
+	 */
 	renderString(template, data) {
 		if( !template ) {
 			// Message does not exist
@@ -464,15 +486,19 @@ class DomService {
 		);
 	}
 	
+	/**
+	 * @warning data-if and data-else attributes are not supported by root elements, wrap them in a div instead
+	 */
 	renderTemplateElement($template, data, prefix) {
 		// Resolve conditional displays
-		$template.querySelectorAll("[data-if]").forEach($element => {
+		this.queryAll($template, "[data-if]").forEach($element => {
+			// Warning: unable to remove the self-element ($element is $template)
 			if( !this.resolveCondition($element.dataset.if, data) ) {
 				$element.remove();
 			}
 		});
 		// Resolve else displays
-		$template.querySelectorAll("[data-else]").forEach($element => {
+		this.queryAll($template, "[data-else]").forEach($element => {
 			if( $element.dataset.else === "siblings" ) {
 				const conditionalSiblings = this.getSiblings($element, "[data-if]");
 				if( conditionalSiblings.length ) {
@@ -489,12 +515,12 @@ class DomService {
 			});
 		
 		// Fix image loading preventing
-		$template.querySelectorAll("[data-src]").forEach($element => {
+		this.queryAll($template, "[data-src]").forEach($element => {
 			$element.src = $element.dataset.src;
 			delete $element.dataset.src;
 		});
 		// Fix link crawling
-		$template.querySelectorAll("[data-href]").forEach($element => {
+		this.queryAll($template, "[data-href]").forEach($element => {
 			$element.href = $element.dataset.href;
 			delete $element.dataset.href;
 		});
@@ -552,13 +578,13 @@ class DomService {
 	}
 	
 	/**
-	 * @param template
+	 * @param {HTMLTemplateElement|HTMLElement|String} template
 	 * @param data
 	 * @param options
 	 * @returns {Element[]}
 	 */
 	renderTemplate(template, data = null, options = {}) {
-		// TODO [Low] Require unit tests, for now, use Dev Composer page or test api dev page
+		// TODO [Low] Require unit tests
 		if( !template ) {
 			throw new Error("Empty template");
 		}
@@ -675,20 +701,25 @@ class DomService {
 	}
 	
 	dispatchEvent(element, event, detail = null, options = {}) {
-		if( element ) {
-			if( Is.iterable(element) && !Is.array(element) ) {
-				// Convert any iterable to array
-				element = [...element];
-			}
-			if( Is.array(element) ) {
-				// Loop on all elements
-				element.forEach((itemElement) => this.dispatchEvent(itemElement, event, detail));
-				return;
-			}
-			if( element._element ) {
-				// Auto handle BS Modals
-				element = element._element;
-			}
+		if( !element ) {
+			return;
+		}
+		// If the element has children, it's an iterable, and children are the values
+		if( element instanceof NodeList ) {
+			// Convert any iterable to array
+			element = [...element];
+		}
+		if( Is.array(element) ) {
+			// Loop on all elements
+			element.forEach((itemElement) => this.dispatchEvent(itemElement, event, detail));
+			return;
+		}
+		if( element._element ) {
+			// Auto handle BS Modals
+			element = element._element;
+		}
+		if( !Is.domElement(element) && !Is.domWindow(element) ) {
+			throw new Error("Invalid element");
 		}
 		if( options.bubbles === undefined ) {
 			// Default is to bubble (event goes up to parents)

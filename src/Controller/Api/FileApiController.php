@@ -27,7 +27,7 @@ class FileApiController extends AbstractApiController {
 	#[Route("/api/file/{id}", name: 'api_file_delete', methods: ['DELETE'], format: 'json')]
 	public function delete(File $file): JsonResponse {
 		try {
-			throw new ForbiddenOperationException($this->translator->trans('file.remove.forbidden', [], 'admin'));
+			throw new ForbiddenOperationException($this->translator->trans('file.remove.forbidden', domain:'admin'));
 			// TODO Add/Verify authentication
 //			if( !$this->fileService->allowFileEdit($file, $this->getUser()) ) {
 //				throw new ForbiddenOperationException($this->translator->trans('file.remove.forbidden', [], 'admin'));
@@ -36,7 +36,7 @@ class FileApiController extends AbstractApiController {
 //			//			$this->fileService->remove($file);
 //			return $this->json($this->translator->trans('file.remove.success', [], 'admin'));
 		} catch( Exception $e ) {
-			return $this->json($this->formatException($e, $this->translator->trans('file.remove.error', [], 'admin')), $e->getCode() ?: 500);
+			return $this->json($this->formatException($e, $this->translator->trans('file.remove.error', domain:'admin')), $e->getCode() ?: 500);
 		}
 	}
 	

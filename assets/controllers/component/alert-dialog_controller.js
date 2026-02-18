@@ -1,4 +1,4 @@
-import {AbstractController} from "../abstract.controller.js";
+import {AbstractController} from "../../core/controller/abstract.controller.js"
 
 /**
  * TODO Update from SoIngenious Demo

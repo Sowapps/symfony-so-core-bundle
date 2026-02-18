@@ -114,7 +114,7 @@ class TwigExtension {
 			$path = null;
 		}
 		foreach( $keys as $key ) {
-			$translations[$key] = $this->translator->trans($path ? sprintf('%s.%s', $path, $key) : $key, [], $domain);
+			$translations[$key] = $this->translator->trans($path ? sprintf('%s.%s', $path, $key) : $key, domain:$domain);
 		}
 		
 		return $translations;

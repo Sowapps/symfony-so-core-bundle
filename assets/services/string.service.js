@@ -9,6 +9,9 @@ class StringService {
 		return performance.now().toString(36).replace(".", "");
 	}
 	
+	/**
+	 * @see DomService.renderString Allow more features
+	 */
 	replace(str, replacement) {
 		Object.entries(replacement).forEach(([key, value]) => {
 			if( !this.isStringConvertible(value) ) {

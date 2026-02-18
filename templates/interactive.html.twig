@@ -94,10 +94,10 @@
 	{% embed '@SoCore/component/dialog.html.twig' with {
 		dialogId: 'DialogGenericConfirm',
 		dialogClass: 'dialog-confirm',
-		sizeClass: 'modal-xl modal-fullscreen-lg-down',
 		controllers: 'sowapps--so-core--dialog sowapps--so-core--confirm-dialog',
 		controllerActions: 'so.confirm.request@window->sowapps--so-core--confirm-dialog#request'
 	} %}
+		{#		sizeClass: 'modal-xl modal-fullscreen-lg-down',#}
 		{%- block body -%}
 			<p class="dialog-legend"></p>
 		{%- endblock -%}

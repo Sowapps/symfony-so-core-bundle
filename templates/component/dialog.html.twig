@@ -1,10 +1,8 @@
 {% set dialogId = dialogId | default(form is defined and form is iterable and dialogId is not defined ? ('Dialog_' ~ form.vars.id) : uniqueId('Dialog_')) %}
 {% set standaloneForm = standaloneForm | default(form is defined and (form is not iterable or not form.parent)) %}
 {% set dialogClass = dialogClass | default('') %}
-{# {% set dialogClasses = ['modal-auto-close-components'] %} #}
-{# {% if disableWhenHidden is defined and disableWhenHidden %} #}
-{#    {% set dialogClasses = 'modal-hide-is-disabling' | pushTo(dialogClasses) %} #}
-{# {% endif %} #}
+{# Is dialog content wrapped in a template and rendered for each opening0 #}
+{% set templated = templated | default %}
 {% set sizeClass = sizeClass | default(large is defined and large ? 'modal-lg' : '') %}
 {% set attr = attr | default('') %}
 {% set options = options | default({ keyboard: 'false' }) %}
@@ -12,22 +10,26 @@
 	{# https://getbootstrap.com/docs/5.0/components/modal/#options #}
 	{% set attr = attr ~ ' ' ~ (options | attributes('data-bs-')) %}
 {% endif %}
-{% set controller = controller | default(controllers | default('sowapps--so-core--dialog') | split(' ') | first) %}
+{# Dialog controller, used to open and close the dialog #}
+{% set controller = controller | default('sowapps--so-core--dialog') %}
 {% set controllers = controllers | default(controller) %}
 {% set open = open ?? null %}
 
 {# Removed attribute tabindex="-1" to fix issue with select2 search field #}
 <div id="{{ dialogId }}" class="modal fade {{ dialogClass }}"
 	 data-controller="{{ controllers }}"
+	 data-{{ controller }}-templated-value="{{ templated ? 'true' : 'false' }}"
 	 data-action="so.dialog.open->{{ controller }}#open so.dialog.close->{{ controller }}#close {{ controllerActions | default | raw }}" {%- if attr %} {{ attr | raw }}{% endif -%}>
-	<div class="modal-dialog {{ sizeClass }}">
+	<div class="modal-dialog {{ sizeClass }} {{ templated ? 'template-unloaded' : '' }}" data-{{ controller }}-target="content">
+		{# .template-unloaded prevent disabling button on a template not loaded yet #}
 		<div class="modal-content{{ autoFocus ?? true ? ' modal-focus' : '' }}{{ autoReset ?? true ? ' modal-form-reset' : '' }}{{ smartEnter ?? true ? ' smart-enter-on-inputs' : '' }}">
 			{%- block content -%}
 				{% if standaloneForm %}
 					{% if form is iterable %}
 						{{ form_start(form, formOptions | default([])) }}
 					{% else %}
-						<form method="{{ form is same as(true) ? 'post' : form }}">
+						<form method="{{ form is same as(true) ? 'post' : form }}"
+						data-controller="sowapps--so-core--form" data-action="submit->sowapps--so-core--form#submit {{ formActions | default }}">
 					{% endif %}
 				{% endif %}
 				<div class="modal-header">
@@ -36,10 +38,10 @@
 				</div>
 				<div class="modal-body">
 					<div class="container-fluid">
+						{% if legend is defined %}
+							<p class="dialog-legend">{{ legend | raw }}</p>
+						{% endif %}
 						{%- block body %}
-							{% if legend is defined %}
-								<p class="dialog-legend">{{ legend | raw }}</p>
-							{% endif %}
 							<div class="report-list" data-{{ reportController | default(controller) }}-target="{{ reportTarget | default('reportList') }}"></div>
 							{% if form is defined and form is iterable %}
 								{% block body_form %}
@@ -58,8 +60,10 @@
 								<button type="button" class="btn btn-outline-secondary action-cancel" data-bs-dismiss="modal">
 									{{- 'action.cancel' | trans -}}
 								</button>
-								<button type="submit" {% if submit.name is defined %} name="{{ submit.name }}"{% endif %} data-component--form-target="submitButton"
-										{% if submit.value is defined %} value="{{ submit.value }}"{% endif %} class="btn btn-primary">
+								<button type="submit" data-component--form-target="submitButton" class="btn btn-primary"
+										{% if buttonController is defined %}data-{{ buttonController }}-target="button"{% endif %}
+										{% if submit.name is defined %}name="{{ submit.name }}"{% endif %}
+										{% if submit.value is defined %} value="{{ submit.value }}"{% endif %}>
 									{% if hasSubmitting -%}
 									<span class="show-not-submitting">
 									{% endif -%}
@@ -92,6 +96,10 @@
 			{%- endblock -%}
 		</div>
 	</div>
+	{% if templated %}
+		{# Optional template to reload body when opening the dialog, the JS is moving the dialog content to the template when connecting the controller #}
+		<template data-{{ controller }}-target="template"></template>
+	{% endif %}
 </div>
 
 {% if (open is null and form is defined and form is iterable and not form.vars.valid) or open %}

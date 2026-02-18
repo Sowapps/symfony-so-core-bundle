@@ -9,6 +9,9 @@ use InvalidArgumentException;
 use JsonSerializable;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
+/**
+ * @deprecated Use Symfony Exception => ValidationFailedException
+ */
 class ValidationException extends InvalidArgumentException implements JsonSerializable {
 	
 	public function __construct(
