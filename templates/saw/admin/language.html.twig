@@ -45,7 +45,7 @@
 	<template data-sowapps--so-core--admin-language-target="languageListTemplate">
 		{# TODO Admin table controller (LAL) #}
 		<div> {# ~Wrap cause data-if does not work well with root elements #}
-			<table class="table table-striped table-bordered" data-controller="admin--table" data-admin--table-order-value="{{ [[1, "asc"]] | json_encode }}" data-if="hasLanguages">
+			<table class="table table-striped table-bordered" data-controller="sowapps--so-core--table" data-sowapps--so-core--table-order-value="{{ [[1, "asc"]] | json_encode }}" data-if="hasLanguages">
 				<thead>
 				<tr>
 					<th scope="col" style="width:1%;">#</th>
