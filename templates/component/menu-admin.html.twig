@@ -1,3 +1,6 @@
+{# Left admin menu for admin panel #}
+{% trans_default_domain 'admin' %}
+
 <ul class="nav nav-menu flex-column" data-sowapps--so-core--admin-main-target="adminMenu">
 	{% if is_granted('ROLE_CONTRIBUTOR') %}
 		<li class="nav-item">

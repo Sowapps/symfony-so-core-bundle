@@ -1,15 +1,12 @@
-{#
-View the main log file entries
-#}
+{# View, enable, disable, edit, create and export app languages #}
 {% extends '@SoCore/template-admin-page.html.twig' %}
-
 {% trans_default_domain 'admin' %}
+
 {% block controller 'sowapps--so-core--admin-language' %}
 {% block label 'page.admin-language.label' | trans %}
 
-{# TODO Update language #}
-{# TODO Disable/Enable language #}
 {# TODO Export language list #}
+{# TODO Import language list #}
 
 {% block containerAttributes -%}
 	data-sowapps--so-core--admin-language-load-list-title-value="{{ 'page.admin-language.list.load' | trans }}"
@@ -103,6 +100,7 @@ View the main log file entries
 			</td>
 		</tr>
 	</template>
+
 	{% embed "@SoCore/component/dialog.html.twig" with {
 		title: 'page.admin-language.create.title' | trans,
 		attr: 'data-sowapps--so-core--admin-language-target="dialogCreate"',
@@ -132,6 +130,7 @@ View the main log file entries
 			</div>
 		{% endblock %}
 	{% endembed %}
+
 	{% embed "@SoCore/component/dialog.html.twig" with {
 		title: 'page.admin-language.update.title' | trans,
 		attr: 'data-sowapps--so-core--admin-language-target="dialogUpdate"',

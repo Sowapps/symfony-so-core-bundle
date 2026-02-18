@@ -73,17 +73,6 @@ page:
         success:
             title: "Mot de passe modifié"
             legend: "Votre nouveau mot de passe a été enregistré, Vous pouvez maintenant vous connecter en l'utilisant."
-    admin:
-        title: "{page} - Administration {app}"
-        label: "Administration"
-    admin-login:
-        label: "Connexion"
-    admin-dashboard:
-        label: "Tableau de bord"
-    admin-user-list:
-        label: "Utilisateurs"
-    adov:
-        label: "Website Editor"
     admin-log-view: # TODO Move to admin yaml
         label: "Journal de bord"
         legend: "Est-ce que tout se passe bien sur l'application ?"

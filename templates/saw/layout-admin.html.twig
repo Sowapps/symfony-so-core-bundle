@@ -1,6 +1,9 @@
-<template data-document-title="{{ 'page.admin.title' | trans }}" data-param--app="{{ 'app.label' | trans }}">
+{# Admin layout for SAW pages #}
+{% trans_default_domain 'admin' %}
+
+<template data-document-title="{{ 'page.admin.title' | trans }}" data-param--app="{{ 'app.label' | trans([], 'messages') }}">
 	<header class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top flex-md-nowrap p-0 shadow">
-		<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 py-2 my-1 fs-6" href="/">{{ 'app.label' | trans }}</a>
+		<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 py-2 my-1 fs-6" href="/">{{ 'app.label' | trans([], 'messages') }}</a>
 
 		<ul class="navbar-nav ms-auto me-3 me-lg-4" data-sowapps--so-core--admin-main-target="userMenu">
 
@@ -19,9 +22,9 @@
 				#}
 				<div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
 					<div class="offcanvas-header">
-						<h5 class="offcanvas-title" id="sidebarMenuLabel">{{ 'app.label' | trans }}</h5>
+						<h5 class="offcanvas-title" id="sidebarMenuLabel">{{ 'app.label' | trans([], 'messages') }}</h5>
 						<button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu"
-								aria-label="{{ 'action.close' | trans }}"></button>
+								aria-label="{{ 'action.close' | trans([], 'messages') }}"></button>
 					</div>
 					<div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
 						{% include "@SoCore/component/menu-admin.html.twig" %}
