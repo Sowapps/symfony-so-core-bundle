@@ -131,17 +131,10 @@ class AbstractEntity implements JsonSerializable, Persistable, \Stringable {
 		return $this;
 	}
 	
-	/**
-	 * @return string|null
-	 */
 	public function getCreateIp(): ?string {
 		return $this->createIp ?? null;
 	}
 	
-	/**
-	 * @param string $createIp
-	 * @return AbstractEntity
-	 */
 	public function setCreateIp(string $createIp): self {
 		$this->createIp = $createIp;
 		
