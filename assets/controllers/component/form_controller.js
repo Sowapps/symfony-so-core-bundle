@@ -5,17 +5,10 @@ import {domService} from "../../services/dom.service.js";
  * Form to manipulate object (not mad to work with the Symfony framework but with API)
  */
 export default class FormController extends AbstractController {
-	/** @type {HTMLFormElement} */
-	// element;
-	
-	// static targets = ['submitButton'];
-	// static values = {delegate: Boolean, liveCheck: Boolean, name: String};
-	
 	connect() {
 		if( this.element.nodeName !== 'FORM' ) {
 			throw new Error("Form controller can only be used on <form> elements");
 		}
-		// console.log("Connect form", typeof this.element, this.element.constructor.name, this.element);
 	}
 	
 	/**
@@ -76,10 +69,8 @@ export default class FormController extends AbstractController {
 		
 		// Format form data to object
 		const data = domService.getFormObject(this.element);
-		console.log("Submitting valid form with data", data);
 		
 		// Trigger so.form.submit with valid form values
-		console.log("Dispatch event 'so.form.submit' on ", this.element);
 		this.dispatchEvent('so.form.submit', data);
 		
 		// After all, so the event binder can close the modal before it resets

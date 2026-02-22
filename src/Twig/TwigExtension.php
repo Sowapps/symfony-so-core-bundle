@@ -7,6 +7,7 @@
 namespace Sowapps\SoCore\Twig;
 
 use DateTime;
+use InvalidArgumentException;
 use Sowapps\SoCore\Contracts\ContextInterface;
 use Sowapps\SoCore\Core\File\LocalHttpFile;
 use Sowapps\SoCore\Core\Form\AbstractForm;
@@ -55,9 +56,8 @@ class TwigExtension {
 		protected readonly LanguageService       $languageService,
 		#[Autowire('%kernel.project_dir%')]
 		protected readonly string                $projectPath
-	)
-    {
-    }
+	) {
+	}
 	
 	public function getTests(): array {
 		return [
@@ -80,6 +80,19 @@ class TwigExtension {
 			new TwigFunction('reports', $this->renderReports(...), ['is_safe' => ['html']]),
 			new TwigFunction('form_success', $this->renderSuccessAlert(...), ['is_safe' => ['html']]),
 		];
+	}
+	
+	/**
+	 * @param class-string $class
+	 */
+	#[AsTwigFunction('enum')]
+	public function listEnumCases(string $class): ?array {
+		if( !enum_exists($class) ) {
+			throw new InvalidArgumentException(sprintf('Enum "%s" does not exist.', $class));
+		}
+		
+		// @phpstan-ignore-next-line (runtime-safe: enum_exists checked)
+		return $class::cases();
 	}
 	
 	#[AsTwigFilter('fileArray')]
@@ -114,7 +127,7 @@ class TwigExtension {
 			$path = null;
 		}
 		foreach( $keys as $key ) {
-			$translations[$key] = $this->translator->trans($path ? sprintf('%s.%s', $path, $key) : $key, domain:$domain);
+			$translations[$key] = $this->translator->trans($path ? sprintf('%s.%s', $path, $key) : $key, domain: $domain);
 		}
 		
 		return $translations;

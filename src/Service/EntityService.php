@@ -8,11 +8,13 @@ use DateTime;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Selectable;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Doctrine\ORM\UnitOfWork;
 use RuntimeException;
 use Sowapps\SoCore\Core\Entity\PaginatedResult;
 use Sowapps\SoCore\Core\ProcessOption\PaginationOptions;
@@ -31,15 +33,23 @@ readonly class EntityService {
 	) {
 	}
 	
-	public function mapDto(object $dto, AbstractEntity $entity): static {
+	public function mapDto(array|object $dto, AbstractEntity $entity): static {
 		$this->autoMapper->map($dto, $entity);
 		
 		return $this;
 	}
 	
-	public function countChanges(AbstractEntity $entity): int {
+	public function getChanges(bool $update = true): UnitOfWork {
 		$uow = $this->entityManager->getUnitOfWork();
-		$uow->computeChangeSets();
+		if($update) {
+			$uow->computeChangeSets();
+		}
+		
+		return $uow;
+	}
+	
+	public function countChanges(AbstractEntity $entity): int {
+		$uow = $this->getChanges();
 		
 		return count($uow->getEntityChangeSet($entity));
 	}
@@ -54,6 +64,10 @@ readonly class EntityService {
 		}
 		
 		return $this;
+	}
+	
+	public function iterateOnQuery(QueryBuilder $query): iterable {
+		return $query->getQuery()->toIterable();
 	}
 	
 	public function paginateQuery(QueryBuilder $query, PaginationOptions $pagination): PaginatedResult {
@@ -117,7 +131,7 @@ readonly class EntityService {
 		return $this;
 	}
 	
-	protected function setupCreate(AbstractEntity $entity): void {
+	public function setupCreate(AbstractEntity $entity): void {
 		//		$entity->setId(Uuid::v4());// Uuid4 is totally random
 		//		$entity->setCreationDate(new DateTime());
 		//		$entity->setCreationUser($this->security->getUser());
@@ -216,7 +230,7 @@ readonly class EntityService {
 		return $this;
 	}
 	
-	protected function setupUpdate(AbstractEntity $entity): void {
+	public function setupUpdate(AbstractEntity $entity): void {
 		if( method_exists($entity, 'setModificationDate') ) {
 			$entity->setModificationDate(new DateTime());
 		}
@@ -243,6 +257,20 @@ readonly class EntityService {
 	
 	public function clear(): void {
 		$this->entityManager->clear();
+	}
+	
+	/**
+	 * Clone the EntityManager, useful for bulk operation on a table without impacting the current environment
+	 * Advantage #1: Entities are not loaded in the main EntityManager cache
+	 * Advantage #2: Truncating operations do not conflict with the main EntityManager cache
+	 * This clone is recommended for import operation
+	 */
+	public function cloneEntityManager(): EntityManager {
+		return new EntityManager(
+			$this->entityManager->getConnection(),
+			$this->entityManager->getConfiguration(),
+			$this->entityManager->getEventManager(),
+		);
 	}
 	
 	public function clearAllEntities(array $entityClasses): void {

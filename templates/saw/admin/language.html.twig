@@ -5,15 +5,16 @@
 {% block controller 'sowapps--so-core--admin-language' %}
 {% block label 'page.admin-language.label' | trans %}
 
-{# TODO Export language list #}
-{# TODO Import language list #}
-
 {% block containerAttributes -%}
 	data-sowapps--so-core--admin-language-load-list-title-value="{{ 'page.admin-language.list.load' | trans }}"
-	data-sowapps--so-core--admin-language-create-success-value="{{ 'page.admin-language.create.success' | trans }}"
 	data-sowapps--so-core--admin-language-create-title-value="{{ 'page.admin-language.create.label' | trans }}"
-	data-sowapps--so-core--admin-language-update-success-value="{{ 'page.admin-language.update.success' | trans }}"
+	data-sowapps--so-core--admin-language-create-success-value="{{ 'page.admin-language.create.success' | trans }}"
 	data-sowapps--so-core--admin-language-update-title-value="{{ 'page.admin-language.update.label' | trans }}"
+	data-sowapps--so-core--admin-language-update-success-value="{{ 'page.admin-language.update.success' | trans }}"
+	data-sowapps--so-core--admin-language-export-title-value="{{ 'page.admin-language.export.label' | trans }}"
+	data-sowapps--so-core--admin-language-export-success-value="{{ 'feature.export.success' | trans }}"
+	data-sowapps--so-core--admin-language-import-title-value="{{ 'page.admin-language.import.label' | trans }}"
+	data-sowapps--so-core--admin-language-import-success-value="{{ 'feature.import.success' | trans }}"
 {%- endblock %}
 {% block content %}
 	<div class="row">
@@ -22,10 +23,20 @@
 			{% embed "@SoCore/component/panel.html.twig" with {title: 'page.admin-language.list.title' | trans } %}
 				{% trans_default_domain 'admin' %}
 				{% block headerContent %}
-					<div class="btn-toolbar mb-2 mb-md-0 btn-group-sm">
-						<button type="button" class="btn btn-outline-secondary" data-action="sowapps--so-core--admin-language#load">
-							<i class="fa-solid fa-rotate-right"></i>
-						</button>
+					<div class="btn-toolbar mb-2 mb-md-0">
+						<div class="btn-group btn-group-sm me-2" role="group">
+							<button type="button" class="btn btn-outline-secondary" data-action="sowapps--so-core--admin-language#requestImport">
+								<i class="fa-solid fa-upload"></i>
+							</button>
+							<button type="button" class="btn btn-outline-secondary" data-action="sowapps--so-core--admin-language#requestExport">
+								<i class="fa-solid fa-download"></i>
+							</button>
+						</div>
+						<div class="btn-group btn-group-sm" role="group">
+							<button type="button" class="btn btn-outline-secondary" data-action="sowapps--so-core--admin-language#load">
+								<i class="fa-solid fa-rotate-right"></i>
+							</button>
+						</div>
 					</div>
 				{% endblock %}
 				{% block bodyContent %}
@@ -45,7 +56,8 @@
 	<template data-sowapps--so-core--admin-language-target="languageListTemplate">
 		{# TODO Admin table controller (LAL) #}
 		<div> {# ~Wrap cause data-if does not work well with root elements #}
-			<table class="table table-striped table-bordered" data-controller="sowapps--so-core--table" data-sowapps--so-core--table-order-value="{{ [[1, "asc"]] | json_encode }}" data-if="hasLanguages">
+			<table class="table table-striped table-bordered" data-controller="sowapps--so-core--table" data-sowapps--so-core--table-order-value="{{ [[1, "asc"]] | json_encode }}"
+				   data-if="hasLanguages">
 				<thead>
 				<tr>
 					<th scope="col" style="width:1%;">#</th>
@@ -77,7 +89,8 @@
 			</td>
 			<td class="text-end">
 				<div class="btn-group btn-group-sm" role="group">
-					<button class="btn btn-outline-primary" type="button" data-action="click->sowapps--so-core--admin-language#requestUpdateLanguage" data-sowapps--so-core--admin-language-id-param="{id}">
+					<button class="btn btn-outline-primary" type="button" data-action="click->sowapps--so-core--admin-language#requestUpdateLanguage"
+							data-sowapps--so-core--admin-language-id-param="{id}">
 						<i class="fa-regular fa-pen-to-square fa-fw"></i>
 					</button>
 					<button class="btn btn-outline-warning" type="button" data-controller="sowapps--so-core--confirm" data-sowapps--so-core--admin-language-target="button"
@@ -158,6 +171,51 @@
 			<div class="mb-3">
 				<label for="InputLanguageRegionCode" class="form-label">{{ 'language.field.regionCode' | trans }}</label>
 				<input id="InputLanguageRegionCode" name="regionCode" value="{regionCode}" type="text" class="form-control" required minlength="2" maxlength="7" autocomplete="off">
+			</div>
+		{% endblock %}
+	{% endembed %}
+
+	{% embed "@SoCore/component/dialog.html.twig" with {
+		title: 'page.admin-language.export.title' | trans,
+		legend: 'feature.export.legend' | trans,
+		attr: 'data-sowapps--so-core--admin-language-target="dialogExport"',
+		formActions: 'so.form.submit->sowapps--so-core--admin-language#exportList',
+		buttonController: 'sowapps--so-core--admin-language',
+		submit: {
+			label: 'feature.export.action' | trans([], 'admin'),
+			icon: 'fa-solid fa-download'
+		},
+		form: true
+	} %}
+	{% endembed %}
+
+	{% embed "@SoCore/component/dialog.html.twig" with {
+		title: 'page.admin-language.import.title' | trans,
+		legend: 'feature.import.legend' | trans,
+		attr: 'data-sowapps--so-core--admin-language-target="dialogImport"',
+		formActions: 'so.form.submit->sowapps--so-core--admin-language#importList',
+		buttonController: 'sowapps--so-core--admin-language',
+		submit: {
+			label: 'feature.import.action' | trans([], 'admin'),
+			icon: 'fa-solid fa-download'
+		},
+		form: true
+	} %}
+		{% block body %}
+			<div class="mb-3">
+				<label for="InputImportMode" class="form-label">{{ 'language.field.name' | trans }}</label>
+				<select id="InputImportMode" name="mode" class="form-select">
+					{% for mode in enum('\\Sowapps\\SoCore\\Core\\FileExport\\ImportMode') %}
+						{# Default value is "update" #}
+						<option value="{{ mode.value }}" {{ mode.value == 'update' ? 'selected' : '' }}>
+							{{ mode.label() | trans([], 'admin') }}
+						</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="mb-3">
+				<label for="InputImportFile" class="form-label">{{ 'language.field.locale' | trans }}</label>
+				<input id="InputImportFile" name="file" type="file" class="form-control" required>
 			</div>
 		{% endblock %}
 	{% endembed %}

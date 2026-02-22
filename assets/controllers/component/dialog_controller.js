@@ -3,7 +3,6 @@ import {Modal} from 'bootstrap';
 import {domService} from "../../services/dom.service.js";
 
 export default class DialogController extends AbstractController {
-	
 	static targets = [
 		'template', // Optional, if provided the content is removed from the dialog when connecting TODO Remove unused
 		'content' // Optional, if provided the content is removed from the dialog when connecting
@@ -11,7 +10,8 @@ export default class DialogController extends AbstractController {
 	
 	static values = {
 		initOpen: Boolean,
-		templated: Boolean
+		templated: Boolean,
+		autoReset: {type: Boolean, default: true},
 	};
 	/** @type {String|null} */
 	template = null;
@@ -24,7 +24,7 @@ export default class DialogController extends AbstractController {
 	connect() {
 		this.modal = Modal.getOrCreateInstance(this.element);
 		console.log("Connect dialog", this.element, this.templatedValue);
-		if(this.templatedValue) {
+		if( this.templatedValue ) {
 			// Remove content if this controller is templated
 			this.template = this.contentTarget.innerHTML;
 			this.contentTarget.innerHTML = "";
@@ -43,6 +43,14 @@ export default class DialogController extends AbstractController {
 		buttonElement.blur();
 		
 		this.modal.hide();
+		
+		// Auto reset form in dialog
+		if( this.autoResetValue ) {
+			const $form = this.element.querySelector("form");
+			if( $form ) {
+				domService.dispatchEvent($form, 'so.form.reset');
+			}
+		}
 	}
 	
 	open(event) {
@@ -52,7 +60,7 @@ export default class DialogController extends AbstractController {
 			data = event.detail.data || event.detail;
 		}
 		if( data ) {
-			if(this.template) {
+			if( this.template ) {
 				this.contentTarget.innerHTML = "";
 				const contentElements = domService.renderTemplate(this.template, data);
 				console.log("content", contentElements);
@@ -67,9 +75,15 @@ export default class DialogController extends AbstractController {
 		this.modal.show();
 	}
 	
+	/** @returns {HTMLElement} */
+	get element() {
+		return super.element;
+	}
+	
 	static get EVENT_DIALOG_OPEN() {
 		return "so.dialog.open";
 	}
+	
 	static get EVENT_DIALOG_CLOSE() {
 		return "so.dialog.close";
 	}

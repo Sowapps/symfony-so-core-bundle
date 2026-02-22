@@ -5,13 +5,14 @@
 
 namespace Sowapps\SoCore\Core\DBAL;
 
-use Sowapps\SoCore\Core\ProcessOption\CriteriaOptions;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Exception as DbalException;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use InvalidArgumentException;
 use RuntimeException;
 use Sowapps\SoCore\Core\Entity\EntitySearch;
+use Sowapps\SoCore\Core\ProcessOption\CriteriaOptions;
 
 abstract class AbstractRepository extends ServiceEntityRepository {
 	
@@ -51,6 +52,28 @@ abstract class AbstractRepository extends ServiceEntityRepository {
 	protected function filterQuery(QueryBuilder $query, CriteriaOptions $criteria): void {
 		$this->filterIdList($criteria, $query);
 		$this->filterExcludedIdList($criteria, $query);
+	}
+	
+	/**
+	 * @throws DbalException
+	 * @warning May request an entityManager clear to insert new entities
+	 */
+	public function removeAll(bool $force = false): int {
+		$entityManager = $this->getEntityManager();
+		$class = $this->getClassName();
+		$cmd = $entityManager->getClassMetadata($class);
+		$connection = $entityManager->getConnection();
+		$dbPlatform = $connection->getDatabasePlatform();
+		if( $force ) {
+			$connection->executeQuery('SET FOREIGN_KEY_CHECKS=0');
+		}
+		$sql = $dbPlatform->getTruncateTableSql($cmd->getTableName());
+		$affectedRows = $connection->executeStatement($sql);
+		if( $force ) {
+			$connection->executeQuery('SET FOREIGN_KEY_CHECKS=1');
+		}
+		
+		return (int) $affectedRows;
 	}
 	
 	/**

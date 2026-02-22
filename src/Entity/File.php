@@ -28,6 +28,10 @@ class File extends AbstractEntity {
 	#[ORM\Column(type: "string", length: 100)]
 	private string $mimeType;
 	
+	/**
+	 * What is the usage of the file? If related to another entity, it should have only one, see parentId
+	 * @see so_core.yaml > so_core.file.purposes
+	 */
 	#[Assert\NotBlank]
 	#[FileAssert\ValidFilePurpose]
 	#[ORM\Column(length: 255, nullable: false)]
@@ -36,6 +40,10 @@ class File extends AbstractEntity {
 	#[ORM\Column(type: "string", length: 32)]
 	private string $privateKey;
 	
+	/**
+	 * What kind of origin the file has? http upload, generated, downlaoded from another source...
+	 * @see so_core.yaml > so_core.file.sources
+	 */
 	#[FileAssert\ValidFileSource]
 	#[ORM\Column(length: 255, nullable: false)]
 	private string $sourceType;
@@ -55,7 +63,10 @@ class File extends AbstractEntity {
 	#[ORM\Column(type: "smallint")]
 	private int $position = 0;
 	
-	/** On which support ? */
+	/**
+	 * Where the file is stored? Locally, a remote platform...
+	 * @see so_core.yaml > so_core.file.storages
+	 */
 	#[FileAssert\ValidFileStorage]
 	#[ORM\Column(length: 255, nullable: false)]
 	private ?string $storage = null;

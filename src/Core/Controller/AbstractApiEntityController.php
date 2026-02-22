@@ -6,13 +6,18 @@
 namespace Sowapps\SoCore\Core\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use RuntimeException;
 use Sowapps\SoCore\Core\DBAL\AbstractRepository;
+use Sowapps\SoCore\Core\FileExport\CsvFormat;
+use Sowapps\SoCore\Core\FileExport\StreamableDataExporter;
 use Sowapps\SoCore\Core\ProcessOption\FormatOptions;
 use Sowapps\SoCore\Core\ProcessOption\PaginationOptions;
 use Sowapps\SoCore\Entity\AbstractEntity;
 use Sowapps\SoCore\Exception\ValidationException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 abstract class AbstractApiEntityController extends AbstractApiController {
 	
@@ -28,7 +33,7 @@ abstract class AbstractApiEntityController extends AbstractApiController {
 		$format = $this->getRequestFormat($request, true);
 		
 		$this->entityService
-//			->validate($dto) // Form-level validation (ex: The length of strings) - DTO is already validated by Symfony
+			//			->validate($dto) // Form-level validation (ex: The length of strings) - DTO is already validated by Symfony
 			->mapDto($dto, $entity)
 			->validate($entity) // Entity-level validation (ex: Entity is unique)
 			->create($entity)
@@ -45,6 +50,40 @@ abstract class AbstractApiEntityController extends AbstractApiController {
 		$format = $this->getRequestFormat($request, true);
 		
 		return $this->respondEntityUpdate($entity, $format);
+	}
+	
+	/**
+	 * Process request to export entities
+	 * @warning For now, we load the entities object in memory; it may lead to performance issues
+	 * TODO Move to service
+	 */
+	protected function processRequestExport(array $columns, string $filename, Request $request, StreamableDataExporter $exporter): Response {
+		$criteria = $this->getRequestCriteria($request);
+		$query = $this->repository->queryBy($criteria);
+		$format = new CsvFormat(
+			delimiter: ',',
+			withUtf8Bom: false,
+		);
+		
+		// DB iterators
+		$rows = $this->entityService->iterateOnQuery($query);
+		
+		$response = new StreamedResponse(function () use ($exporter, $rows, $columns, $format) {
+			$out = fopen('php://output', 'wb');
+			if( $out === false ) {
+				throw new RuntimeException('Unable to open output stream');
+			}
+			
+			$exporter->streamTo($rows, $columns, $format, $out);
+		});
+		
+		$disposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename);
+		
+		$response->headers->set('Content-Type', 'text/csv; charset=UTF-8');
+		$response->headers->set('Content-Disposition', $disposition);
+		$response->headers->set('Cache-Control', 'no-store, no-cache, must-revalidate');
+		
+		return $response;
 	}
 	
 	/**
@@ -112,8 +151,8 @@ abstract class AbstractApiEntityController extends AbstractApiController {
 	/**
 	 * Format an entity
 	 */
-	protected function respondEntity(AbstractEntity $entity, FormatOptions $format): Response {
-		return $this->respond($this->formatEntity($entity, $format));
+	protected function respondEntity(AbstractEntity $entity, FormatOptions $format, int $status = Response::HTTP_OK): Response {
+		return $this->respond($this->formatEntity($entity, $format), $status);
 	}
 	
 }

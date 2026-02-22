@@ -53,45 +53,6 @@ class AppWebService {
 	}
 	
 	/**
-	 * @param {Object} question
-	 * @returns {Promise<Object>}
-	 */
-	async addQuestion(question) {
-		try {
-			return await this.requestPost(`/question`, question);
-		} catch (error) {
-			throw new ApiException("Unable to create question", error);
-		}
-	}
-	
-	/**
-	 *
-	 * @param {Number} questionId
-	 * @param {Object} answer
-	 * @returns {Promise<Object>}
-	 */
-	async answerQuestion(questionId, answer) {
-		try {
-			return await this.requestPost(`/question/${questionId}/answer`, answer);
-		} catch (error) {
-			throw new ApiException("Unable to answer question", error);
-		}
-	}
-	
-	/**
-	 * @param {Array<Number>} excludeQuestions
-	 * @returns {Promise<Array>}
-	 */
-	async getRandomQuestions(excludeQuestions) {
-		const excludedList = JSON.stringify(excludeQuestions);
-		try {
-			return await this.getList(`/question/random?limit=20&exclude=${excludedList}`);
-		} catch (error) {
-			throw new ApiException("Unable to load question list", error);
-		}
-	}
-	
-	/**
 	 * Post ressource to API
 	 *
 	 * @param {String} path
@@ -100,7 +61,7 @@ class AppWebService {
 	 */
 	requestPost(path, input) {
 		console.debug("api.requestPost", path, input);
-		return this.request(path, {
+		return this.requestJson(path, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -117,7 +78,7 @@ class AppWebService {
 	 * @returns {Promise<Object>}
 	 */
 	requestPatch(path, input) {
-		return this.request(path, {
+		return this.requestJson(path, {
 			method: "PATCH",
 			headers: {
 				"Content-Type": "application/json",
@@ -134,7 +95,7 @@ class AppWebService {
 	 * @returns {Promise<Object>}
 	 */
 	requestDelete(path, input = null) {
-		return this.request(path, {
+		return this.requestJson(path, {
 			method: "DELETE",
 			headers: {
 				"Content-Type": "application/json",
@@ -162,7 +123,7 @@ class AppWebService {
 	 * @returns {Promise<Array>}
 	 */
 	async getPaginatedList(path, query = null) {
-		const response = await this.request(path, {
+		const response = await this.requestJson(path, {
 			query,
 			withResponseHeaders: true,
 			headers: {"Accept-Pagination": 1},
@@ -191,7 +152,94 @@ class AppWebService {
 	 * @returns {Promise<Object|Array>}
 	 */
 	requestGet(path, query = null) {
-		return this.request(path, {query});
+		return this.requestJson(path, {query});
+	}
+	
+	/**
+	 * Download file from API
+	 *
+	 * @param {String} path
+	 * @param {Object|null} query
+	 * @returns {Promise<Object|Array>}
+	 */
+	async downloadFile(path, query = null) {
+		// Format options
+		let options = {query};
+		options.withResponseHeaders = true;// Required to get disposition header
+		
+		// Request
+		const response = await this.requestFile(path, options);
+		if( !response ) {
+			return null;
+		}
+		
+		// Success
+		const filename = this.extractFilename(response.headers["content-disposition"]);
+		const objectUrl = URL.createObjectURL(response.body);
+		
+		// Create anchor to create an auto-clicked link
+		try {
+			const a = document.createElement("a");
+			a.href = objectUrl;
+			a.download = filename;
+			document.body.appendChild(a);
+			a.click();
+			a.remove();
+		} finally {
+			URL.revokeObjectURL(objectUrl);
+		}
+	}
+	
+	/**
+	 * Upload a file to API, send as multipart/form-data but expect a JSON response
+	 *
+	 * @param {String} path
+	 * @param {FormData} form
+	 * @param {Object|null} query
+	 * @returns {Promise<Object|Array>}
+	 */
+	async uploadFile(path, form, query = null) {
+		return this.requestJson(path, {
+			method: "POST",
+			body: form,
+			query,
+		});
+	}
+	
+	extractFilename(contentDisposition) {
+		if (!contentDisposition) {
+			return null;
+		}
+		// Ex: attachment; filename="export.csv"
+		const m = /filename\*?=(?:UTF-8''|")?([^\";]+)/i.exec(contentDisposition);
+		return m?.[1] ? decodeURIComponent(m[1].replace(/"/g, "")) : null;
+	}
+	
+	/**
+	 * Download file from API
+	 *
+	 * @param {String} path
+	 * @param {Object|null} options
+	 * @returns {Promise<Blob|Object|null>}
+	 */
+	async requestFile(path, options = null) {
+		// Format options
+		options = this.#formatRequestOptions(options);
+		
+		// Request
+		let response = await this.request(path, options);
+		if( !response ) {
+			return null;
+		}
+		try {
+			const body = await response.blob();
+			if( options.withResponseHeaders ) {
+				return {headers: Object.fromEntries(response.headers), body};
+			}
+			return body;
+		} catch (error) {
+			throw new ApiClientError(response, error);
+		}
 	}
 	
 	/**
@@ -201,15 +249,50 @@ class AppWebService {
 	 * @param {?Object|null} options
 	 * @returns {Promise<Object|Array>}
 	 */
-	async request(path, options = null) {
-		let response = null;
+	async requestJson(path, options = null) {
 		// Format options
-		options = options || {};
-		options.headers = options.headers || {};
-		options.withResponseHeaders = options.withResponseHeaders || false;
+		options = this.#formatRequestOptions(options);
 		if( !options.headers["Accept"] ) {
 			options.headers["Accept"] = "application/json";
 		}
+		let response = await this.request(path, options);
+		if(!response) {
+			return null;
+		}
+		try {
+			const body = await response.json();
+			if( options.withResponseHeaders ) {
+				return {headers: Object.fromEntries(response.headers), body};
+			}
+			return body;
+		} catch (error) {
+			throw new ApiClientError(response, error);
+		}
+	}
+	
+	/**
+	 * @param {Object|null} options
+	 * @return {{headers: Object, withResponseHeaders: boolean}}
+	 */
+	#formatRequestOptions(options) {
+		options = options || {};
+		options.headers = options.headers || {};
+		options.withResponseHeaders = options.withResponseHeaders || false;
+		
+		return options;
+	}
+	
+	/**
+	 * Request API
+	 *
+	 * @param {String} path
+	 * @param {?Object|null} options
+	 * @returns {Promise<Response>}
+	 */
+	async request(path, options = null) {
+		let response = null;
+		// Format options
+		options = this.#formatRequestOptions(options);
 		// Request server
 		try {
 			const query = this.formatQueryString(options.query);
@@ -226,18 +309,10 @@ class AppWebService {
 			throw new ApiServerError(response);
 		}
 		// Format response
-		try {
-			if( response.status === 204 ) {
-				return null;
-			}
-			const body = await response.json();
-			if( options.withResponseHeaders ) {
-				return {headers: Object.fromEntries(response.headers), body};
-			}
-			return body;
-		} catch (error) {
-			throw new ApiClientError(response, error);
+		if( response.status === 204 ) {
+			return null;
 		}
+		return response;
 	}
 	
 	/**

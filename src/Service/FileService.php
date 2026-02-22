@@ -29,8 +29,13 @@ use Symfony\Component\HttpFoundation\UrlHelper;
 use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Environment as TwigService;
+use ValueError;
 
 class FileService extends AbstractEntityService {
+	// Standard sources are referenced for internal use
+	const SOURCE_HTTP_UPLOAD = 'http_upload';
+	// Standard storages are referenced for internal use
+	const STORAGE_LOCAL = 'local';
 	
 	const TYPE_LARGE = 'large';
 	const TYPE_SMALL = 'small';
@@ -121,6 +126,12 @@ class FileService extends AbstractEntityService {
 		}
 	}
 	
+	/**
+	 * Upload file to the local storage from a Symfony UploadedFile
+	 * TODO Allow using FileCreateDto
+	 * TODO Allow using another storage
+	 * @see Prefer the File Upload API
+	 */
 	public function upload(UploadedFile $uploadedFile, ?string $purpose, ?DateTime $expireDate = null, ?Persistable $parent = null): ?File {
 		$file = new File();
 		$file->setName($uploadedFile->getClientOriginalName());
@@ -128,9 +139,10 @@ class FileService extends AbstractEntityService {
 		$file->setMimeType($uploadedFile->getMimeType());
 		$file->setPurpose($purpose);
 		$file->setPrivateKey($this->stringHelper->generateKey());
-		$file->setSourceType(EnumFileSourceType::HTTP_UPLOAD);
+		$file->setSourceType(self::SOURCE_HTTP_UPLOAD);
 		$file->setSourceName($uploadedFile->getClientOriginalName());
 		$file->setSourceUrl(null);
+		$file->setStorage(self::STORAGE_LOCAL);
 		// Upload to local storage with no path
 		if( $expireDate ) {
 			$file->setExpireDate($expireDate);
@@ -350,8 +362,22 @@ class FileService extends AbstractEntityService {
 		return parent::prepareRemove($entity);
 	}
 	
-	public function getLocalFile($file): SymfonyFile {
-		return new SymfonyFile($this->getFileLocalPath($file instanceof File ? $file : $this->getFile($file)));
+	/**
+	 * Get the file from its storage (local or remote)
+	 * TODO Require a storage resolver for remote storage
+	 */
+	public function getStoredFile(File $file): SymfonyFile {
+		if($file->getStorage() === self::STORAGE_LOCAL) {
+			return $this->getLocalFile($file);
+		}
+		throw new ValueError("only local storage is supported for now");
+	}
+	
+	/**
+	 * Get the local-stored file
+	 */
+	public function getLocalFile(File $file): SymfonyFile {
+		return new SymfonyFile($this->getFileLocalPath($file));
 	}
 	
 	public function getFileLocalPath(File $file): string {

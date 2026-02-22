@@ -1,7 +1,7 @@
 import {securityService} from "../../services/security.service.js";
 import {navigationService} from "../../services/navigation.service.js";
 import {SawElementLoader} from "../../core/render/ElementLoader.js";
-import {ApiValidationError, appWebService} from "../../services/app-web.service.js";
+import {appWebService} from "../../services/app-web.service.js";
 import {domService} from "../../services/dom.service.js";
 import {Is} from "../../helpers/is.helper.js";
 import {AbstractPageController} from "../../core/controller/controllers.js";
@@ -10,7 +10,7 @@ import DialogController from "../component/dialog_controller.js";
 export default class extends AbstractPageController {
 	static targets = [
 		'languageListBody', 'languageListTemplate', 'languageListTable', 'languageItemTemplate',
-		'dialogCreate', 'dialogUpdate',
+		'dialogCreate', 'dialogUpdate', 'dialogExport', 'dialogImport',
 		"button", // Any button that is disabled while operating with the server
 	];
 	static values = {
@@ -18,7 +18,11 @@ export default class extends AbstractPageController {
 		createSuccess: String,
 		createTitle: String,
 		updateSuccess: String,
-		updateTitle: String
+		updateTitle: String,
+		exportTitle: String,
+		exportSuccess: String,
+		importTitle: String,
+		importSuccess: String,
 	};
 	/** @type {Object[]} */
 	languages;
@@ -93,9 +97,9 @@ export default class extends AbstractPageController {
 			domService.dispatchEvent(this.dialogCreateTarget, DialogController.EVENT_DIALOG_CLOSE);
 			this.reportSuccess(domService.renderString(this.createSuccessValue, language), this.createTitleValue);
 			await this.load();
-		} catch (error) {
+		} catch (exception) {
 			// Form popin stays open
-			this.reportValidationException(error, this.createTitleValue, formController);
+			this.reportValidationException(exception, this.createTitleValue, formController);
 			this.endOperating();
 		}
 	}
@@ -129,9 +133,9 @@ export default class extends AbstractPageController {
 			domService.dispatchEvent(this.dialogUpdateTarget, DialogController.EVENT_DIALOG_CLOSE);
 			this.reportSuccess(domService.renderString(this.updateSuccessValue, language), this.updateTitleValue);
 			await this.load();
-		} catch (error) {
+		} catch (exception) {
 			// Form popin stays open
-			this.reportValidationException(error, this.updateTitleValue, formController);
+			this.reportValidationException(exception, this.updateTitleValue, formController);
 			this.endOperating();
 		}
 	}
@@ -157,8 +161,8 @@ export default class extends AbstractPageController {
 			const language = await appWebService.requestPatch(`/language/${id}/enabled`, {enabled: enabled});
 			this.reportSuccess(domService.renderString(this.updateSuccessValue, language), this.updateTitleValue);
 			await this.load();
-		} catch (error) {
-			this.reportException(error, this.updateTitleValue);
+		} catch (exception) {
+			this.reportException(exception, this.updateTitleValue);
 			this.endOperating();
 		}
 	}
@@ -167,6 +171,67 @@ export default class extends AbstractPageController {
 		const data = this.getLanguage(event.params.id);
 		console.debug("Open update language dialog with", event.params, data);
 		domService.dispatchEvent(this.dialogUpdateTarget, DialogController.EVENT_DIALOG_OPEN, data);
+	}
+	
+	requestExport() {
+		console.debug("Request export");
+		domService.dispatchEvent(this.dialogExportTarget, DialogController.EVENT_DIALOG_OPEN);
+	}
+	
+	async exportList() {
+		this.startOperating();
+		try {
+			// Request download, the service automates the process
+		    await appWebService.downloadFile(`/languages.csv`);
+			// Success
+			domService.dispatchEvent(this.dialogExportTarget, DialogController.EVENT_DIALOG_CLOSE);
+			this.reportSuccess(this.exportSuccessValue, this.exportTitleValue);
+		} catch (exception) {
+			this.reportException(exception, this.exportTitleValue);
+		} finally {
+			this.endOperating();
+		}
+	}
+	
+	requestImport() {
+		console.debug("Request Import");
+		domService.dispatchEvent(this.dialogImportTarget, DialogController.EVENT_DIALOG_OPEN);
+	}
+	
+	async importList(event) {
+		const input = event.detail;
+		this.startOperating();
+		try {
+			// Upload the file
+			const $form = this.dialogImportTarget.querySelector("form");
+			const form = domService.getFormData($form);
+			
+			// Upload the file - Copy the form file to a new FormData
+			const formFile = form.get("file");
+			const uploadForm = new FormData();
+			uploadForm.append("file", formFile, formFile.name);
+			uploadForm.append("purpose", 'import_language');
+			uploadForm.append("expireDate", '1 day');// Expires in one day
+			
+			// Upload the file - Process upload to server
+			const file = await appWebService.uploadFile(`/file`, uploadForm, {format: 'public'});
+			
+			// Import the file
+			delete input.file;
+			input.fileId = file.id;
+			console.debug("Import", input);
+			const summary = await appWebService.requestPost(`/languages.csv`, input);
+			summary.errorCount = summary.errors.length;
+			
+			// Success
+			domService.dispatchEvent(this.dialogImportTarget, DialogController.EVENT_DIALOG_CLOSE);
+			this.reportSuccess(domService.renderString(this.importSuccessValue, summary), this.importTitleValue);
+			await this.load();
+		} catch (exception) {
+			// Validation errors are technical here as the user can no act on most of them
+			this.reportException(exception, this.importTitleValue);
+			this.endOperating();
+		}
 	}
 	
 }

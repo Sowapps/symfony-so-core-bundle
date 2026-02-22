@@ -700,7 +700,14 @@ class DomService {
 		return new CustomEvent(event, options);
 	}
 	
+	/**
+	 * @param {Element|Element[]|NodeList} element
+	 * @param {String} event
+	 * @param {Object} detail
+	 * @param {Object} options
+	 */
 	dispatchEvent(element, event, detail = null, options = {}) {
+		console.debug(`Dispatch event "${event}" on `, element, detail);
 		if( !element ) {
 			return;
 		}
@@ -714,7 +721,7 @@ class DomService {
 			element.forEach((itemElement) => this.dispatchEvent(itemElement, event, detail));
 			return;
 		}
-		if( element._element ) {
+		if( element._element ) { // TODO Always in use ?
 			// Auto handle BS Modals
 			element = element._element;
 		}

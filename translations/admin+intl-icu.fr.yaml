@@ -9,6 +9,24 @@ file:
         error: "Impossible de supprimer le fichier."
         forbidden: "Opération non autorisée"
 
+feature:
+    export:
+        legend: "L'export sera un CSV utilisant la virgule comme séparateur et encodé en UTF-8."
+        action: "Exporter"
+        success: "Le fichier a été généré, il devrait apparaitre dans vos téléchargements dans quelques instants."
+    import:
+        legend: "Le fichier doit être un CSV utilisant la virgule comme séparateur et encodé en UTF-8, comme pour l'export."
+        action: "Importer"
+        success: "Le fichier a bien été importé. Résumé: {rows} lignes, {processedCreate} ajoutées, {processedUpdate} mises à jour et {errorCount} en erreur."
+        field:
+            file: "Fichier à importer"
+            mode: "Mode d'import"
+        mode:
+            add: "Ajouter sans doublon"
+            append: "Forcer l'ajout"
+            replace: "Remplacer (supprime l'existant)"
+            update: "Mise à jour"
+
 page:
     # TODO Migrate so_core keys to SAW names instead of route names
     so_core_admin_register: # TODO Remove or convert
@@ -71,8 +89,6 @@ page:
     admin:
         title: "{page} - Administration {app}"
         label: "Administration"
-    admin-login:
-        label: "Connexion"
     admin-dashboard:
         label: "Tableau de bord"
     admin-user-list:
@@ -102,6 +118,12 @@ page:
             title: "Modifier une langue"
             legend: "En modifiant cette langue, elle sera désactivée pour que vous vous assuriez d'avoir fini toutes les modifications nécessaires."
             success: "Les modifications apportées à la langue {name} ont été sauvegardées !"
+        export:
+            label: "Exporter les langues"
+            title: "Exporter les langues"
+        import:
+            label: "Importer des langues"
+            title: "Importer des langues"
         enable:
             confirmTitle: "Activer la langue ?"
             confirmMessage: |

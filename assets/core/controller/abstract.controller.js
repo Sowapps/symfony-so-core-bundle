@@ -27,6 +27,7 @@ export class AbstractController extends Controller {
 	 * Report the exception to the main controller, so it could choose the way to notify the user
 	 */
 	reportException(exception, title = null, options = {}) {
+		console.error(exception, title);
 		this.dispatchEvent("so.report.error", {title, error: exception, options});
 	}
 	
