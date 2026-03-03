@@ -1,9 +1,20 @@
 action:
     save: "Enregistrer"
     close: "Fermer"
-    filter: 'Filtrer'
+    filter: "Filtrer"
+    retry: "Réessayer"
+    backToWebsite: "Retour au site"
 
 error:
+    401:
+        title: "Authentification requise"
+        legend: "Cette page appartient requiert un accès restreint. Nous allons tenter de restaurer votre session."
+        checking: "Vérification des informations d'identification..."
+        authSuccess: "Session restaurée, rechargement de la page…"
+        errorNoToken: "Aucun token trouvé, vous n’êtes pas authentifié ou votre session locale a été supprimée"
+        errorAccessDenied: "Accès refusé, votre token est invalide, expiré, ou ne permet pas d’accéder à l’administration."
+        errorNetwork: "Erreur réseau, impossible de contacter le serveur pour restaurer la session."
+        errorGeneric: "Erreur inattendue, impossible de vous authentifier auprès de nos services."
     404:
         label: "Page non trouvée"
     generic:

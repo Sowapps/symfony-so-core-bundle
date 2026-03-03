@@ -4,6 +4,7 @@ namespace Sowapps\SoCore\Repository;
 
 use Doctrine\Persistence\ManagerRegistry;
 use Sowapps\SoCore\Core\DBAL\AbstractRepository;
+use Sowapps\SoCore\Entity\AbstractUser;
 use Sowapps\SoCore\Entity\File;
 use Sowapps\SoCore\Entity\UserApiToken;
 
@@ -17,6 +18,13 @@ class UserApiTokenRepository extends AbstractRepository {
 	
 	public function __construct(ManagerRegistry $registry) {
 		parent::__construct($registry, UserApiToken::class, 'userToken');
+	}
+	
+	/**
+	 * @return UserApiToken[]
+	 */
+	public function findByUser(AbstractUser $user): array {
+		return $this->findBy(['user' => $user], ['createDate' => 'DESC']);
 	}
 	
 }

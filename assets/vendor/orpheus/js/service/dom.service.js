@@ -201,7 +201,7 @@ class DomService {
 	loadTemplate(key, target) {
 		const deferred = $.Deferred();
 		const $target = $(target);
-		$target.load('/api/template/' + key, (responseText, textStatus, jqXHR) => {
+		$target.loadToken('/api/template/' + key, (responseText, textStatus, jqXHR) => {
 			if( textStatus === 'success' ) {
 				deferred.resolve($target);
 			} else {

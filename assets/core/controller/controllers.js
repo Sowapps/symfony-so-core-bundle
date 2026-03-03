@@ -34,14 +34,11 @@ export class AbstractMainController extends Controller {
 		// document.documentElement.dataset.bsTheme = "dark";
 		sawService.setDefaultVar("mainController", this.identifier);
 		
+		// TODO Look what to move to Application
 		this.watchNavigation();
 		this.watchUserAuthentication();
 		this.watchDocumentClick();
 		
-		const user = await this.loadSession();
-		if( user ) {
-			this.triggerUserConnected(user);
-		}
 		await this.navigateFromCurrentUrl();
 	}
 	
@@ -123,16 +120,6 @@ export class AbstractMainController extends Controller {
 	
 	triggerUserConnected(user) {
 		securityService.trigger(SecurityEvent.USER_CONNECTED, {user: user});
-	}
-	
-	async loadSession() {
-		// Load current user
-		try {
-			return await appWebService.getAuthenticatedUser();
-		} catch (exception) {
-			console.error("Error getting authenticated user", exception);
-			return null;
-		}
 	}
 	
 	async logout() {

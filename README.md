@@ -124,6 +124,14 @@ Declare them in `assets/package.json`
 Use it as `@sowapps--so-core-name` with name the given name in package.json.  
 To test it locally, you have to add your controller in `assets/controllers.json` too.
 
+### Authentication
+
+There are two firewalls:
+ - api: For the API, no session, authentication with an api token, a bearer token.
+ - main: For the front, with session, authentication with an autoloading session from the api token. 
+
+[//]: # (TODO Write more)
+
 ### SAW Feature
 
 [README-Saw.md](README-Saw.md)

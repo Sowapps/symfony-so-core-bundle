@@ -102,16 +102,19 @@ class AbstractEntity implements JsonSerializable, Persistable, \Stringable {
 		return new EntityReference(static::class, $this->getId());
 	}
 	
-	/**
-	 * @param mixed $other
-	 * @return bool
-	 */
 	public function equals(mixed $other): bool {
-		return $other && is_object($other) && static::class === $other::class && !$this->isNew() && !$other->isNew() && $this->getId() === $other->getId();
+		return $other instanceof AbstractEntity && static::getClass() === $other::getClass() && !$this->isNew() && !$other->isNew() && $this->getId() === $other->getId();
 	}
 	
 	public function getId(): ?int {
 		return $this->id;
+	}
+	
+	/**
+	 * In case of using a proxy, you could force to user the class of your entity
+	 */
+	public static function getClass(): string {
+		return static::class;
 	}
 	
 	/**

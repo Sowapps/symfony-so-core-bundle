@@ -3,8 +3,8 @@ import {Exception} from "../core/exceptions.js";
 import {Pagination} from "../core/pagination.js";
 
 class AppWebService {
-	
 	apiUrl = "/api";// No ending slash
+	#bearerToken = null;
 	
 	constructor() {
 		this.FORMAT = Object.freeze({
@@ -14,30 +14,10 @@ class AppWebService {
 	}
 	
 	/**
-	 * @returns {Promise<Object>}
+	 * Set the bearer token and enable authentication for all future requests
 	 */
-	async getAuthenticatedUser() {
-		try {
-			return await this.requestGet(`/me`);
-		} catch (error) {
-			if( error instanceof ApiServerError && error.response.status === 401 ) {
-				// Unauthorized is acceptable if user is not authenticated
-				return null;
-			}
-			throw new ApiException("Unable to get authenticated user", error);
-		}
-	}
-	
-	/**
-	 * @param {Object} authentication
-	 * @returns {Promise<Object>}
-	 */
-	async authenticateUser(authentication) {
-		return await this.requestPost(`/security/authenticate`, authentication);
-		// try {
-		// } catch( error ) {
-		// 	throw new ApiException("Unable to authenticate user", error);
-		// }
+	setBearerTokenAuthentication(token) {
+		this.#bearerToken = token;
 	}
 	
 	/**
@@ -57,17 +37,20 @@ class AppWebService {
 	 *
 	 * @param {String} path
 	 * @param {Object} input
+	 * @param {Object|null} query
+	 * @param {Object} options
 	 * @returns {Promise<Object>}
 	 */
-	requestPost(path, input) {
-		console.debug("api.requestPost", path, input);
-		return this.requestJson(path, {
+	requestPost(path, input, query = null, options = {}) {
+		console.debug("api.requestPost", path, input, query);
+		return this.requestJson(path, Object.assign(options, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 			},
 			body: input ? JSON.stringify(input) : null,
-		});
+			query,
+		}));
 	}
 	
 	/**
@@ -105,7 +88,7 @@ class AppWebService {
 	}
 	
 	/**
-	 * Get ressources from API
+	 * Get resources from API
 	 *
 	 * @param {String} path
 	 * @param {Object|null} query
@@ -116,7 +99,7 @@ class AppWebService {
 	}
 	
 	/**
-	 * Get ressources from API
+	 * Get resources from API
 	 *
 	 * @param {String} path
 	 * @param {Object|null} query
@@ -145,7 +128,7 @@ class AppWebService {
 	}
 	
 	/**
-	 * Get ressources from API
+	 * Get resources from API
 	 *
 	 * @param {String} path
 	 * @param {Object|null} query
@@ -207,7 +190,7 @@ class AppWebService {
 	}
 	
 	extractFilename(contentDisposition) {
-		if (!contentDisposition) {
+		if( !contentDisposition ) {
 			return null;
 		}
 		// Ex: attachment; filename="export.csv"
@@ -256,7 +239,7 @@ class AppWebService {
 			options.headers["Accept"] = "application/json";
 		}
 		let response = await this.request(path, options);
-		if(!response) {
+		if( !response ) {
 			return null;
 		}
 		try {
@@ -275,9 +258,28 @@ class AppWebService {
 	 * @return {{headers: Object, withResponseHeaders: boolean}}
 	 */
 	#formatRequestOptions(options) {
+		// Initialize only objects (no scalar) to prevent call of property on an undefined object
 		options = options || {};
 		options.headers = options.headers || {};
 		options.withResponseHeaders = options.withResponseHeaders || false;
+		
+		return options;
+	}
+	
+	/**
+	 * @param {Object|null} options
+	 * @return {Object}
+	 */
+	#formatFetchOptions(options) {
+		options = this.#formatRequestOptions(options);
+		
+		// Automatically complete options with configured data
+		const { authenticated = true } = options;
+		console.log("authenticated", authenticated);
+		if( authenticated && this.#bearerToken ) {
+			options.headers['Authorization'] = 'Bearer ' + this.#bearerToken;
+		}
+		delete options.authenticated;
 		
 		return options;
 	}
@@ -292,7 +294,7 @@ class AppWebService {
 	async request(path, options = null) {
 		let response = null;
 		// Format options
-		options = this.#formatRequestOptions(options);
+		options = this.#formatFetchOptions(options);
 		// Request server
 		try {
 			const query = this.formatQueryString(options.query);
@@ -363,7 +365,7 @@ export class ApiException extends Exception {
 	
 }
 
-class ApiError extends Exception {
+export class ApiError extends Exception {
 	/**
 	 * @var {Response}
 	 */
@@ -384,7 +386,7 @@ class ApiError extends Exception {
 /**
  * Error from server, by default user could not get what is going wrong
  */
-class ApiServerError extends ApiError {
+export class ApiServerError extends ApiError {
 	
 	constructor(response, message = null) {
 		super(message || "API Request failed with code " + response.status, response);
@@ -500,7 +502,7 @@ export class ApiValidationError extends ApiUserServerError {
 		 * Using a custom validation exception format, not compatible with Symfony validation error format
 		 * @see \App\Event\ExceptionSubscriber::onValidationException
 		 */
-		if(!Is.array(body.violations) || !body.message) {
+		if( !Is.array(body.violations) || !body.message ) {
 			throw new Error("Invalid validation error format from server, requires violations array and message string");
 		}
 		
@@ -514,7 +516,7 @@ export class ApiValidationError extends ApiUserServerError {
 	
 }
 
-class ApiNetworkError extends ApiError {
+export class ApiNetworkError extends ApiError {
 	
 	constructor(previous) {
 		super(`API Network issue (${previous.message})`);
@@ -524,7 +526,7 @@ class ApiNetworkError extends ApiError {
 	
 }
 
-class ApiClientError extends ApiError {
+export class ApiClientError extends ApiError {
 	
 	constructor(response, previous) {
 		super(`API Client issue (${previous.message})`, response);

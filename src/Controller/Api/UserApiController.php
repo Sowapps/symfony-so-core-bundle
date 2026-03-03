@@ -20,6 +20,7 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  * It provides default routes for User API, you could overwrite the route path to get it by your own way
@@ -40,6 +41,7 @@ class UserApiController extends AbstractApiEntityController {
 	}
 	
 	#[Route("/api/user/{id}", methods: ['GET'], format: 'json')]
+	#[IsGranted(SecurityService::ROLE_USER)]
 	public function getOneUser(AbstractUser $user, #[CurrentUser] ?AbstractUser $currentUser): Response {
 		// TODO Format must be provided
 		$format = AbstractEntity::FORMAT_PUBLIC;

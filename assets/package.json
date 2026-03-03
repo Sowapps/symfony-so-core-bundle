@@ -5,6 +5,11 @@
 	"version": "0.1.0",
 	"symfony": {
 		"controllers": {
+			"system-auth-token": {
+				"main": "controllers/system/auth-token_controller.js",
+				"fetch": "eager",
+				"enabled": true
+			},
 			"admin-auth-main": {
 				"main": "controllers/admin-auth/main_controller.js",
 				"fetch": "eager",

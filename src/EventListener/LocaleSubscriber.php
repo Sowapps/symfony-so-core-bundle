@@ -14,6 +14,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * TODO Update from \App\Event\LocaleSubscriber
+ */
 class LocaleSubscriber implements EventSubscriberInterface {
 	
 	public function __construct(private readonly ContextInterface $contextService, private readonly LanguageService $languageService)

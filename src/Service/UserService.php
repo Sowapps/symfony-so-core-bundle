@@ -21,7 +21,6 @@ readonly class UserService {
 	public function __construct(
 		protected EntityManagerInterface      $entityManager,
 		protected UserPasswordHasherInterface $passwordEncoder,
-		protected SecurityService             $securityService,
 		protected StringService               $stringService,
 		#[Autowire('%so_core.user%')]
 		protected array                       $configUser
@@ -38,6 +37,13 @@ readonly class UserService {
 	
 	public function getUserClass(): string {
 		return $this->configUser['class'];
+	}
+	
+	/**
+	 * @return array{expire: string, limit: int}
+	 */
+	public function getUserApiTokenConfig(): array {
+		return $this->configUser['apiToken'];
 	}
 	
 	/**

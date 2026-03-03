@@ -28,11 +28,13 @@ export default class extends Controller {
 		domService.endFadeOut(this.errorTarget);
 		
 		try {
-			const user = await appWebService.authenticateUser(input);
+			/** @type {Object} */
+			const authentication = await appWebService.requestPost(`/security/authenticate`, input, {withApi: true}, {authenticated: false});
+			console.log("Auth token", authentication);
 			this.formTarget.reset();
-			securityService.trigger(SecurityEvent.USER_AUTHENTICATED, {user: user});
+			securityService.authenticate(authentication.user, authentication.apiToken.token);
 			// Redirect to another page, getting out of this main controller
-			navigationService.redirectTo("/admin/dashboard");// TODO Uncomment
+			navigationService.redirectTo("/admin/dashboard");
 		} catch (exception) {
 			console.error("exception", exception);
 			let message = null;

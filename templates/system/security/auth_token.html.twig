@@ -1,0 +1,58 @@
+{% extends '@SoCore/base-interactive-default.html.twig' %}
+
+{% block title %}{{ 'error.401.checking' | trans }}{% endblock %}
+
+{% block body -%}
+
+{#		<div id="msg">#}
+{#			{{ 'error.401.checking' | trans }}#}
+{#		</div>#}
+
+		<main class="min-vh-100 d-flex align-items-center" data-controller="sowapps--so-core--system-auth-token"
+			  data-sowapps--so-core--system-auth-token-checking-value="{{ 'error.401.checking' | trans }}"
+			  data-sowapps--so-core--system-auth-token-auth-success-value="{{ 'error.401.authSuccess' | trans }}"
+			  data-sowapps--so-core--system-auth-token-error-no-token-value="{{ 'error.401.errorNoToken' | trans }}"
+			  data-sowapps--so-core--system-auth-token-error-access-denied-value="{{ 'error.401.errorAccessDenied' | trans }}"
+			  data-sowapps--so-core--system-auth-token-error-network-value="{{ 'error.401.errorNetwork' | trans }}"
+			  data-sowapps--so-core--system-auth-token-error-generic-value="{{ 'error.401.errorGeneric' | trans }}"
+		>
+			<div class="container py-5">
+				<div class="row justify-content-center">
+					<div class="col-12 col-md-10 col-lg-7 col-xl-6">
+						<div class="card shadow-sm border-0">
+							<div class="card-body p-4 p-md-5">
+								<div class="d-flex align-items-start gap-3">
+									<div class="rounded-circle bg-danger-subtle text-danger d-flex align-items-center justify-content-center flex-shrink-0 fs-4"
+										 style="width:48px;height:48px;">
+										<span class="fw-bold">!</span>
+									</div>
+
+									<div class="flex-grow-1">
+										<h1 class="h4 mb-1">{{ 'error.401.title' | trans }}</h1>
+										<p class="text-secondary mb-3">{{ 'error.401.legend' | trans }}</p>
+
+										<div class="alert alert-info d-flex align-items-center gap-2 mb-3" role="alert" data-sowapps--so-core--system-auth-token-target="status">
+											{{ 'error.401.checking' | trans }}
+										</div>
+
+										<div class="d-flex flex-wrap flex- gap-2 justify-content-end">
+											<a href="{{ path(routing.route.public_default) }}" class="btn btn-outline-secondary">
+												{{ 'action.backToWebsite' | trans }}
+											</a>
+											<button id="retryBtn" type="button" class="btn btn-primary" hidden
+													data-sowapps--so-core--system-auth-token-target="retryButton"
+													data-action="click->sowapps--so-core--system-auth-token#connectUser"
+											>
+												{{ 'action.retry' | trans }}
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+
+{%- endblock %}

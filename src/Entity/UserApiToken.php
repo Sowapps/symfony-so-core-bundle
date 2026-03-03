@@ -22,7 +22,7 @@ class UserApiToken extends AbstractEntity {
 	#[ORM\Column(type: 'string', length: 60)]
 	protected ?string $ip = null;
 	
-	#[ORM\Column(type: "string", length: 32)]
+	#[ORM\Column(type: "string", length: 255, unique: true)]
 	private ?string $tokenHash = null;
 	
 	#[ORM\Column(type: "datetime", nullable: true)]
