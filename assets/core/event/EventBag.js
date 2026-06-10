@@ -2,6 +2,9 @@
  * @author Florent HAZARD <f.hazard@sowapps.com>
  */
 
+/**
+ * TODO Require JS DOC
+ */
 export class EventBag {
 	
 	#typeEvents;

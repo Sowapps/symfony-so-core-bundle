@@ -7,6 +7,7 @@ namespace Sowapps\SoCore\Core\DBAL;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Exception as DbalException;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use InvalidArgumentException;
@@ -27,6 +28,14 @@ abstract class AbstractRepository extends ServiceEntityRepository {
 		parent::__construct($registry, $entityClass);
 		
 		$this->alias = $alias;
+	}
+	
+	protected function getResultSetMapping(?string $alias = null): ResultSetMappingBuilder {
+		$alias ??= $this->alias;
+		$rsm = new ResultSetMappingBuilder($this->getEntityManager());
+		$rsm->addRootEntityFromClassMetadata($this->getClassName(), $alias);
+		
+		return $rsm;
 	}
 	
 	public function queryBy(?CriteriaOptions $criteria): QueryBuilder {

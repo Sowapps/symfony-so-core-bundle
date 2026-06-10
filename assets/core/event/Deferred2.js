@@ -4,7 +4,7 @@ import {Is} from "../../helpers/is.helper.js";
 /**
  * TODO Require JS DOC
  */
-export class Deferred {
+export class Deferred2 {
 	/**
 	 * @type {DeferredPromise}
 	 */
@@ -107,7 +107,7 @@ export class Deferred {
 	}
 }
 
-export class DeferredPromise {
+export class DeferredPromise2 {
 	/**
 	 * @param {Deferred} deferred
 	 */

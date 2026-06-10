@@ -54,8 +54,12 @@ export class Is {
 		return typeof value[Symbol.iterator] === "function";
 	}
 	
-	static function(v) {
-		return typeof (v) === "function";
+	static function(value) {
+		return (typeof value) === "function";
+	}
+	
+	static class(value) {
+		return this.function(value) && /^class\s/.test(Function.prototype.toString.call(value));
 	}
 	
 	static domElement(obj) {

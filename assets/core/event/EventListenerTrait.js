@@ -4,9 +4,10 @@
 import {Trait} from "../trait/Trait.js";
 import {Deferred, DeferredPromise} from "./Deferred.js";
 import {EventBag} from "./EventBag.js";
-import {Is} from "../../helpers/is.helper.js";
 
-
+/**
+ * TODO Require JS DOC
+ */
 export class EventListenerTrait extends Trait {
 	
 	initializeEventListenerTrait() {
